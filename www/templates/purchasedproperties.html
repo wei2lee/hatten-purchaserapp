@@ -1,0 +1,15 @@
+<ion-view view-title="Purchased">
+    <ion-content>
+        <div class="list card " ng-repeat="purchasedProperty in purchasedProperties">
+            <a href="#/app/purchasedproperty/1" class="item item-icon-left item-thumbnail-left" >
+                <img ng-src="{{purchasedProperty.thumb}}"> 
+                <p>
+                    <small>{{purchasedProperty.area}}</small>
+                    <br/>
+                    <b>{{purchasedProperty.displayName}}</b>
+                </p>
+                <p><small>Purchased at {{purchasedProperty.purchasedDate | date : 'MMM dd, yyyy'}}</small></p>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

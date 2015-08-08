@@ -1,0 +1,56 @@
+<ion-view view-title="{{purchasedProperty.unitNo}}">
+    <ion-content>
+<!--        <img class="view-center-thumb padding-top" ng-src="{{purchasedProperty.project.thumb}}">-->
+        
+        <div class="list card line-card-image">
+            <img class="full-img-responsive" ng-src="{{purchasedProperty.project.thumb}}">
+        </div>
+        
+        <div class="list card">
+            <div class="item">
+                <p><small>Project</small></p>
+                <h2>{{purchasedProperty.project.displayName}}</h2>
+            </div>
+            <div class="item">
+                <p><small>Unit</small></p>
+                <h2>{{purchasedProperty.unitNo}}</h2>
+            </div>
+            <div class="item">
+                <p><small>Completion Date</small></p>
+                <h2>{{purchasedProperty.completionDate}}</h2>
+            </div>
+        </div>
+        
+        <div class="list card">
+            <div class="item padding-0">
+                <div class="row padding-0">
+                    <div class="col padding-md text-center">
+                        <a>Floor Plan</a>
+                    </div>
+                    <div class="col padding-md left-border text-center">
+                        <a>Specification</a>
+                    </div>
+                </div>
+            </div>
+            <div class="item padding-0">
+                <div class="row padding-0">
+                    <div class="col padding-md text-center">
+                        Gallery
+                    </div>
+                    <div class="col padding-md left-border text-center">
+                        Location
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="list card">
+            <a class="item">
+                Billing Status
+            </a>
+            <a class="item">
+                Agent Served
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

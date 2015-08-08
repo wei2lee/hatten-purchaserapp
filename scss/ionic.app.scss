@@ -1,0 +1,107 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
+*/
+
+$royal:                           #C6095F !default;
+
+$fa-font-path: "../lib/fontawesome/fonts" !default;
+@import "www/lib/fontawesome/scss/font-awesome.scss";
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+//Utility Start
+.padding-0 {
+    padding: 0;
+}
+
+.padding-md {
+    padding: 20px;
+}
+
+.m-b-xs {
+    margin:2px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.full-img-responsive {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+}
+
+.font-bold {
+    font-weight:900;   
+}
+
+//Utility End
+
+//Customized ionic Start
+
+.left-border {
+    border-left: solid 1px rgb(221, 221, 221);
+}
+
+.line-card-image {
+    line-height:0; 
+    padding-top:0;
+    padding-bottom:0;
+}
+
+.view-center-thumb {
+    width: 45%;
+    min-width: 160px;
+    display: block;
+    margin: 0 auto;
+}
+
+ion-content {
+    background-color:rgba(232, 230, 230, 0.21)   
+}
+
+.card {
+    margin:10px 10px;   
+}
+
+.item {
+    .font-size-lg {
+        font-size: 16px;
+    }
+    .icon-left-border {
+        border-left: solid 1px rgb(221, 221, 221);
+        padding-left: 10px;
+    }
+}
+
+.login-button {
+    background-color:$balanced;
+    color:white;
+}
+
+.tabs-top-buttons {
+    height:44px; 
+    
+    .tabs {
+        top:0;   
+        background-color:transparent !important;
+    }
+}
+
+//Customized ionic End
