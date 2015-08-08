@@ -169,6 +169,9 @@ angular.module('starter.controllers', [])
         console.log($scope.constructions);
         //Dummy End
     });
+    $scope.$watch('tabIndex', function(newval, oldval) {
+        console.log('tabIndex='+newval);
+    });
 })
 
 .controller('ConstructionDetailCtrl', function ($scope, $state) {

@@ -26,8 +26,7 @@
 
         </div>
 
-
-        <div class="list card" ng-repeat="construction in constructions">
+        <div class="list card" ng-repeat="construction in constructions | filter:{type:tabIndex}">
             <a ng-href="#/app/construction/{{construction.id}}" class="item item-icon-left item-thumbnail-left">
                 <img ng-src="{{construction.thumb}}">
                 <p>{{construction.displayName}}</p>
