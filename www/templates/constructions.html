@@ -1,16 +1,6 @@
 <ion-view view-title="Construction">
     <ion-content>
-        <!--
-        <div class="padding-top padding-left padding-right">
-            <div class="button-bar">
-              <a class="button">Commerical</a>
-              <a class="button">Residential</a>
-              <a class="button">Hospitality</a>
-            </div>
-        </div>
--->
-
-        <div class="tabs-striped tabs-top tabs-background-light tabs-color-royal tabs-top-buttons">
+        <div class="tabs-striped tabs-top tabs-background-light tabs-color-positive tabs-top-buttons">
             <div class="tabs">
                 <a class="tab-item" ng-class="{active:tabIndex==0}" ng-click="tabIndex=0;">
                      COMMERICIAL
@@ -22,16 +12,12 @@
                      HOSPITALITY
                 </a>
             </div>
-
-
         </div>
-
         <div class="list card" ng-repeat="construction in constructions | filter:{type:tabIndex}">
             <a ng-href="#/app/construction/{{construction.id}}" class="item item-icon-left item-thumbnail-left">
                 <img ng-src="{{construction.thumb}}">
                 <p>{{construction.displayName}}</p>
             </a>
         </div>
-
     </ion-content>
 </ion-view>

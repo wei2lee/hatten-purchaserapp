@@ -1,0 +1,29 @@
+<ion-view view-title="Event">
+    <ion-content>
+        <div class="tabs-striped tabs-top tabs-background-light tabs-color-positive tabs-top-buttons">
+            <div class="tabs">
+                <a class="tab-item" ng-class="{active:tabIndex==0}" ng-click="tabIndex=0;">
+                     Upcoming Events
+                </a>
+                <a class="tab-item" ng-class="{active:tabIndex==1}" ng-click="tabIndex=1;">
+                     Ongoing Events
+                </a>
+            </div>
+        </div>
+        <div class="list card" ng-repeat="event in events | filter:{type:tabIndex}">
+            <div class="item padding-0">
+                <a ng-href="#/app/event/{{event.id}}"><img class="full-img-responsive" ng-src="{{event.thumb}}"></a>
+                
+                <p class="padding">
+                    <small>{{event.period}}</small>
+                    <br/>
+                    <span class="font-bold font-size-lg">{{event.displayName}}</span>
+                </p>
+            </div>
+            <div class="item item-icon-right">
+                <p>Count Down: {{event.expireRemain}}</p>
+                <a ng-click="u.share(event)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

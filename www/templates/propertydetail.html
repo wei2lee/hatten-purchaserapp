@@ -1,11 +1,17 @@
 <ion-view view-title="{{property.displayName}}">
     <ion-content>
-        <img class="view-center-thumb padding-top" ng-src="{{property.project.thumb}}">
-
-        <div class="list card">
+        <img class="view-center-thumb padding-top" ng-src="{{project.thumb}}">
+        <div class="list card line-card-image">
             <img ng-src="{{property.thumb}}" class="full-img-responsive">
         </div>
-        
+        <div class="list card">
+            <div class="item-body">
+                {{property.description}}
+            </div>
+            <button class="button button-full button-positive footer-button">
+                LEARN MORE
+            </button>
+        </div>
         <div class="list card">
             <div class="item padding-0">
                 <div class="row padding-0">
@@ -27,6 +33,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="list card">
+            <button class="button button-full button-balanced footer-button">
+                FIND A CONSULTANT
+            </button>
         </div>
     </ion-content>
 </ion-view>

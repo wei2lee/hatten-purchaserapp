@@ -1,19 +1,25 @@
 <ion-view view-title="Properties">
     <ion-content>
-        <div class="padding-top padding-left padding-right">
-            <div class="button-bar">
-              <a class="button">Commerical</a>
-              <a class="button">Residential</a>
-              <a class="button">Hospitality</a>
+        <div class="tabs-striped tabs-top tabs-background-light tabs-color-positive tabs-top-buttons">
+            <div class="tabs">
+                <a class="tab-item" ng-class="{active:tabIndex==0}" ng-click="tabIndex=0;">
+                     COMMERICIAL
+                </a>
+                <a class="tab-item" ng-class="{active:tabIndex==1}" ng-click="tabIndex=1;">
+                     RESIDENTIAL
+                </a>
+                <a class="tab-item" ng-class="{active:tabIndex==2}" ng-click="tabIndex=2;">
+                     HOSPITALITY
+                </a>
             </div>
         </div>
-        
-        <div class="list card" ng-repeat="property in properties">
+        <div class="list card" ng-repeat="property in properties | filter:{type:tabIndex}">
             <div class="item padding-0 line-card-image">
-                <a ng-href="#/app/property/1"><img class="full-img-responsive" ng-src="{{property.thumb}}"></a>
+                <a ng-href="#/app/property/{{property.id}}"><img class="full-img-responsive" ng-src="{{property.thumb}}"></a>
             </div>
             <div class="item item-icon-right">
                 <p>{{property.displayName}}</p>
+                <a ng-click="u.addFavourite(property)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
                 <a ng-click="u.share(property)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
             </div>
         </div>

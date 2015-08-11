@@ -7,6 +7,10 @@
   "dependencies": {
     "fontawesome": "~4.4.0",
     "angular-resource": "~1.4.3",
-    "Faker": "~3.0.1"
+    "Faker": "~3.0.1",
+    "sprintf": "~1.0.3",
+    "underscore": "~1.8.3",
+    "angular-adaptive-googlemaps": "latest",
+    "ngCordova": "~0.1.19-alpha"
   }
 }

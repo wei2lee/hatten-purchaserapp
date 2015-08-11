@@ -12,6 +12,7 @@
             </div>
             <div class="item item-icon-right">
                 <p>Count Down: {{new.expireRemain}}</p>
+                <a ng-click="u.toggleFavourited(new)"><i class="icon icon-left-border icon-right-2 text-energized" ng-class="{'ion-ios-star-outline':new.favourited, 'ion-ios-star':!new.favourited}"></i></a>
                 <a ng-click="u.share(new)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
             </div>
         </div>

@@ -68,36 +68,32 @@ angular.module('starter.controllers', [])
             var hh = Math.floor(expireRemainTimeInterval / (60*60)) % 24;
             var mi = Math.floor(expireRemainTimeInterval / (60)) % 60;
             var ss = expireRemainTimeInterval % 60;
-            _new.expireRemain = dd + ' Days ' + hh + ' Hours ' + mi + ' Minute ' + ss + ' Seconds';
+            //_new.expireRemain = dd + ' Days ' + hh + ' Hours ' + mi + ' Minute ' + ss + ' Seconds';
+            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
         }
     }
     
     $scope.$on('$ionicView.beforeEnter ', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.beforeEnter', viewInfo, state);
         $scope.startUpdateExpireRemain(); 
     });
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.afterEnter', viewInfo, state);
         $scope.startUpdateExpireRemain(); 
     });
     $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.beforeLeave', viewInfo, state);
     });
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.afterLeave', viewInfo, state);
         $scope.stopUpdateExpireRemain();
     });
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
-        
         //Dummy Start
         for(i = 0 ; i < 10 ; i++) {
             var value = {};
-            value.thumb = faker.image.city();
+            value.thumb = faker.image.event();
             value.period = '12-14 JUNE, 11pm-5pm';
             value.displayName = faker.company.companyName();
             value.expireDate = faker.date.future();
-            value.expireRemain = '7 Days 9 Hrs 0min';
+            value.expireRemain = '';
+            value.favourited = _.random(1) == 0;
             $scope.news.push(value);
         }
         //Dummy End
@@ -105,14 +101,12 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PurchasedPropertiesCtrl', function ($scope) {
-    $scope.purchasedProperties = [];
-    
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
         //Dummy Start
+        $scope.purchasedProperties = [];
         for(i = 0 ; i < 10 ; i++) {
             var value = {};
-            value.thumb = faker.image.city();
+            value.thumb = faker.image.property();
             value.displayName = faker.company.companyName();
             value.project = {
                 displayName : 'Harbour City'
@@ -136,58 +130,51 @@ angular.module('starter.controllers', [])
 
 .controller('PurchasedPropertyDetailCtrl', function ($scope, $state) {
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
         //Dummy Start
         $scope.purchasedProperty = {
             project: {
                 displayName:'Harbour City',
-                thumb:faker.image.city()
+                thumb:faker.image.property()
             },
             displayName: '',
             unitNo:'A-01-03',
-            completionDate: '20 Dec 2015'
+            completionDate: faker.date.future()
         };
-        console.log($scope.purchasedProperty);
         //Dummy End
     });
 })
 
 .controller('ConstructionsCtrl', function ($scope, $state) {
-    $scope.constructions = [];
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
+        $scope.constructions = [];
+        $scope.tabIndex = 0;
         //Dummy Start
         for(i = 0 ; i < 30 ; i++) {
             $scope.constructions.push(
             {
                 id:i,
                 displayName: faker.company.companyName(),
-                thumb:faker.image.city(),
-                type:Math.floor(Math.random() * 3)
+                thumb:faker.image.property(),
+                type:_.random(2)
             });
         }
-        console.log($scope.constructions);
         //Dummy End
-    });
-    $scope.$watch('tabIndex', function(newval, oldval) {
-        console.log('tabIndex='+newval);
     });
 })
 
 .controller('ConstructionDetailCtrl', function ($scope, $state) {
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
         //Dummy Start
         $scope.project = {
             id:1,
             displayName: faker.company.companyName(),
-            thumb:faker.image.city()
+            thumb:faker.image.projectLogo()
         };
 
         $scope.construction = {
             id:1,
             displayName: faker.company.companyName(),
-            thumb:faker.image.city()
+            thumb:faker.image.construction()
         };
 
         $scope.progresses = [];
@@ -195,12 +182,10 @@ angular.module('starter.controllers', [])
             $scope.progresses.push(
             {
                 id:i,
-                photoTakenDate: '25 June 2015',
-                thumb:faker.image.transport()
+                photoTakenDate: faker.date.past(),
+                thumb:faker.image.progress()
             });
         }
-
-        console.log($scope.construction);
         //Dummy End
     });
 })
@@ -208,34 +193,127 @@ angular.module('starter.controllers', [])
 
 .controller('PropertiesCtrl', function ($scope, $state) {
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
+        $scope.tabIndex = 0;
         //Dummy Start
         $scope.properties = [];
-        for(i = 0 ; i < 10 ; i++) {
+        for(i = 0 ; i < 30 ; i++) {
             $scope.properties.push(
             {
                 id:i,
                 displayName: faker.company.companyName(),
-                thumb:faker.image.city()
+                thumb:faker.image.property(),
+                type:_.random(2)
             });
         }
         //Dummy End
     });
 })
 
-
 .controller('PropertyDetailCtrl', function ($scope, $state) {
     $scope.$on('$ionicView.loaded', function (viewInfo, state) {
         //Dummy Start
-        console.log('CTRL - $ionicView.loaded', viewInfo, state);
         $scope.project = {
-            thumb:faker.image.city()   
+            thumb:faker.image.projectLogo()   
         }
         $scope.property = {
-            thumb:faker.image.city(),
+            thumb:faker.image.property(),
             description:faker.lorem.paragraphs(),
             displayName:faker.company.companyName()
+        }
+        //Dummy End
+    });
+})
 
+.controller('EventsCtrl', function ($scope, $interval, u) {
+    $scope.events = [];
+    $scope.updateExpireRemainInterval = null;
+    
+    $scope.startUpdateExpireRemain = function() {
+        if($scope.updateExpireRemainInterval) return;
+        
+        $scope.updateExpireRemainInterval = $interval(function() {
+            $scope.updateExpireRemain();
+        },500);
+    }
+    
+    $scope.stopUpdateExpireRemain = function() {
+        if(!$scope.updateExpireRemainInterval) return;
+        
+        $scope.updateExpireRemainInterval.cancel();
+    }
+    
+    $scope.updateExpireRemain = function() {
+        for(i = 0 ; i < $scope.events.length ; i++) {
+            var _event = $scope.events[i];
+            var expireRemainTimeInterval = Math.max(Math.floor((_event.expireDate.getTime() - new Date().getTime()) / 1000), 0);
+            var dd = Math.floor(expireRemainTimeInterval / (60*60*24));
+            var hh = Math.floor(expireRemainTimeInterval / (60*60)) % 24;
+            var mi = Math.floor(expireRemainTimeInterval / (60)) % 60;
+            var ss = expireRemainTimeInterval % 60;
+            //_new.expireRemain = dd + ' Days ' + hh + ' Hours ' + mi + ' Minute ' + ss + ' Seconds';
+            _event.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
+        }
+    }
+    
+    $scope.$on('$ionicView.beforeEnter ', function (viewInfo, state) {
+        $scope.startUpdateExpireRemain(); 
+    });
+    $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
+        $scope.startUpdateExpireRemain(); 
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+    });
+    $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
+        $scope.stopUpdateExpireRemain();
+    });
+    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
+        $scope.tabIndex = 0;
+        //Dummy Start
+        for(i = 0 ; i < 10 ; i++) {
+            var value = {};
+            value.id = i;
+            value.thumb = faker.image.event();
+            value.period = '12-14 JUNE, 11pm-5pm';
+            value.displayName = faker.company.companyName();
+            value.expireDate = faker.date.future();
+            value.expireRemain = '';
+            value.type = _.random(1);
+            $scope.events.push(value);
+        }
+        //Dummy End
+    });
+})
+
+.controller('EventDetailCtrl', function ($scope, $state) {
+    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
+        //Dummy Start
+        $scope.event = {
+            thumb:faker.image.event(),
+            description:faker.lorem.paragraphs(),
+            displayName:faker.company.companyName(),
+            period:'12-14 JUNE, 11pm-5pm',
+            address:faker.address.streetAddress() + ', ' + faker.address.city() + ', ' + faker.address.state() + ', ' + faker.address.country(),
+            location:{
+                latitude:faker.address.latitude(),
+                longitude:faker.address.longitude()
+            },
+            distance:sprintf("%.1f ", Math.random() * 100) + 'KM'
+        }
+        //Dummy End
+    });
+})
+
+.controller('ConsultantsCtrl', function ($scope, $state) {
+    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
+        $scope.projects = [];
+        //Dummy Start
+        for(i = 0 ; i < 10 ; i++) {
+            $scope.projects.push(
+            {
+                id:i,
+                displayName: faker.company.companyName(),
+                thumb:faker.image.property()
+            });
         }
         //Dummy End
     });
