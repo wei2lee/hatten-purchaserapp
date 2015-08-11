@@ -11,6 +11,7 @@
     "sprintf": "~1.0.3",
     "underscore": "~1.8.3",
     "angular-adaptive-googlemaps": "latest",
-    "ngCordova": "~0.1.19-alpha"
+    "ngCordova": "~0.1.19-alpha",
+    "ionic-material": "~0.4.2"
   }
 }
