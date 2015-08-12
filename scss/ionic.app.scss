@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+
 /*
 To customize the look and feel of Ionic, you can override the variables
 in ionic's _variables.scss file.
@@ -15,15 +19,31 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
+$sidemenu-bottom-overlay-box-shadow:0 0 20px rgba(0, 0, 0, .3) !default;
+
+$bgcolor: rgba(232, 230, 230, 0.21) ;
+
 $royal:                           #C6095F !default;
 
 $fa-font-path: "../lib/fontawesome/fonts" !default;
-@import "www/lib/fontawesome/scss/font-awesome.scss";
+
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
+
+/* ==========================================================================
+   Base Import
+   ========================================================================== */
+
+@import "www/lib/fontawesome/scss/font-awesome.scss";
+
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
-//Utility Start
+
+/* ==========================================================================
+   Utility
+   ========================================================================== */
+
+//text-color
 .text-light {
     color:$light;   
 }
@@ -52,6 +72,36 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     color:$dark;   
 }
 
+//bg-color
+.bg-light {
+    background-color:$light;   
+}
+.bg-stable {
+    background-color:$stable;   
+}
+.bg-positive {
+    background-color:$positive;   
+}
+.bg-calm {
+    background-color:$calm;   
+}
+.bg-balanced {
+    background-color:$balanced;   
+}
+.bg-energized {
+    background-color:$energized;   
+}
+.bg-assertive {
+    background-color:$assertive;   
+}
+.bg-royal {
+    background-color:$royal;   
+}
+.bg-dark {
+    background-color:$dark;   
+}
+
+//padding
 .padding-0 {
     padding: 0;
 }
@@ -75,13 +125,10 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     padding-right:54px*2;
 }
 
-
-
 .item-icon-right .icon.icon-right-2 {
     right:54px + 11px;   
 }
-
-
+//margin
 .margin-bottom-0 {
     margin-bottom:0;   
 }
@@ -90,6 +137,11 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     margin:2px;
 }
 
+.margin-0 {
+    margin:0;   
+}
+
+//alignment
 .text-center {
     text-align: center;
 }
@@ -98,6 +150,15 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     margin:0 auto;   
 }
 
+.absolute-position-bottom {
+    position:absolute;
+    bottom:0;
+}
+
+//other
+.full-width {
+    width:100%;   
+}
 
 .full-img-responsive {
     width: 100%;
@@ -134,10 +195,6 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     min-width: 160px;
     display: block;
     margin: 0 auto;
-}
-
-.fade-animation {
-       
 }
 
 .vertical-center-container {
@@ -215,65 +272,92 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
         }
     }
 }
-//Utility End
+/* ==========================================================================
+   End Utility
+   ========================================================================== */
 
-//Customized ionic Start
+/* ==========================================================================
+   Customize Ionic Component / Extra Stylilng
+   ========================================================================== */
 
-
+/* ==========================================================================
+   SideMenu
+   ========================================================================== */
 ion-side-menu {
-    ion-item {
-        .item-content {
-            .icon {
-                left:15px;
-                img {
-                    width:26px;
-                    height:26px;
+    .ion-content-first-child {
+        bottom:60px;   
+    }
+    ion-list {
+        ion-item {
+            .item-content {
+                .icon {
+                    left:15px;
+                    img {
+                        width:26px;
+                        height:26px;
+                    }
                 }
             }
         }
     }
 }
 
+.sidemenu-bottom-overlay-box-shadow {
+    box-shadow: $sidemenu-bottom-overlay-box-shadow;
+}
+
+
+
+/* ==========================================================================
+   ion-content
+   ========================================================================== */
+
+ion-content {
+    background-color:$bgcolor;  
+    
+    &.block-child-only {
+        pointer-events: none;
+        
+        > * {
+           pointer-events: visible; 
+        }
+    }
+}
+
+//ion-content which under a tabs component
+.tabs-top+ion-content {
+    padding-top:50px;
+}
+
+
+/* ==========================================================================
+   List
+   ========================================================================== */
+
+.list {
+    &.card {
+        margin:10px 10px;   
+        padding-bottom:0; 
+    }
+    
+    .item {
+        .font-size-lg {
+            font-size: 16px;
+        }
+        .icon-left-border {
+            border-left: solid 1px rgb(221, 221, 221);
+            padding-left: 10px;
+        }
+    }
+
+}
 
 .button.button-full.footer-button {
     margin-bottom:0;
     margin-top:0;
 }
 
-ion-content {
-    background-color:rgba(232, 230, 230, 0.21)   
-}
 
-.list.card {
-    padding-bottom:0;   
-}
-
-.card {
-    margin:10px 10px;   
-}
-
-.item {
-    .font-size-lg {
-        font-size: 16px;
-    }
-    .icon-left-border {
-        border-left: solid 1px rgb(221, 221, 221);
-        padding-left: 10px;
-    }
-}
-
-.login-button {
-    background-color:$balanced;
-    color:white;
-}
-
-.tabs-top-buttons {
-    height:44px; 
-    
-    .tabs {
-        top:0;   
-        background-color:transparent !important;
-    }
-}
-
-//Customized ionic End
+/* ==========================================================================
+   End Customize Ionic Component / Extra Stylilng
+   ========================================================================== */

@@ -1,6 +1,6 @@
 {
   "name": "hatten-purchaserapp",
-  "app_id": "",
+  "app_id": "com.infradesign.prosync",
   "gulpStartupTasks": [
     "sass",
     "watch"

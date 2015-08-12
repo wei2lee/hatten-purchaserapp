@@ -16,7 +16,7 @@
         <ion-header-bar class="bar-stable">
             <h1 class="title">Hatten Group</h1>
         </ion-header-bar>
-        <ion-content>
+        <ion-content class="ion-content-first-child">
             <ion-list>
                 <ion-item menu-close href="#/app/whatsnew" class="item-icon-left">
                     <span class="icon">
@@ -102,13 +102,12 @@
                     </span>
                     About Us
                 </ion-item>
-                <ion-item>
-                    
-                </ion-item>
-                <ion-item menu-close ng-click="login()" class="text-center login-button">
-                    Login&nbsp;&nbsp;&nbsp;
-                </ion-item>
             </ion-list>
+        </ion-content>
+        <ion-content scroll="false" class="block-child-only">
+            <div class="absolute-position-bottom full-width">
+                <button class=".sidemenu-bottom-overlay-box-shadow button button-balanced button-full margin-0 " ng-click="login()">Login</button>
+            </div>
         </ion-content>
     </ion-side-menu>
 </ion-side-menus>

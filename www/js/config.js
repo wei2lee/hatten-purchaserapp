@@ -95,6 +95,16 @@ angular.module('route', ['ionic'])
             }
         }
     })
+    
+    .state('app.calculator', {
+        url: '/calculator',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/calculator.html',
+                controller: 'CalculatorCtrl'
+            }
+        }
+    })
 
     .state('app.feedbacks', {
         url: '/feedbacks',
