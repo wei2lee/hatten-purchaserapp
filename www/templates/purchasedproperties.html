@@ -1,7 +1,7 @@
 <ion-view view-title="Purchased">
     <ion-content>
-        <div class="list card " ng-repeat="purchasedProperty in purchasedProperties">
-            <a href="#/app/purchasedproperty/1" class="item item-icon-left item-thumbnail-left" >
+        <div class="list card fade-animation" ng-repeat="purchasedProperty in purchasedProperties">
+            <a href="#/app/purchasedproperty/{{purchasedProperty.id}}" class="item item-icon-left item-thumbnail-left" >
                 <img ng-src="{{purchasedProperty.thumb}}"> 
                 <p>
                     <small>{{purchasedProperty.area}}</small>

@@ -1,13 +1,29 @@
-<ion-view view-title="Feedbacks">
+<ion-view view-title="Feedbacks" id="feedbacks">
     <ion-pane class="padding-top-headerbar">
         <div class="divide-by-4">
-            <div class="row bottom-border">
-                <a href="#/app/properties" class="col">Properties</a>
-                <a href="#/app/events" class="col left-border">Events</a>
+            <div class="row bottom-border responsive-sm ">
+                <a href="#/app/properties" class="properties-background col">
+                    <div class="text-container">
+                        <h1 class="text-light">Properties</h1>
+                    </div>
+                </a>
+                <a href="#/app/events" class="events-background col left-border">
+                    <div class="text-container">
+                        <h1 class="text-light">Events</h1>
+                    </div>
+                </a>
             </div>
-            <div class="row bottom-border">
-                <a href="#/app/agents" class="col">Consultants</a>
-                <a class="col left-border">More...</a>
+            <div class="row bottom-border responsive-sm ">
+                <a href="#/app/consultants" class="consultants-background col">
+                    <div class="text-container">
+                        <h1 class="text-light">Consultants</h1>
+                    </div>
+                </a>
+                <a class="col left-border more-background">
+                    <div class="text-container">
+                        <h1 class="text-light">More</h1>
+                    </div>
+                </a>
             </div>
         </div>
     </ion-pane>

@@ -1,41 +1,43 @@
 <ion-view view-title="{{event.displayName}}">
     <ion-content>
-        <div class="list card">
-            <div class="item padding-0">
-                <img class="full-img-responsive" ng-src="{{event.thumb}}">
-                <p class="padding">
-                    {{event.displayName}}
-                </p>
-            </div>
-        </div>
-        <div class="list card">
-            <div class="item-body">
-                {{event.description}}
-            </div>
-            <button class="button button-full button-positive footer-button">
-                LEARN MORE
-            </button>
-        </div>
-        
-        <div class="list card">
-            <div class="item padding-0">
-                <div class="responsive-container">
-                    <canvas width=800 height=500></canvas>
-                    <div class="responsive-content">
-                        <iframe class="pointer-events-none" id='map' width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDwzM42cKPYaZ-NkqPkiVsu1_VJ7UIcHfg&q=3.1349111,101.5371">
-                        </iframe>
-                    </div>
+        <div class="fade-animation" ng-show="event">
+            <div class="list card">
+                <div class="item padding-0">
+                    <img class="full-img-responsive" ng-src="{{event.thumb}}">
+                    <p class="padding">
+                        {{event.displayName}}
+                    </p>
                 </div>
             </div>
-            <div class="item-body padding-right-1-item">
-                <span>{{event.address}}</span>
-                <span class="item-right">{{event.distance}}</span>
+            <div class="list card">
+                <div class="item-body">
+                    {{event.description}}
+                </div>
+                <button class="button button-full button-positive footer-button">
+                    LEARN MORE
+                </button>
             </div>
-        </div>
-        <div class="list card">
-            <button class="button button-full button-balanced footer-button">
-                ATTEND
-            </button>
+
+            <div class="list card">
+                <div class="item padding-0">
+                    <div class="responsive-container">
+                        <canvas width=800 height=500></canvas>
+                        <div class="responsive-content">
+                            <iframe class="pointer-events-none" id='map' width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDwzM42cKPYaZ-NkqPkiVsu1_VJ7UIcHfg&q=3.1349111,101.5371">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-body padding-right-1-item">
+                    <span>{{event.address}}</span>
+                    <span class="item-right">{{event.distance}}</span>
+                </div>
+            </div>
+            <div class="list card">
+                <button class="button button-full button-balanced footer-button">
+                    ATTEND
+                </button>
+            </div>
         </div>
     </ion-content>
 </ion-view>

@@ -25,7 +25,6 @@ faker.image.event = function() {
     var arr = ['dining-area.jpg',
     'Hatten_birthday.png',
     'Hatten_homepage1.png'];
-    console.log(_.random(arr.length - 1));
     return 'img/images_dummy_only/' + arr[_.random(arr.length - 1)];
     
 };
@@ -78,3 +77,50 @@ faker.image.property = function() {
         ];
     return 'img/properties_images/' + arr[_.random(arr.length - 1)];
 }
+
+faker.company.projectName = function() {
+    var arr = [
+    'Harbour City',
+    'Dataran Pahlawan',
+    'Elements City',
+    'Hatten Hotel',
+    'Hatten Square',
+    'Imperio',
+    'Silverscape',
+    'Terminal Rear',
+    'UniCity',
+    'Vedro'
+    ];
+    return arr[_.random(arr.length - 1)];
+}
+
+faker.company.propertyName = function() {
+    var arr = [
+    'Harbour City',
+    'Dataran Pahlawan',
+    'Elements City',
+    'Hatten Hotel',
+    'Hatten Square',
+    'Imperio',
+    'Silverscape',
+    'Terminal Rear',
+    'UniCity',
+    'Vedro'
+    ];
+    return arr[_.random(arr.length - 1)];
+}
+
+faker.id = {
+    unitNo : function() {
+        return sprintf('%s-%02d-%02d', ['A','B','C'][_.random(2)], _.random(99), _.random(99));  
+    },
+    unitId : function() {
+        return _.random(99999);
+    }
+    
+}
+
+function fakeNetworkFunctionCall(f) {
+    $timeout(f, Math.random() * 1000); 
+}
+

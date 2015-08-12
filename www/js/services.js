@@ -16,12 +16,37 @@ angular.module('services', ['ngResource'])
     }, false);
 })
 
-.service('u', function ($cordovaSocialSharing, $cordovaAppRate) {
+.service('u', function ($q, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
+    var _this = this;
+    
     this.toggleFavourited = function (item) {
         item.favourited = !item.favourited;
     }
+    
+    this.showProgress = function() {
+//        if(window.cordova === undefined) return;
+//        
+//        $cordovaProgress.showSimple();
+        $ionicLoading.show({
+            delay: 300,
+            templateUrl: 'templates/loading.html'
+        });
+    }
+    this.hideProgress = function() {
+//        if(window.cordova === undefined) return;
+//        
+//        $cordovaProgress.hide();
+        
+        $ionicLoading.hide();
+    }
+    
+    this.showError = function(error) {
+           
+    }
 
     this.share = function (item) {
+        if(window.cordova === undefined) return;
+        
         var message = undefined;
         if (item.message) message = item.message;
         else if (item.msg) message = item.msg;
@@ -52,8 +77,29 @@ angular.module('services', ['ngResource'])
     }
     
     this.rateApp = function() {
+        if(window.cordova === undefined) return;
+        
         $cordovaAppRate.promptForRating(true).then(function (result) {
             // success
         });
+    }
+    
+    this.waitDeviceReadyAndViewDidLoaded = function($scope) {
+        var defer = $q(function(resolve, reject) {
+            var i = 0;
+            ionic.Platform.ready(function(){
+                console.log('ready');
+                if(++i==2) {
+                    resolve();   
+                }
+            });
+            $scope.$on('$ionicView.loaded', function (viewInfo, state) {
+                console.log('$ionicView.loaded');
+                if(++i==2) {
+                    resolve();   
+                }
+            });        
+        });
+        return defer;
     }
 });

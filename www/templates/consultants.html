@@ -1,6 +1,6 @@
 <ion-view view-title="Find A Marketing Consultant">
     <ion-content>
-        <div class="list card" ng-repeat="project in projects">
+        <div class="list card fade-animation" ng-repeat="project in projects">
             <a ng-href="#/app/consultants/{{project.id}}" class="item item-icon-left item-thumbnail-left">
                 <img ng-src="{{project.thumb}}">
                 <p>{{project.displayName}}</p>

@@ -42,7 +42,7 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('WhatsNewCtrl', function ($scope, $interval, u) {
+.controller('WhatsNewCtrl', function ($scope, $interval, u, apiWhatsNewItem) {
     $scope.news = [];
     $scope.updateExpireRemainInterval = null;
     
@@ -57,7 +57,7 @@ angular.module('starter.controllers', [])
     $scope.stopUpdateExpireRemain = function() {
         if(!$scope.updateExpireRemainInterval) return;
         
-        $scope.updateExpireRemainInterval.cancel();
+        $interval.cancel($scope.updateExpireRemainInterval);
     }
     
     $scope.updateExpireRemain = function() {
@@ -78,154 +78,130 @@ angular.module('starter.controllers', [])
     });
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
         $scope.startUpdateExpireRemain(); 
+        if(state.direction != 'back') {
+            ionic.Platform.ready(function(){
+                u.showProgress();
+                apiWhatsNewItem.getAll().then(function(results) {
+                    $scope.news = results;  
+                    $scope.startUpdateExpireRemain(); 
+                }).catch(function(error) {
+
+                }).finally(function() {
+                     u.hideProgress();
+                });
+            });
+        }
     });
     $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
     });
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
         $scope.stopUpdateExpireRemain();
     });
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        //Dummy Start
-        for(i = 0 ; i < 10 ; i++) {
-            var value = {};
-            value.thumb = faker.image.event();
-            value.period = '12-14 JUNE, 11pm-5pm';
-            value.displayName = faker.company.companyName();
-            value.expireDate = faker.date.future();
-            value.expireRemain = '';
-            value.favourited = _.random(1) == 0;
-            $scope.news.push(value);
-        }
-        //Dummy End
-    });
 })
 
-.controller('PurchasedPropertiesCtrl', function ($scope) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        //Dummy Start
-        $scope.purchasedProperties = [];
-        for(i = 0 ; i < 10 ; i++) {
-            var value = {};
-            value.thumb = faker.image.property();
-            value.displayName = faker.company.companyName();
-            value.project = {
-                displayName : 'Harbour City'
-            };
-            value.area = faker.address.state();
-            value.unitNo = 'A-01-03';
-            value.unitId = '123';
-            value.completionDate = faker.date.future();
-            value.purchasedDate = faker.date.past();
-            value.location = {
-                latitude : '',
-                longitude : ''
-            }
-            $scope.purchasedProperties.push(value);
-        }
-        //Dummy End
-    });
-    
+.controller('PurchasedPropertiesCtrl', function ($scope, u, apiPurchasedProperty) {
+    $scope.purchasedProperties = [];
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiPurchasedProperty.getAll().then(function(results) {
+                $scope.purchasedProperties = results;  
+            }).catch(function(error) {
 
-})
-
-.controller('PurchasedPropertyDetailCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        //Dummy Start
-        $scope.purchasedProperty = {
-            project: {
-                displayName:'Harbour City',
-                thumb:faker.image.property()
-            },
-            displayName: '',
-            unitNo:'A-01-03',
-            completionDate: faker.date.future()
-        };
-        //Dummy End
-    });
-})
-
-.controller('ConstructionsCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        $scope.constructions = [];
-        $scope.tabIndex = 0;
-        //Dummy Start
-        for(i = 0 ; i < 30 ; i++) {
-            $scope.constructions.push(
-            {
-                id:i,
-                displayName: faker.company.companyName(),
-                thumb:faker.image.property(),
-                type:_.random(2)
+            }).finally(function() {
+                 u.hideProgress();
             });
         }
-        //Dummy End
     });
 })
 
-.controller('ConstructionDetailCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        //Dummy Start
-        $scope.project = {
-            id:1,
-            displayName: faker.company.companyName(),
-            thumb:faker.image.projectLogo()
-        };
+.controller('PurchasedPropertyDetailCtrl', function ($scope, u, $state, apiPurchasedProperty) {
+    $scope.purchasedProperty = undefined;
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiPurchasedProperty.getById($state.params.id).then(function(results) {
+                $scope.purchasedProperty = results;  
+            }).catch(function(error) {
 
-        $scope.construction = {
-            id:1,
-            displayName: faker.company.companyName(),
-            thumb:faker.image.construction()
-        };
-
-        $scope.progresses = [];
-        for(i = 0 ; i < 10 ; i++) {
-            $scope.progresses.push(
-            {
-                id:i,
-                photoTakenDate: faker.date.past(),
-                thumb:faker.image.progress()
+            }).finally(function() {
+                 u.hideProgress();
             });
         }
-        //Dummy End
     });
 })
 
+.controller('ConstructionsCtrl', function ($scope, u, $state, apiConstruction) {
+    $scope.constructions = [];
+    $scope.tabIndex = 0;
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiConstruction.getAll().then(function(results) {
+                $scope.constructions = results;  
+            }).catch(function(error) {
 
-.controller('PropertiesCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        $scope.tabIndex = 0;
-        //Dummy Start
-        $scope.properties = [];
-        for(i = 0 ; i < 30 ; i++) {
-            $scope.properties.push(
-            {
-                id:i,
-                displayName: faker.company.companyName(),
-                thumb:faker.image.property(),
-                type:_.random(2)
+            }).finally(function() {
+                 u.hideProgress();
             });
         }
-        //Dummy End
     });
 })
 
-.controller('PropertyDetailCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        //Dummy Start
-        $scope.project = {
-            thumb:faker.image.projectLogo()   
+.controller('ConstructionDetailCtrl', function ($scope, u, $state, apiConstructionProgress) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiConstructionProgress.getByConstrucitonId($state.params.id).then(function(results) {
+                $scope.project = results.project;
+                $scope.construction = results.construction;
+                $scope.progresses = results.progresses;
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
         }
-        $scope.property = {
-            thumb:faker.image.property(),
-            description:faker.lorem.paragraphs(),
-            displayName:faker.company.companyName()
-        }
-        //Dummy End
     });
 })
 
-.controller('EventsCtrl', function ($scope, $interval, u) {
+
+.controller('PropertiesCtrl', function ($scope, u, $state, apiProperty) {
+    $scope.properties = [];
+    $scope.tabIndex = 0;
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiProperty.getAll().then(function(results) {
+                $scope.properties = results;
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+})
+
+.controller('PropertyDetailCtrl', function ($scope, u, $state, apiProperty) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiProperty.getById($state.params.id).then(function(results) {
+                $scope.property = results;  
+                $scope.project = results.project;
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+})
+
+.controller('EventsCtrl', function ($scope, $interval, u, apiEvent) {
     $scope.events = [];
+    $scope.tabIndex = 0;
     $scope.updateExpireRemainInterval = null;
     
     $scope.startUpdateExpireRemain = function() {
@@ -238,8 +214,7 @@ angular.module('starter.controllers', [])
     
     $scope.stopUpdateExpireRemain = function() {
         if(!$scope.updateExpireRemainInterval) return;
-        
-        $scope.updateExpireRemainInterval.cancel();
+        $interval.cancel($scope.updateExpireRemainInterval);
     }
     
     $scope.updateExpireRemain = function() {
@@ -255,8 +230,18 @@ angular.module('starter.controllers', [])
         }
     }
     
-    $scope.$on('$ionicView.beforeEnter ', function (viewInfo, state) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         $scope.startUpdateExpireRemain(); 
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiEvent.getAll().then(function(results) {
+                $scope.events = results;
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
     });
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
         $scope.startUpdateExpireRemain(); 
@@ -266,56 +251,35 @@ angular.module('starter.controllers', [])
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
         $scope.stopUpdateExpireRemain();
     });
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        $scope.tabIndex = 0;
-        //Dummy Start
-        for(i = 0 ; i < 10 ; i++) {
-            var value = {};
-            value.id = i;
-            value.thumb = faker.image.event();
-            value.period = '12-14 JUNE, 11pm-5pm';
-            value.displayName = faker.company.companyName();
-            value.expireDate = faker.date.future();
-            value.expireRemain = '';
-            value.type = _.random(1);
-            $scope.events.push(value);
-        }
-        //Dummy End
-    });
 })
 
-.controller('EventDetailCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        //Dummy Start
-        $scope.event = {
-            thumb:faker.image.event(),
-            description:faker.lorem.paragraphs(),
-            displayName:faker.company.companyName(),
-            period:'12-14 JUNE, 11pm-5pm',
-            address:faker.address.streetAddress() + ', ' + faker.address.city() + ', ' + faker.address.state() + ', ' + faker.address.country(),
-            location:{
-                latitude:faker.address.latitude(),
-                longitude:faker.address.longitude()
-            },
-            distance:sprintf("%.1f ", Math.random() * 100) + 'KM'
-        }
-        //Dummy End
-    });
-})
+.controller('EventDetailCtrl', function ($scope, u, $state, apiEvent) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiEvent.getById($state.params.id).then(function(results) {
+                $scope.event = results;
+            }).catch(function(error) {
 
-.controller('ConsultantsCtrl', function ($scope, $state) {
-    $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-        $scope.projects = [];
-        //Dummy Start
-        for(i = 0 ; i < 10 ; i++) {
-            $scope.projects.push(
-            {
-                id:i,
-                displayName: faker.company.companyName(),
-                thumb:faker.image.property()
+            }).finally(function() {
+                 u.hideProgress();
             });
         }
-        //Dummy End
+    });
+})
+
+.controller('ConsultantsCtrl', function ($scope, u, $state, apiProject) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiProject.getAll().then(function(results) {
+                $scope.projects = results;
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
     });
 })
 
