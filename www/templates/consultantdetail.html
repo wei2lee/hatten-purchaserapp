@@ -1,0 +1,48 @@
+<ion-view view-title="{{consultant.fullName}}">
+    <ion-content>
+        <div class="text-center">
+            <img ng-src="{{consultant.thumb}}" width=240 height=240 class="circle padding">
+        </div>
+        <div class="list card">
+            <div class="item">
+                <p>
+                    <small>Name</small><br>
+                    <b>{{consultant.fullName}}</b>
+                </p>
+            </div>
+            <div class="item">
+                <p>
+                    <small>Contact</small><br>
+                    <b>{{consultant.contact}}</b>
+                </p>
+            </div>
+            <div class="item">
+                <p>
+                    <small>Email</small><br>
+                    <b>{{consultant.email}}</b>
+                </p>
+            </div>       
+            <div class="item">
+                <p>
+                    <small>Address</small><br>
+                    <b>{{consultant.address}}</b>
+                </p>
+            </div>  
+        </div>
+        <div class="row responsive-sm">
+            <div class="col padding-0 margin-bottom-0">
+                <div class="full-width">
+                    <button class="margin-0 button button-calm button-full" ng-click="">Call</button>
+                </div>
+            </div>
+            <div class="col padding-0 margin-bottom-0">
+                <div class="full-width">
+                    <button class="margin-0 button button-balanced button-full" ng-click="">Email</button>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <rating ng-model="rate" max="5"></rating>
+        </div>
+    </ion-content>
+</ion-view>

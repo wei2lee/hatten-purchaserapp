@@ -228,6 +228,93 @@ angular.module('services-api', [])
     }
 })
 
+.service('apiProject', function($q,$timeout) {
+    var values = [];
+    for(i = 0 ; i < 10 ; i++) {
+        var value = {};
+        value.id = i;
+        value.displayName = faker.company.projectName();
+        value.thumb = faker.image.projectLogo();
+        value.area = faker.address.state();
+        value.address = faker.address.streetAddress() + ", " + faker.address.city() + ", " + faker.address.stateAbbr() + " " + faker.address.zipCode();
+        values.push(value);
+    }
+    
+    this.getAll = function() {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() { resolve(values); });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+    
+    this.getById = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() {
+                    var ret = _.where(values, {'id':id})[0];
+                    resolve(ret);
+                });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+})
+
+.service('apiConsultant', function($q,$timeout) {
+    var values = [];
+    for(i = 0 ; i < 90 ; i++) {
+        var firstName = faker.name.firstName(), lastName = faker.name.lastName();
+        var value = {};
+        value.id = i;
+        value.fullName = faker.name.findName(firstName, lastName);
+        value.thumb = faker.internet.avatar();
+        value.project = {
+            id:_.random(9)  
+        };
+        value.contact = faker.phone.phoneNumber();
+        value.email = faker.internet.email(firstName, lastName)
+        value.address = faker.address.streetAddress() + ", " + faker.address.city() + ", " + faker.address.stateAbbr() + " " + faker.address.zipCode();
+        values.push(value);
+    }
+    
+    this.getAll = function() {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() { resolve(values); });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+    
+    this.getByProjectId = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() {
+                    var ret = _.filter(values, function(o) { return o.project && o.project.id == id; } );
+                    resolve(ret);
+                });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+    
+    this.getById = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() {
+                    resolve(_.where(values, {'id':id})[0]);
+                });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+})
+
 
 
 //API Service End

@@ -2,39 +2,40 @@ angular.module('route', ['ionic'])
 
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
-        .state('app', {
-            url: '/app',
-            abstract: true,
-            templateUrl: 'templates/menu.html',
-            controller: 'AppCtrl'
-        })
-        .state('app.whatsnew', {
-            url: '/whatsnew',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/whatsnew.html',
-                    controller: 'WhatsNewCtrl'
-                }
+    
+    .state('app', {
+        url: '/app',
+        abstract: true,
+        templateUrl: 'templates/menu.html',
+        controller: 'AppCtrl'
+    })
+    .state('app.whatsnew', {
+        url: '/whatsnew',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/whatsnew.html',
+                controller: 'WhatsNewCtrl'
             }
-        })
-        .state('app.purchasedproperties', {
-            url: '/purchasedproperties',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/purchasedproperties.html',
-                    controller: 'PurchasedPropertiesCtrl'
-                }
+        }
+    })
+    .state('app.purchasedproperties', {
+        url: '/purchasedproperties',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/purchasedproperties.html',
+                controller: 'PurchasedPropertiesCtrl'
             }
-        })
-        .state('app.purchasedproperty', {
-            url: '/purchasedproperty/{id}',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/purchasedpropertydetail.html',
-                    controller: 'PurchasedPropertyDetailCtrl'
-                }
+        }
+    })
+    .state('app.purchasedproperty', {
+        url: '/purchasedproperty/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/purchasedpropertydetail.html',
+                controller: 'PurchasedPropertyDetailCtrl'
             }
-        })
+        }
+    })
 
     .state('app.constructions', {
         url: '/constructions',
@@ -95,7 +96,7 @@ angular.module('route', ['ionic'])
             }
         }
     })
-    
+
     .state('app.calculator', {
         url: '/calculator',
         views: {
@@ -124,17 +125,28 @@ angular.module('route', ['ionic'])
             }
         }
     })
-    
-    .state('app.consultants.project', {
-        url: '/consultants/{{projectId}}',
+
+    .state('app.consultants-where-project', {
+        url: '/consultants/where-project/{projectId}',
         views: {
             'menuContent': {
-                templateUrl: 'templates/consultants-project.html',
-                controller: 'ProjectConsultantsCtrl'
+                templateUrl: 'templates/consultants-where-project.html',
+                controller: 'ConsultantsWhereProjectCtrl'
             }
         }
     })
-    
+
+    .state('app.consultantdetail', {
+        url: '/consultant/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/consultantdetail.html',
+                controller: 'ConsultantDetailCtrl'
+            }
+        }
+    })
+
+
     .state('app.privacypolicy', {
         url: '/privacypolicy',
         views: {
@@ -143,7 +155,7 @@ angular.module('route', ['ionic'])
             }
         }
     })
-    
+
     .state('app.termsandcondition', {
         url: '/termsandcondition',
         views: {
@@ -152,7 +164,7 @@ angular.module('route', ['ionic'])
             }
         }
     })
-    
+
     .state('app.pdpa', {
         url: '/pdpa',
         views: {
@@ -161,7 +173,7 @@ angular.module('route', ['ionic'])
             }
         }
     })
-    
+
     .state('app.profile', {
         url: '/profile',
         views: {
@@ -170,7 +182,7 @@ angular.module('route', ['ionic'])
             }
         }
     })
-    
+
     .state('app.aboutus', {
         url: '/aboutus',
         views: {

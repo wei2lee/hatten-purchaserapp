@@ -1,9 +1,14 @@
-<ion-view view-title="Find A Marketing Consultant">
+<ion-view view-title="Find A Consultant">
     <ion-content>
+        
         <div class="list card fade-animation" ng-repeat="project in projects">
-            <a ng-href="#/app/consultants/{{project.id}}" class="item item-icon-left item-thumbnail-left">
+            <a ng-href="#/app/consultants/where-project/{{project.id}}" class="item item-icon-left item-thumbnail-left">
                 <img ng-src="{{project.thumb}}">
-                <p>{{project.displayName}}</p>
+                <p>
+                    <b>{{project.displayName}}</b>
+                    <br/><small>{{project.area}}</small>
+                </p>
+                <p><small>{{project.address}}</small></p>
             </a>
         </div>
     </ion-content>

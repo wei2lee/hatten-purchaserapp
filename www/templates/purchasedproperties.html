@@ -4,9 +4,8 @@
             <a href="#/app/purchasedproperty/{{purchasedProperty.id}}" class="item item-icon-left item-thumbnail-left" >
                 <img ng-src="{{purchasedProperty.thumb}}"> 
                 <p>
-                    <small>{{purchasedProperty.area}}</small>
-                    <br/>
                     <b>{{purchasedProperty.displayName}}</b>
+                    <br/><small>{{purchasedProperty.area}}</small>
                 </p>
                 <p><small>Purchased at {{purchasedProperty.purchasedDate | date : 'MMM dd, yyyy'}}</small></p>
             </a>

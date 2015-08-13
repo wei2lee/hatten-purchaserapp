@@ -268,12 +268,45 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ConsultantsCtrl', function ($scope, u, $state, apiProject) {
+.controller('ConsultantsCtrl', function ($scope, u, $state, apiProject, apiConsultant) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
             apiProject.getAll().then(function(results) {
                 $scope.projects = results;
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+})
+
+.controller('ConsultantsWhereProjectCtrl', function ($scope, $q, u, $state, apiConsultant, apiProject) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            $q.all([apiConsultant.getByProjectId($state.params.projectId), 
+                    apiProject.getById($state.params.projectId)]).then(function(results) {
+                $scope.consultants = results[0];
+                $scope.project = results[1];
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+})
+
+.controller('ConsultantDetailCtrl', function ($scope, u, $state, apiConsultant) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiConsultant.getById($state.params.id).then(function(results) {
+                console.log(results);
+                $scope.consultant = results;
             }).catch(function(error) {
 
             }).finally(function() {
