@@ -1,3 +1,5 @@
+
+
 angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function ($rootScope, $scope, $ionicModal, $timeout, u) {
@@ -131,6 +133,38 @@ angular.module('starter.controllers', [])
     });
 })
 
+.controller('TicketsCtrl', function ($scope, u, $state, apiTicket) {
+    $scope.tickets = [];
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiTicket.getAll().then(function(results) {
+                $scope.tickets = results;  
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+})
+
+.controller('TicketCtrl', function ($scope, u, $state, apiTicket) {
+    $scope.ticket = undefined;
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiTicket.getById($state.params.id).then(function(results) {
+                $scope.ticket = results;  
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+})
+
 .controller('ConstructionsCtrl', function ($scope, u, $state, apiConstruction) {
     $scope.constructions = [];
     $scope.tabIndex = 0;
@@ -183,7 +217,7 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertyDetailCtrl', function ($scope, u, $state, apiProperty) {
+.controller('PropertyDetailCtrl', function ($scope, u, $state, apiProperty, $timeout) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
@@ -197,6 +231,7 @@ angular.module('starter.controllers', [])
             });
         }
     });
+
 })
 
 .controller('EventsCtrl', function ($scope, $interval, u, apiEvent) {
@@ -253,14 +288,23 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('EventDetailCtrl', function ($scope, u, $state, apiEvent) {
+.controller('EventDetailCtrl', function ($scope, u, $state, apiEvent, apiTicket) {
+    $scope.attempEvent = function(event) {
+        u.showProgress();
+        apiTicket.addByEvent(event).then(function(results) {
+            u.showAlert('Ticket for this event is added.');
+        }).catch(function(error) {
+        }).finally(function() {
+             u.hideProgress();
+        });
+    }
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
             apiEvent.getById($state.params.id).then(function(results) {
                 $scope.event = results;
             }).catch(function(error) {
-
+                
             }).finally(function() {
                  u.hideProgress();
             });

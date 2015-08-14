@@ -30,11 +30,12 @@ $fa-font-path: "../lib/fontawesome/fonts" !default;
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
-
+$black-theme-bg-color:black;
 
 /* ==========================================================================
    Base Import
    ========================================================================== */
+
 
 @import "www/lib/fontawesome/scss/font-awesome.scss";
 
@@ -169,6 +170,15 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 //other
 .full-width {
     width:100%;   
+}
+
+.full-height {
+    height:100%;   
+}
+
+.img-responsive {
+    max-width: 100%;
+    height: auto;
 }
 
 .full-img-responsive {
@@ -426,32 +436,6 @@ $zoom: 1.7;
             font-size:50px;
         }
     }
-/* ==========================================================================
-   SideMenu
-   ========================================================================== */
-ion-side-menu {
-    .ion-content-first-child {
-        bottom:60px;   
-    }
-    ion-list {
-        ion-item {
-            .item-content {
-                .icon {
-                    left:15px;
-                    img {
-                        width:26px;
-                        height:26px;
-                    }
-                }
-            }
-        }
-    }
-}
-
-.sidemenu-bottom-overlay-box-shadow {
-    box-shadow: $sidemenu-bottom-overlay-box-shadow;
-}
-
 
 
 /* ==========================================================================
@@ -459,9 +443,11 @@ ion-side-menu {
    ========================================================================== */
 
 ion-content {
-    background-color:$bgcolor;  
+    //background-color:$bgcolor;  
+    background-color:$black-theme-bg-color;
     
     &.block-child-only {
+        background-color:transparent;
         pointer-events: none;
         
         > * {
@@ -474,6 +460,50 @@ ion-content {
 .tabs-top+ion-content {
     padding-top:50px;
 }
+
+
+
+/* ==========================================================================
+   SideMenu
+   ========================================================================== */
+ion-side-menu {
+    .ion-content-first-child {
+        //bottom:60px;   
+    }
+    .item {
+        border:none;   
+    }
+    ion-content.ion-content-first-child {
+        background-color:$black-theme-bg-color;
+        ion-list {
+            ion-item {
+                background-color:transparent !important;
+                .item-content {
+                    .icon {
+                        left:15px;
+                        img {
+                            width:26px;
+                            height:26px;
+                        }
+                    }
+                }
+                .item-content {
+                    background-color:transparent !important;
+                }
+            }
+        }        
+    }
+}
+
+.sidemenu-bottom-overlay-box-shadow {
+    &.button.button-full {
+        margin-bottom:0;
+        margin-top:0;
+    }
+    
+    //box-shadow: $sidemenu-bottom-overlay-box-shadow;
+}
+
 
 
 /* ==========================================================================
@@ -564,4 +594,14 @@ ion-content {
 
 }
 
+
+#ticket {
+    .qrcode-container {
+        margin-top:40px;
+        img {
+            width:200px;
+            height:200px;
+        }
+    }
+}
 

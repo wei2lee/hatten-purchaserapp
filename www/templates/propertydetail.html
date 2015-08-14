@@ -1,4 +1,7 @@
 <ion-view view-title="{{property.displayName}}">
+    <ion-nav-title>
+       {{property.displayName}}
+    </ion-nav-title>
     <ion-content>
         <div class="fade-animation" ng-show="property">
             <img class="view-center-thumb padding-top" ng-src="{{project.thumb}}">
@@ -6,8 +9,8 @@
                 <img ng-src="{{property.thumb}}" class="full-img-responsive">
             </div>
             <div class="list card">
-                <div class="item-body">
-                    {{property.description}}
+                <div class="item-body" ng-bind-html="property.description">
+<!--                    {{property.description}}-->
                 </div>
                 <button class="button button-full button-positive footer-button">
                     LEARN MORE

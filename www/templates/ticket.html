@@ -1,0 +1,28 @@
+<ion-view view-title="{{ticket.event.displayName}}" id="ticket">
+    <ion-nav-title>
+       {{ticket.event.displayName}}
+    </ion-nav-title>
+    <ion-content>
+        <div class="fade-animation" ng-show="ticket">
+<!--
+            <div class="responsive-container qrcode-container">
+                <canvas width=10 height=10></canvas>
+                <div class="responsive-content text-center">
+                    <div class="vertical-center-container full-height">
+                        <div class="vertical-center-content">
+                            <img class="img-responsive" ng-src="{{ticket.qrcode}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+-->
+            <div class="qrcode-container text-center padding">
+                <img class="img-responsive" ng-src="{{ticket.qrcode}}">
+            </div>
+            <div class="text-light text-center">
+                <h3 class="text-light">Christina Leong</h3>
+                <div>{{ticket.event.displayName}} Registration</div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

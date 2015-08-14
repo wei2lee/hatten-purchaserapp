@@ -16,7 +16,7 @@ angular.module('services', ['ngResource'])
     }, false);
 })
 
-.service('u', function ($q, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
+.service('u', function ($q, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
     var _this = this;
     
     this.toggleFavourited = function (item) {
@@ -42,6 +42,19 @@ angular.module('services', ['ngResource'])
     
     this.showError = function(error) {
            
+    }
+    
+    this.showAlert = function(title, msg, buttonType) {
+        if(buttonType === undefined || buttonType === null) buttonType = 'button-positive';
+        var alertPopup = $ionicPopup.alert({
+            'title': title,
+            'template': msg,
+            'buttons': [{
+                'text': 'Close',
+                'type': buttonType
+            }]
+        });
+        return alertPopup;
     }
 
     this.share = function (item) {

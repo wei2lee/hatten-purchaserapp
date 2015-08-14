@@ -1,0 +1,15 @@
+<ion-view view-title="Tickets">
+    <ion-content>
+        <div class="list card fade-animation" ng-repeat="(event,event_tickets) in tickets | groupBy: 'event.id'">
+            <a href="#/app/ticket/{{event_tickets[0].id}}" class="item item-icon-left item-thumbnail-left" >
+                <img ng-src="{{event_tickets[0].event.thumb}}"> 
+                <p>
+                    <b>{{event_tickets[0].event.displayName}}</b>
+                    <br/><small>{{event_tickets[0].event.area}}</small>
+                    <br/><small>{{event_tickets.length}} ticket(s)</small>
+                </p>
+                <p><small>{{event_tickets[0].event.address}}</small></p>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

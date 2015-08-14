@@ -13,7 +13,8 @@ angular.module('starter', [
     'route', 
     'ionic', 
     'starter.controllers', 
-    'services'])
+    'services',
+    'angular.filter'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

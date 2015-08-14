@@ -96,6 +96,26 @@ angular.module('route', ['ionic'])
             }
         }
     })
+    
+    .state('app.tickets', {
+        url: '/tickets',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/tickets.html',
+                controller: 'TicketsCtrl'
+            }
+        }
+    })
+
+    .state('app.ticket', {
+        url: '/ticket/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/ticket.html',
+                controller: 'TicketCtrl'
+            }
+        }
+    })
 
     .state('app.calculator', {
         url: '/calculator',

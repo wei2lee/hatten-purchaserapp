@@ -1,4 +1,7 @@
 <ion-view view-title="{{event.displayName}}">
+    <ion-nav-title>
+       {{event.displayName}}
+    </ion-nav-title>
     <ion-content>
         <div class="fade-animation" ng-show="event">
             <div class="list card">
@@ -34,7 +37,7 @@
                 </div>
             </div>
             <div class="list card">
-                <button class="button button-full button-balanced footer-button">
+                <button ng-click="attempEvent(event)" class="button button-full button-balanced footer-button">
                     ATTEND
                 </button>
             </div>

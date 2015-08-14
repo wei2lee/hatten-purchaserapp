@@ -77,7 +77,7 @@ angular.module('services-api', [])
 
 
 .service('apiConstruction', function($q,$timeout) {
-    var values = [];
+    var values = []; 
     for(i = 0 ; i < 10 ; i++) {
         var value = {
             id:i,
@@ -147,7 +147,26 @@ angular.module('services-api', [])
 
 .service('apiProperty', function($q,$timeout) {
     var values = [];
-    for(i = 0 ; i < 30 ; i++) {
+    var index = 0;
+//    for(i = 0 ; i < 30 ; i++) {
+//        var value = 
+//        {
+//            project: {
+//                displayName : faker.company.projectName(),
+//                thumb:faker.image.projectLogo()
+//            },
+//            id:i,
+//            displayName: faker.company.propertyName(),
+//            thumb:faker.image.property(),
+//            type:_.random(2),
+//            description:faker.lorem.paragraphs(),
+//        };
+//        values.push(value);
+//    }
+    
+    var ps = faker.table.properties();
+    values.push(ps[0],ps[1],ps[2]);
+    for(i = 3 ; i < 30 ; i++) {
         var value = 
         {
             project: {
@@ -157,12 +176,11 @@ angular.module('services-api', [])
             id:i,
             displayName: faker.company.propertyName(),
             thumb:faker.image.property(),
-            type:_.random(2),
+            type:_.random(1) + 1,
             description:faker.lorem.paragraphs(),
         };
         values.push(value);
     }
-    
     this.getAll = function() {
         return $q(function(resolve, reject) {
             if(Math.random() >= 0)
@@ -186,7 +204,7 @@ angular.module('services-api', [])
 })
 
 .service('apiEvent', function($q,$timeout) {
-    var values = [];
+    var values = []; this.values = values;
     for(i = 0 ; i < 10 ; i++) {
         var value = {};
         value.id = i;
@@ -196,6 +214,7 @@ angular.module('services-api', [])
         value.displayName = faker.company.projectName();
         value.expireDate = faker.date.future();
         value.expireRemain = '';
+        value.area = faker.address.state();
         value.address = faker.address.streetAddress() + ', ' + faker.address.city() + ', ' + faker.address.state() + ', ' + faker.address.country();
         value.location = {
             latitude:faker.address.latitude(),
@@ -308,6 +327,80 @@ angular.module('services-api', [])
             if(Math.random() >= 0)
                 fakeNetworkDelay($timeout, function() {
                     resolve(_.where(values, {'id':id})[0]);
+                });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+})
+
+.service('apiTicket', function($q,$timeout,apiEvent) {
+    var index = 0;
+    var values = [];
+    value = {};
+    value.id = index++;
+    value.qrcode = faker.image.qrcode();
+    value.event = apiEvent.values[0];
+    values.push(value);
+    
+    this.addByEvent = function(event) {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0){
+                var value = {};
+                value.id = index++;
+                value.qrcode = faker.image.qrcode();
+                value.event = event;
+                values.push(value);
+                fakeNetworkDelay($timeout, function() { 
+                    resolve(null); 
+                });
+            }else{
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+            }
+        });
+    }
+    
+    this.removeById = function(id) {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0){
+                    values = _.filter(values, function(o) { return o.id != id }); 
+                    fakeNetworkDelay($timeout, function() { 
+                    resolve(null); 
+                });
+            }else{
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+            }
+        });
+    }
+    
+    this.removeByEvent = function(event) {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0){
+                    values = _.filter(values, function(o) { return o.event.id != event.id }); 
+                    fakeNetworkDelay($timeout, function() { 
+                    resolve(null); 
+                });
+            }else{
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+            }
+        });
+    }
+    
+    this.getAll = function() {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() { resolve(values); });
+            else
+                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
+        });
+    }
+    this.getById = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0)
+                fakeNetworkDelay($timeout, function() {
+                    var ret = _.where(values, {'id':id})[0];
+                    resolve(ret);
                 });
             else
                 fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
