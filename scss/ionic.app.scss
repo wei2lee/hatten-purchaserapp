@@ -258,6 +258,25 @@ $black-theme-bg-color:black;
 }
 
 
+.fade-in-animation {
+    position:relative;
+    &.ng-enter {
+        transition: 0.3s ease-out all;
+        opacity: 0;
+        //right:-50%;
+        //bottom:-50%;
+    }
+    &.ng-enter-stagger {
+        transition-delay: 0.15s;
+        transition-duration: 0s;
+    }
+    &.ng-enter.ng-enter-active {
+        opacity: 1;
+        //right:0;
+        //bottom:0;
+    }
+}
+
 .fade-animation {
     position:relative;
     &.ng-enter {
