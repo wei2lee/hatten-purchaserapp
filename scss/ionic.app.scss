@@ -18,6 +18,8 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
+$royal:                           #000000 !default;
+//$dark:                           #000000 !default;
 
 $sidemenu-bottom-overlay-box-shadow:0 0 20px rgba(0, 0, 0, .3) !default;
 
@@ -31,6 +33,8 @@ $fa-font-path: "../lib/fontawesome/fonts" !default;
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 $black-theme-bg-color:black;
+$light-theme-bg-color:#fafafa;
+$light-theme-text-color:#ccc;
 
 /* ==========================================================================
    Base Import
@@ -463,7 +467,7 @@ $zoom: 1.7;
 
 ion-content {
     //background-color:$bgcolor;  
-    background-color:$black-theme-bg-color;
+    background-color:$light-theme-bg-color;
     
     &.block-child-only {
         background-color:transparent;
@@ -490,7 +494,8 @@ ion-side-menu {
         //bottom:60px;   
     }
     .item {
-        border:none;   
+        border:solid 1px rgba(128,128,128,0.2);   
+        color:$light-theme-text-color;
     }
     ion-content.ion-content-first-child {
         background-color:$black-theme-bg-color;
