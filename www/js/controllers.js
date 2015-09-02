@@ -2,46 +2,7 @@
 
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function ($rootScope, $scope, $ionicModal, $timeout, u) {
-
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
-    $rootScope.u = u;
-
-    // Form data for the login modal
-    $scope.loginData = {};
-
-    // Create the login modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/login.html', {
-        scope: $scope
-    }).then(function (modal) {
-        $scope.modal = modal;
-    });
-
-    // Triggered in the login modal to close it
-    $scope.closeLogin = function () {
-        $scope.modal.hide();
-    };
-
-    // Open the login modal
-    $scope.login = function () {
-        $scope.modal.show();
-    };
-
-    // Perform the login action when the user submits the login form
-    $scope.doLogin = function () {
-        console.log('Doing login', $scope.loginData);
-
-        // Simulate a login delay. Remove this and replace with your login
-        // code if using a login system
-        $timeout(function () {
-            $scope.closeLogin();
-        }, 1000);
-    };
+.controller('AppCtrl', function ($rootScope, $scope, $ionicModal, $timeout, u, apiUser) {
 })
 
 .controller('WhatsNewCtrl', function ($scope, $interval, u, apiWhatsNewItem) {
@@ -123,7 +84,10 @@ angular.module('starter.controllers', [])
         if(state.direction != 'back') {
             u.showProgress();
             apiPurchasedProperty.getById($state.params.id).then(function(results) {
-                $scope.purchasedProperty = results;  
+                $scope.purchasedProperty = results;
+                $scope.project = results.project;
+                $scope.unit = results.unit;
+                $scope.consultant = results.consultant;
             }).catch(function(error) {
 
             }).finally(function() {
@@ -182,13 +146,13 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ConstructionDetailCtrl', function ($scope, u, $state, apiConstructionProgress) {
+.controller('ConstructionDetailCtrl', function ($scope, u, $state, apiConstruction) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
-            apiConstructionProgress.getByConstrucitonId($state.params.id).then(function(results) {
+            apiConstruction.getById($state.params.id).then(function(results) {
                 $scope.project = results.project;
-                $scope.construction = results.construction;
+                $scope.construction = results;
                 $scope.progresses = results.progresses;
             }).catch(function(error) {
 
@@ -223,7 +187,7 @@ angular.module('starter.controllers', [])
             u.showProgress();
             apiProperty.getById($state.params.id).then(function(results) {
                 $scope.property = results;  
-                $scope.project = results.project;
+                $scope.project = results;
             }).catch(function(error) {
 
             }).finally(function() {
@@ -232,6 +196,21 @@ angular.module('starter.controllers', [])
         }
     });
 
+})
+
+.controller('PropertySpecificationCtrl', function ($scope, u, $state, apiProperty, $timeout) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            u.showProgress();
+            apiProperty.getById($state.params.id).then(function(results) {
+                $scope.property = results;  
+            }).catch(function(error) {
+
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
 })
 
 .controller('EventsCtrl', function ($scope, $interval, u, apiEvent) {

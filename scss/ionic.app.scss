@@ -281,6 +281,36 @@ $light-theme-text-color:#ccc;
     }
 }
 
+.fade-slow-animation {
+    position:relative;
+    &.ng-enter {
+        transition: 1s ease-out all;
+        opacity: 0;
+        //right:-50%;
+        //bottom:-50%;
+    }
+    &.ng-enter-stagger {
+        transition-delay: 0.5s;
+        transition-duration: 0s;
+    }
+    &.ng-enter.ng-enter-active {
+        opacity: 1;
+        //right:0;
+        //bottom:0;
+    }
+    &.ng-leave {
+        transition: 1s ease-out all;
+        opacity: 1;
+//        right:0;
+//        bottom:0;
+    }
+    &.ng-leave.ng-leave-active {
+        opacity: 0;
+//        right:50%;
+//        bottom:50%;
+    }
+}
+
 .fade-animation {
     position:relative;
     &.ng-enter {
@@ -464,7 +494,9 @@ $zoom: 1.7;
 /* ==========================================================================
    ion-content
    ========================================================================== */
-
+ion-nav-view ion-content ion-content-bottom-fillter {
+    height:80px;   
+}
 ion-content {
     //background-color:$bgcolor;  
     background-color:$light-theme-bg-color;
@@ -491,7 +523,7 @@ ion-content {
    ========================================================================== */
 ion-side-menu {
     .ion-content-first-child {
-        //bottom:60px;   
+//        bottom:60px;   
     }
     .item {
         border:solid 1px rgba(128,128,128,0.2);   
@@ -529,7 +561,6 @@ ion-side-menu {
 }
 
 
-
 /* ==========================================================================
    List
    ========================================================================== */
@@ -555,13 +586,159 @@ ion-side-menu {
 .button.button-full.footer-button {
     margin-bottom:0;
     margin-top:0;
+} 
+/* ==========================================================================
+   Review
+   ========================================================================== */
+
+.rate-container {
+    padding:10px;
+    display:inline-block;
+    width:330px;
+    height:130px;
+    border:1px solid #000;
+    box-sizing: border-box;
+    
+    .rate-text-section {
+        float:left;
+        width:50%;
+        height:100%;
+//        border:1px solid #000;
+        box-sizing: border-box;
+        
+        .average-rate-number {
+            font-size:52px; 
+            line-height:1.1em;
+            text-align:center;
+        }
+        .average-rate-number-star li {
+            display:inline-block; 
+            margin-right:-4px;
+            padding-right:2px;
+        }
+
+        .average-rate-number-star {
+            text-align:center;
+        }
+        .average-rate-number-people {
+            text-align:center;
+            span {
+                font-size:12px;
+            }
+            i {
+                padding-right:2px;   
+            }
+        }
+    }
+    .rate-chart-section {
+        float:left;
+        width:50%;
+        height:100%;
+        
+        li {
+            
+            line-height:22px;
+            height:22px;
+            
+            .rate-chart-label {
+                display:inline-block;
+                height:100%;
+                position:relative;
+                bottom:5px;
+                i {
+                    padding-right:2px;
+                }
+                .number-star-label {
+                    padding-right:4px;   
+                    font-size:12px;
+                }
+            }
+            .rate-chart-value{
+                display:inline-block;
+                height:100%;
+                position:relative;
+                .number-rate-star {
+//                    padding-left:4px;   
+                    position:absolute;
+                    left:4px;
+                    font-size:12px;
+                }
+            }
+            
+        }
+    
+        
+        li  {
+            &:nth-child(1) .rate-chart-value{
+                background-color:#a2c147;
+//                width:50px;
+            }
+            &:nth-child(2) .rate-chart-value{
+                background-color:#b1d740;
+//                width:20px;
+            }
+            &:nth-child(3) .rate-chart-value{
+                background-color:#fed900;
+//                width:100px;
+            }
+            &:nth-child(4) .rate-chart-value{
+                background-color:#fcb300;
+//                width:40px;
+            }
+            &:nth-child(5) .rate-chart-value{
+                background-color:#fb8c50;
+//                width:20px;
+            }
+        }
+    }
+    
+    li {
+        list-style: none;
+    }
 }
-
-
 /* ==========================================================================
    End Customize Ionic Component / Extra Stylilng
    ========================================================================== */
 
+.learn-more-container {
+    position:relative;
+    
+    @media screen and (max-width:$grid-responsive-md-break) {
+        max-height:250px;
+        height:250px;
+    }
+    
+
+    .learn-more-overlay {
+        position:absolute;
+        bottom:46px;
+        height:100px;
+        width:100%;
+        background: linear-gradient(to bottom, rgba(56,126,245,0) 0%,rgba(56,126,245,1) 100%);
+        
+        @media screen and (min-width:$grid-responsive-md-break) {
+            display:none;
+        }
+        
+    }
+    .learn-more-button {
+        position:absolute;
+        bottom:0px;
+        
+        @media screen and (min-width:$grid-responsive-md-break) {
+            display:none;
+        }
+    }
+    
+    &.tooshort {
+        .learn-more-overlay {
+            display:none;
+        }
+        .learn-more-button {
+            display:none;
+        }
+    }
+}
 /* ==========================================================================
    Page Layout
    ========================================================================== */

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "ionic.app.css",
+  "sources": [
+    "ionic.app.scss"
+  ],
+  "sourcesContent": [],
+  "mappings": "",
+  "names": []
+}

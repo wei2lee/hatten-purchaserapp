@@ -2,10 +2,11 @@
     <ion-content>
         <div class="list card fade-animation" ng-repeat="purchasedProperty in purchasedProperties">
             <a href="#/app/purchasedproperty/{{purchasedProperty.id}}" class="item item-icon-left item-thumbnail-left" >
-                <img ng-src="{{purchasedProperty.thumb}}"> 
+                <img ng-src="{{purchasedProperty.project.thumb}}"> 
                 <p>
-                    <b>{{purchasedProperty.displayName}}</b>
-                    <br/><small>{{purchasedProperty.area}}</small>
+                    <b>{{purchasedProperty.project.displayName}}</b>
+                    <br/><b>{{purchasedProperty.unit.unitNo}}</b>
+                    <br/><small>{{purchasedProperty.project.area}}</small>
                 </p>
                 <p><small>Purchased at {{purchasedProperty.purchasedDate | date : 'MMM dd, yyyy'}}</small></p>
             </a>

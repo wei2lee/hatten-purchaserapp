@@ -16,8 +16,45 @@ angular.module('services', ['ngResource'])
     }, false);
 })
 
-.service('u', function ($q, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
+.service('u', function ($q, $rootScope, $ionicModal, apiUser, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
     var _this = this;
+    
+   //Start Login
+    $ionicModal.fromTemplateUrl('templates/login.html', {
+        scope: $rootScope
+    }).then(function (modal) {
+        $rootScope.loginModal = modal;
+    });
+    this.closeLogin = function () {
+        $rootScope.loginModal.hide();
+    };
+    this.openLogin = function () {
+        $rootScope.loginAlert = null;
+        $rootScope.loginData = {};
+        $ret = $rootScope.loginModal.show();
+        return $q(function(resolve, reject) {
+            $ret = $rootScope.$on('modal.hidden', function() {
+                $ret();
+                resolve();
+            });
+        });
+    }
+    this.doLogout = function() {
+        apiUser.logout();
+    }
+    this.doLogin = function () {
+        _this.showProgress();
+        apiUser.login($rootScope.loginData.username, $rootScope.loginData.password).then(function(results){
+            _this.closeLogin();
+        }).catch(function(error) {
+            $rootScope.loginAlert = {
+                message: error.error_message   
+            }
+        }).finally(function(){
+            _this.hideProgress();
+        });
+    };
+    //End Login
     
     this.toggleFavourited = function (item) {
         item.favourited = !item.favourited;

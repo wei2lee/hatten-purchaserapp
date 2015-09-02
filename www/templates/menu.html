@@ -102,11 +102,18 @@
                     </span>
                     About Us
                 </ion-item>
+                <ion-item menu-close class="item-icon-left">
+                    &nbsp;
+                </ion-item>
+                <ion-item menu-close class="item-icon-left">
+                    &nbsp;
+                </ion-item>
             </ion-list>
         </ion-content>
         <ion-content scroll="false" class="block-child-only">
             <div class="absolute-position-bottom full-width">
-                <button class="sidemenu-bottom-overlay-box-shadow button button-balanced button-full margin-0 " ng-click="login()">Login</button>
+                <button ng-if="apiUser.getUser()" class="sidemenu-bottom-overlay-box-shadow button button-balanced button-full margin-0 " ng-click="u.doLogout();">Logout</button>
+                <button ng-if="!apiUser.getUser()" class="sidemenu-bottom-overlay-box-shadow button button-balanced button-full margin-0 " ng-click="u.openLogin()">Login</button>
             </div>
         </ion-content>
     </ion-side-menu>

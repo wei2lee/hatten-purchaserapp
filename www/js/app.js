@@ -14,7 +14,10 @@ angular.module('starter', [
     'ionic', 
     'starter.controllers', 
     'services',
-    'angular.filter'])
+    'angular.filter',
+    //'monospaced.qrcode'
+
+])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

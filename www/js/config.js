@@ -76,6 +76,17 @@ angular.module('route', ['ionic'])
             }
         }
     })
+    
+    .state('app.propertyspecification', {
+        url: '/propertyspecification',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/propertyspecification.html',
+                controller: 'PropertySpecificationCtrl'
+            }
+        }
+    })
+
 
     .state('app.events', {
         url: '/events',
@@ -116,6 +127,7 @@ angular.module('route', ['ionic'])
             }
         }
     })
+    
 
     .state('app.calculator', {
         url: '/calculator',
@@ -215,4 +227,9 @@ angular.module('route', ['ionic'])
     ;
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/whatsnew');
+    
+    
+}).run(function($rootScope, u, apiUser, $ionicModal){
+    $rootScope.u = u;
+    $rootScope.apiUser = apiUser;
 });
