@@ -14,6 +14,7 @@
     "ngCordova": "~0.1.19-alpha",
     "ionic-material": "~0.4.2",
     "ionic-rating": "~0.1.0",
-    "angular-filter": "~0.5.5"
+    "angular-filter": "~0.5.5",
+    "ionic-ratings": "~0.2.0"
   }
 }

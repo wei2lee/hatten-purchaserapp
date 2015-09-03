@@ -19,7 +19,7 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 $royal:                           #000000 !default;
-//$dark:                           #000000 !default;
+$dark:                           #000000 !default;
 
 $sidemenu-bottom-overlay-box-shadow:0 0 20px rgba(0, 0, 0, .3) !default;
 
@@ -52,62 +52,99 @@ $light-theme-text-color:#ccc;
    Utility
    ========================================================================== */
 
-//text-color
-.text-light {
-    color:$light;   
-}
-.text-stable {
-    color:$stable;   
-}
-.text-positive {
-    color:$positive;   
-}
-.text-calm {
-    color:$calm;   
-}
-.text-balanced {
-    color:$balanced;   
-}
-.text-energized {
-    color:$energized;   
-}
-.text-assertive {
-    color:$assertive;   
-}
-.text-royal {
-    color:$royal;   
-}
-.text-dark {
-    color:$dark;   
+
+@mixin create-color($word, $css) {
+    .#{$word}-light {
+        $css:$light;   
+    }
+    .#{$word}-stable {
+        $css:$stable;   
+    }
+    .#{$word}-positive {
+        $css:$positive;   
+    }
+    .#{$word}-calm {
+        $css:$calm;   
+    }
+    .#{$word}-balanced {
+        $css:$balanced;   
+    }
+    .#{$word}-energized {
+        $css:$energized;   
+    }
+    .#{$word}-assertive {
+        $css:$assertive;   
+    }
+    .#{$word}-royal {
+        $css:$royal;   
+    }
+    .#{$word}-dark {
+        $css:$dark;   
+    }
 }
 
-//bg-color
-.bg-light {
-    background-color:$light;   
+@mixin create-margin($word, $value) {
+    .margin-#{$word} {
+        margin:$value;   
+    }
+
+    .margin-#{$word}-top {
+        margin-top:$value;   
+    }
+
+    .margin-#{$word}-bottom {
+        margin-top:$value;   
+    }
+
+    .margin-#{$word}-left {
+        margin-left:$value;   
+    }
+
+    .margin-#{$word}-right {
+        margin-right:$value;   
+    }
+
+    .margin-#{$word}-horizontal {
+        margin-left: $value;
+        margin-right: $value;
+    }
+
+    .margin-#{$word}-vertical {
+        margin-top: $value;
+        margin-bottom: $value;
+    }
 }
-.bg-stable {
-    background-color:$stable;   
-}
-.bg-positive {
-    background-color:$positive;   
-}
-.bg-calm {
-    background-color:$calm;   
-}
-.bg-balanced {
-    background-color:$balanced;   
-}
-.bg-energized {
-    background-color:$energized;   
-}
-.bg-assertive {
-    background-color:$assertive;   
-}
-.bg-royal {
-    background-color:$royal;   
-}
-.bg-dark {
-    background-color:$dark;   
+
+@mixin create-padding($word, $value) {
+    .padding-#{$word} {
+        padding:$value;   
+    }
+
+    .padding-#{$word}-top {
+        padding-top:$value;   
+    }
+
+    .padding-#{$word}-bottom {
+        padding-top:$value;   
+    }
+
+    .padding-#{$word}-left {
+        padding-left:$value;   
+    }
+
+    .padding-#{$word}-right {
+        padding-right:$value;   
+    }
+
+    .padding-#{$word}-horizontal {
+        padding-left: $value;
+        padding-right: $value;
+    }
+
+    .padding-#{$word}-vertical {
+        padding-top: $value;
+        padding-bottom: $value;
+    }
 }
 
 //padding
@@ -122,9 +159,18 @@ $light-theme-text-color:#ccc;
     padding-top:44px;   
 }
 
-.padding-md {
-    padding: 20px;
-}
+@include create-color('bg', background-color);
+@include create-color('text', color);
+
+@include create-padding('xxs', 5px);
+@include create-padding('xs', 10px);
+@include create-padding('md', 20px);
+@include create-padding('lg', 40px);
+
+@include create-margin('xxs', 5px);
+@include create-margin('xs', 10px);
+@include create-margin('md', 20px);
+@include create-margin('lg', 40px);
 
 .padding-right-1-item {
     padding-right:54px;
@@ -497,6 +543,13 @@ $zoom: 1.7;
 ion-nav-view ion-content ion-content-bottom-fillter {
     height:80px;   
 }
+
+ion-header-bar {
+    background-color:black;
+}
+
+
+
 ion-content {
     //background-color:$bgcolor;  
     background-color:$light-theme-bg-color;
@@ -578,6 +631,10 @@ ion-side-menu {
         .icon-left-border {
             border-left: solid 1px rgb(221, 221, 221);
             padding-left: 10px;
+            
+            &.ion-ios-star-outline, &.ion-ios-star {
+                color:$energized;
+            }
         }
     }
 
@@ -590,112 +647,214 @@ ion-side-menu {
 /* ==========================================================================
    Review
    ========================================================================== */
+$rate-review-lg-font-size:35px;
+$rate-review-xss-font-size:12px;
+$rate-review-xs-font-size:14px;
+$rate-review-container-padding:0px;
+$rate-review-xss-content-padding:2px;
+$rate-review-xs-content-padding:4px;
+$rate-review-lg-content-padding:12px;
 
-.rate-container {
-    padding:10px;
-    display:inline-block;
-    width:330px;
-    height:130px;
-    border:1px solid #000;
-    box-sizing: border-box;
+//.rate-widget, .rate-widget * {
+//    box-sizing: border-box;
+//    border:solid 1px black;
+//}
     
-    .rate-text-section {
-        float:left;
-        width:50%;
-        height:100%;
-//        border:1px solid #000;
-        box-sizing: border-box;
-        
-        .average-rate-number {
-            font-size:52px; 
-            line-height:1.1em;
-            text-align:center;
-        }
-        .average-rate-number-star li {
-            display:inline-block; 
-            margin-right:-4px;
-            padding-right:2px;
-        }
-
-        .average-rate-number-star {
-            text-align:center;
-        }
-        .average-rate-number-people {
-            text-align:center;
-            span {
-                font-size:12px;
-            }
-            i {
-                padding-right:2px;   
-            }
-        }
-    }
-    .rate-chart-section {
-        float:left;
-        width:50%;
-        height:100%;
-        
-        li {
-            
-            line-height:22px;
-            height:22px;
-            
-            .rate-chart-label {
-                display:inline-block;
-                height:100%;
-                position:relative;
-                bottom:5px;
-                i {
-                    padding-right:2px;
-                }
-                .number-star-label {
-                    padding-right:4px;   
-                    font-size:12px;
-                }
-            }
-            .rate-chart-value{
-                display:inline-block;
-                height:100%;
-                position:relative;
-                .number-rate-star {
-//                    padding-left:4px;   
-                    position:absolute;
-                    left:4px;
-                    font-size:12px;
-                }
-            }
-            
-        }
-    
-        
-        li  {
-            &:nth-child(1) .rate-chart-value{
-                background-color:#a2c147;
-//                width:50px;
-            }
-            &:nth-child(2) .rate-chart-value{
-                background-color:#b1d740;
-//                width:20px;
-            }
-            &:nth-child(3) .rate-chart-value{
-                background-color:#fed900;
-//                width:100px;
-            }
-            &:nth-child(4) .rate-chart-value{
-                background-color:#fcb300;
-//                width:40px;
-            }
-            &:nth-child(5) .rate-chart-value{
-                background-color:#fb8c50;
-//                width:20px;
-            }
-        }
-    }
-    
+.rate-widget {
+    max-width:550px;
+    margin:0 auto;
     li {
-        list-style: none;
+        list-style: none;   
+        display:list-item;
+    }
+    
+    .rate-form {
+        text-align:center;
+        .rate-form-title {
+            margin-bottom:  $rate-review-xs-content-padding*2; 
+            font-size: $rate-review-xs-font-size * 1.2;
+        }
+        .rate-form-field {
+            display:-webkit-box;
+            display:-webkit-flex;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            li {  
+                font-size:$rate-review-lg-font-size;
+                padding-left:$rate-review-lg-content-padding;
+                padding-right:$rate-review-lg-content-padding;
+                
+                i {
+                    color:#ffcf00;
+                }
+            }
+        }
+    }
+    .rate-review {
+        padding:$rate-review-container-padding;
+        height:130px;
+        display:flex;
+        font-size:$rate-review-xss-font-size;
+
+
+
+        .text-section {
+            padding-left:$rate-review-container-padding;
+            padding-right:$rate-review-container-padding;
+            width:100%;
+            -webkit-box-flex: 1;
+            -webkit-flex-grow: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            -webkit-flex-shrink: 1;
+            -ms-flex-negative: 1;
+            flex-shrink: 1;
+            display:-webkit-box;
+            display:-webkit-flex;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+
+            .average-rate-number {
+                text-align: center;
+                font-size:$rate-review-lg-font-size;
+                margin-bottom:$rate-review-xs-content-padding;
+            }
+
+            .average-rate-number-star {
+                display:-webkit-box;
+                display:-webkit-flex;
+                display:-ms-flexbox;
+                display:flex;
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+                li:not(last-child) {
+                    padding-left:$rate-review-xss-content-padding;
+                }
+                margin-bottom:-2px;
+            }
+
+            .average-rate-number-people {
+                display:-webkit-box;
+                display:-webkit-flex;
+                display:-ms-flexbox;
+                display:flex;
+                -webkit-box-pack: center;
+                -webkit-justify-content: center;
+                -ms-flex-pack: center;
+                justify-content: center;
+                i {
+                    position:relative;
+                    top:0px;
+                    padding-right:$rate-review-xss-content-padding/2;
+                }
+                span {
+                    padding-bottom:$rate-review-xss-content-padding;
+                }
+            }
+        }
+
+        .chart-section {
+            padding-left:$rate-review-container-padding;
+            padding-right:$rate-review-container-padding;
+            width:100%;
+            -webkit-box-flex: 1;
+            -webkit-flex-grow: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            -webkit-flex-shrink: 1;
+            -ms-flex-negative: 1;
+            flex-shrink: 1;
+            display:-webkit-box;
+            display:-webkit-flex;
+            display:-ms-flexbox;
+            display:flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            li {
+                display:-webkit-box;
+                display:-webkit-flex;
+                display:-ms-flexbox;
+                display:flex;
+                .number-star-label {
+                    -webkit-flex-shrink: 0;
+                    -ms-flex-negative: 0;
+                    flex-shrink: 0;
+
+                    span {
+                        padding-right: $rate-review-xs-content-padding;  
+                    }
+                }
+                .number-star-value {
+                    width:100%;
+                    -webkit-box-flex:1;
+                    -webkit-flex-grow:1;
+                    -ms-flex-positive:1;
+                    flex-grow:1;
+                    position:relative;
+                    div {
+                        height:20px;
+                        position:relative;
+                    }
+                    span {
+                        position:absolute;   
+                        left:4px;
+                        top:1px;
+                    }
+                }
+            }
+
+            li:nth-child(1) .number-star-value div{
+                background-color:#87b02d;
+                //width:20%;
+            }
+            li:nth-child(2) .number-star-value div{
+                background-color:#a2cc02;
+                //width:90%;
+            }
+            li:nth-child(3) .number-star-value div{
+                background-color:#ffcf00;
+                //width:50%;
+            }
+            li:nth-child(4) .number-star-value div{
+                background-color:#ff9e01;
+                //width:30%;
+            }
+            li:nth-child(5) .number-star-value div{
+                background-color:#ff6f32;
+                //width:10%;
+            }
+        }
     }
 }
+
+
 /* ==========================================================================
    End Customize Ionic Component / Extra Stylilng
    ========================================================================== */

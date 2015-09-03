@@ -1,8 +1,10 @@
 <ion-view view-title="What's New">
     <ion-content>
-        <div class="list card fade-animation" ng-repeat="new in news" ng-click="u.toggleFavourited(new);">
+        <div class="list card fade-animation" ng-repeat="new in news">
             <div class="item padding-0">
+                <a href="#/app/event/{{new.id}}">
                 <img class="full-img-responsive" ng-src="{{new.thumb}}">
+                </a>
                 <div class="button">aaa</div>  
                 <p class="padding">
                     <small>{{new.period}}</small>

@@ -229,7 +229,8 @@ angular.module('route', ['ionic'])
     $urlRouterProvider.otherwise('/app/whatsnew');
     
     
-}).run(function($rootScope, u, apiUser, $ionicModal){
+}).run(function($rootScope, u, apiUser, $ionicModal,$state){
+    $rootScope.$state = $state;
     $rootScope.u = u;
     $rootScope.apiUser = apiUser;
 });

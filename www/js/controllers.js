@@ -181,7 +181,21 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertyDetailCtrl', function ($scope, u, $state, apiProperty, $timeout) {
+.controller('PropertyDetailCtrl', function ($interval, $scope, u, $state, apiProperty, $timeout) {
+    $scope.rate = {
+        title:'Rate this Property',
+        setRate:function(i) {
+            $scope.rate.rate = i;
+        },
+        rate:_.random(10,50)/10,
+        review: {
+            averageRate:_.random(10,50)/10,
+            totalPeople:_.random(1000),
+            totalRatePerStars:[_.random(200),_.random(200),_.random(200),_.random(200),_.random(200)],
+            getTotalRateStars:function() { return _.max(this.totalRatePerStars); },
+            getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
+        }
+    };
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
@@ -268,6 +282,20 @@ angular.module('starter.controllers', [])
 })
 
 .controller('EventDetailCtrl', function ($scope, u, $state, apiEvent, apiTicket) {
+    $scope.rate = {
+        title:'Rate this Event',
+        setRate:function(i) {
+            $scope.rate.rate = i;
+        },
+        rate:_.random(10,50)/10,
+        review: {
+            averageRate:_.random(10,50)/10,
+            totalPeople:_.random(1000),
+            totalRatePerStars:[_.random(200),_.random(200),_.random(200),_.random(200),_.random(200)],
+            getTotalRateStars:function() { return _.max(this.totalRatePerStars); },
+            getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
+        }
+    };
     $scope.attempEvent = function(event) {
         u.showProgress();
         apiTicket.addByEvent(event).then(function(results) {
@@ -324,6 +352,20 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ConsultantDetailCtrl', function ($scope, u, $state, apiConsultant) {
+    $scope.rate = {
+        title:'Rate this Consultant',
+        setRate:function(i) {
+            $scope.rate.rate = i;
+        },
+        rate:_.random(10,50)/10,
+        review: {
+            averageRate:_.random(10,50)/10,
+            totalPeople:_.random(1000),
+            totalRatePerStars:[_.random(200),_.random(200),_.random(200),_.random(200),_.random(200)],
+            getTotalRateStars:function() { return _.max(this.totalRatePerStars); },
+            getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
+        }
+    };
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
