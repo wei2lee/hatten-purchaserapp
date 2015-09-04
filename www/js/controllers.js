@@ -81,7 +81,7 @@ angular.module('starter.controllers', [])
 .controller('PurchasedPropertyDetailCtrl', function ($scope, u, $state, apiPurchasedProperty) {
     $scope.purchasedProperty = undefined;
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        if(state.direction != 'back') {
+        if(state.direction != 'back') {          
             u.showProgress();
             apiPurchasedProperty.getById($state.params.id).then(function(results) {
                 $scope.purchasedProperty = results;
@@ -181,11 +181,21 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertyDetailCtrl', function ($interval, $scope, u, $state, apiProperty, $timeout) {
+.controller('PropertyDetailCtrl', function ($q, $interval, $scope, u, $state, apiProperty, $timeout,intent) {
     $scope.rate = {
         title:'Rate this Property',
         setRate:function(i) {
-            $scope.rate.rate = i;
+            var oldval = Math.floor($scope.rate.rate);
+            if(oldval == i && oldval > 1) {
+                $scope.rate.rate = oldval - 1;
+            }else{
+                $scope.rate.rate = i;
+            }
+            var newval = $scope.rate.rate;
+            if(oldval != newval) {
+                if($scope.onSetRate)   
+                    $scope.onSetRate(newval)
+            }
         },
         rate:_.random(10,50)/10,
         review: {
@@ -196,12 +206,52 @@ angular.module('starter.controllers', [])
             getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
         }
     };
+    $scope.rate.review.totalPeople = _.reduce($scope.rate.review.totalRatePerStars, function(s,o){
+        return s+o;
+    });
+    
+    
+    $scope.imagesloaded = function() {
+        return $q(function(resolve, reject) {
+            $timeout(function() {
+                var $imgs = $('#propertydetail').find('img');
+                console.log($imgs.length);
+                var loadcnt = 0;
+                $imgs.one('load', function() {
+                    loadcnt++;
+                    if(loadcnt == $imgs.length){
+                        console.log('loaded');   
+                        resolve();
+                    }
+                }).each(function(){
+                    if(this.complete) $(this).load();
+                });
+            });
+        });
+    };
+    
+    $scope.increaseContentReadyStat = function() {
+        if($scope.contentReadyStat === undefined) $scope.contentReadyStat = 0;
+        $scope.contentReadyStat++;   
+        if($scope.contentReadyStat == 2) {
+            $scope.imagesloaded().then(function(){
+                $scope.contentReady = true;     
+            });
+        }
+    }
+    
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
             apiProperty.getById($state.params.id).then(function(results) {
                 $scope.property = results;  
                 $scope.project = results;
+
+                $onAfterEnter = $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
+                    $onAfterEnter();
+                });
+                
+                
             }).catch(function(error) {
 
             }).finally(function() {
@@ -209,7 +259,6 @@ angular.module('starter.controllers', [])
             });
         }
     });
-
 })
 
 .controller('PropertySpecificationCtrl', function ($scope, u, $state, apiProperty, $timeout) {
@@ -285,7 +334,17 @@ angular.module('starter.controllers', [])
     $scope.rate = {
         title:'Rate this Event',
         setRate:function(i) {
-            $scope.rate.rate = i;
+            var oldval = Math.floor($scope.rate.rate);
+            if(oldval == i && oldval > 1) {
+                $scope.rate.rate = oldval - 1;
+            }else{
+                $scope.rate.rate = i;
+            }
+            var newval = $scope.rate.rate;
+            if(oldval != newval) {
+                if($scope.onSetRate)   
+                    $scope.onSetRate(newval)
+            }
         },
         rate:_.random(10,50)/10,
         review: {
@@ -296,6 +355,10 @@ angular.module('starter.controllers', [])
             getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
         }
     };
+    $scope.rate.review.totalPeople = _.reduce($scope.rate.review.totalRatePerStars, function(s,o){
+        return s+o;
+    });
+    
     $scope.attempEvent = function(event) {
         u.showProgress();
         apiTicket.addByEvent(event).then(function(results) {
@@ -355,7 +418,17 @@ angular.module('starter.controllers', [])
     $scope.rate = {
         title:'Rate this Consultant',
         setRate:function(i) {
-            $scope.rate.rate = i;
+            var oldval = Math.floor($scope.rate.rate);
+            if(oldval == i && oldval > 1) {
+                $scope.rate.rate = oldval - 1;
+            }else{
+                $scope.rate.rate = i;
+            }
+            var newval = $scope.rate.rate;
+            if(oldval != newval) {
+                if($scope.onSetRate)   
+                    $scope.onSetRate(newval)
+            }
         },
         rate:_.random(10,50)/10,
         review: {
@@ -366,6 +439,10 @@ angular.module('starter.controllers', [])
             getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
         }
     };
+    $scope.rate.review.totalPeople = _.reduce($scope.rate.review.totalRatePerStars, function(s,o){
+        return s+o;
+    });
+    
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             u.showProgress();
@@ -413,5 +490,13 @@ angular.module('starter.controllers', [])
 
     });
 })
+
+.controller('LearnMoreCtrl', function ($scope, intent) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        $scope.item = intent.item;
+    });
+})
+
+
 
 ;

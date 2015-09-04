@@ -16,7 +16,11 @@ angular.module('services', ['ngResource'])
     }, false);
 })
 
-.service('u', function ($q, $rootScope, $ionicModal, apiUser, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
+
+.value('intent', {})
+
+
+.service('u', function ($state, $location, intent, $q, $rootScope, $ionicModal, apiUser, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
     var _this = this;
     
    //Start Login
@@ -151,5 +155,12 @@ angular.module('services', ['ngResource'])
             });        
         });
         return defer;
+    }
+    
+    
+    this.navigateToStateWithIntent = function(state, item) {
+        intent.item = item;
+//        $location.path(url);   
+        $state.go(state);
     }
 });

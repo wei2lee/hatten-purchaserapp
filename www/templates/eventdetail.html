@@ -6,19 +6,20 @@
         <div class="fade-animation" ng-show="event">
             <div class="list card">
                 <div class="item padding-0">
-                    <img class="full-img-responsive" ng-src="{{event.thumb}}">
+                    <img preloadThumb class="full-img-responsive" ng-src="{{event.thumb}}">
                     <p class="padding">
                         {{event.displayName}}
                     </p>
                 </div>
             </div>
-            <div class="list card">
+            <div class="list card learn-more-container">
                 <div class="item-body">
                     {{event.description}}
                 </div>
-                <button class="button button-full button-positive footer-button">
+                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', event)">
                     LEARN MORE
                 </button>
+                <div class="learn-more-overlay"></div>
             </div>
 
             <div class="list card">
@@ -40,10 +41,11 @@
                 <button ng-click="attempEvent(event)" class="button button-full button-balanced footer-button">
                     ATTEND
                 </button>
+                <button ng-click="attempEvent(event)" class="button button-full button-energized footer-button">
+                    TICKET
+                </button>
             </div>
-        </div>
-        <div class="padding-xs">
-            <div class="padding-xs">
+            <div class="list card padding-md">
                 <rate-widget rate="rate"></rate-widget>
             </div>
         </div>

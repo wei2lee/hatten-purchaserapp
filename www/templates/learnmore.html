@@ -1,0 +1,9 @@
+<ion-view view-title="{{item.displayName}}">
+    <ion-nav-title>
+       {{item.displayName}}
+    </ion-nav-title>
+    <ion-content>
+        <div class="fade-animation padding" ng-bind-html="item.description" ng-if="item">
+        </div>
+    </ion-content>
+</ion-view>

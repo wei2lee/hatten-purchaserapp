@@ -1,4 +1,4 @@
-<ion-view view-title="{{unit.unitNo}}">
+<ion-view view-title="{{unit.unitNo}}" id="purchasedpropertydetail">
     <ion-nav-title>
        {{unit.unitNo}}
     </ion-nav-title>
@@ -26,21 +26,29 @@
             <div class="list card">
                 <div class="item padding-0">
                     <div class="row padding-0">
-                        <a class="col padding-md text-center">
-                            Floor Plan
-                        </a>
-                        <div class="col padding-md left-border text-center">
-                            <a href="#/app/propertyspecification">Specification</a>
+                        <div class="col  text-center bg-image-button floorplan-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
                         </div>
+                        <a class="col left-border text-center bg-image-button specification-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 <div class="item padding-0">
                     <div class="row padding-0">
-                        <div class="col padding-md text-center">
-                            Gallery
+                        <div class="col  text-center bg-image-button gallery-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
                         </div>
-                        <div class="col padding-md left-border text-center">
-                            Location
+                        <div class="col  left-border text-center bg-image-button location-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>

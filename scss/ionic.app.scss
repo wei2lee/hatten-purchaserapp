@@ -357,6 +357,24 @@ $light-theme-text-color:#ccc;
     }
 }
 
+.fadeUp-animation {
+    position:relative;
+    &.ng-enter {
+        transition: 0.3s ease-out all;
+        opacity: 0;
+        bottom:-60px;
+    }
+//    &.ng-enter-stagger {
+//        transition-delay: 0.15s;
+//        transition-duration: 0s;
+//    }
+    &.ng-enter.ng-enter-active {
+        opacity: 1;
+        bottom:0px;
+    }
+}
+
+
 .fade-animation {
     position:relative;
     &.ng-enter {
@@ -518,6 +536,18 @@ $zoom: 1.7;
     stroke: $yellow;
   }
 }
+
+
+/* ==========================================================================
+   Fix Black screen during transition 
+http://forum.ionicframework.com/t/brief-black-screen-during-navigation/9480/44
+   ========================================================================== */
+
+[nav-view-transition="ios"][nav-view-direction="forward"], [nav-view-transition="ios"][nav-view-direction="back"] {
+  background-color: transparent;
+}
+
+
 /* ==========================================================================
    End Loading
    ========================================================================== */
@@ -663,6 +693,10 @@ $rate-review-lg-content-padding:12px;
 .rate-widget {
     max-width:550px;
     margin:0 auto;
+    display:flex;
+    flex-direction: column;
+    
+    
     li {
         list-style: none;   
         display:list-item;
@@ -675,18 +709,8 @@ $rate-review-lg-content-padding:12px;
             font-size: $rate-review-xs-font-size * 1.2;
         }
         .rate-form-field {
-            display:-webkit-box;
-            display:-webkit-flex;
-            display:-ms-flexbox;
             display:flex;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            -ms-flex-pack: center;
             justify-content: center;
-            -webkit-box-orient: horizontal;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: row;
-            -ms-flex-direction: row;
             flex-direction: row;
             li {  
                 font-size:$rate-review-lg-font-size;
@@ -705,31 +729,14 @@ $rate-review-lg-content-padding:12px;
         display:flex;
         font-size:$rate-review-xss-font-size;
 
-
-
         .text-section {
             padding-left:$rate-review-container-padding;
             padding-right:$rate-review-container-padding;
             width:100%;
-            -webkit-box-flex: 1;
-            -webkit-flex-grow: 1;
-            -ms-flex-positive: 1;
             flex-grow: 1;
-            -webkit-flex-shrink: 1;
-            -ms-flex-negative: 1;
             flex-shrink: 1;
-            display:-webkit-box;
-            display:-webkit-flex;
-            display:-ms-flexbox;
             display:flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: column;
-            -ms-flex-direction: column;
             flex-direction: column;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            -ms-flex-pack: center;
             justify-content: center;
 
             .average-rate-number {
@@ -739,13 +746,7 @@ $rate-review-lg-content-padding:12px;
             }
 
             .average-rate-number-star {
-                display:-webkit-box;
-                display:-webkit-flex;
-                display:-ms-flexbox;
                 display:flex;
-                -webkit-box-pack: center;
-                -webkit-justify-content: center;
-                -ms-flex-pack: center;
                 justify-content: center;
                 li:not(last-child) {
                     padding-left:$rate-review-xss-content-padding;
@@ -754,13 +755,7 @@ $rate-review-lg-content-padding:12px;
             }
 
             .average-rate-number-people {
-                display:-webkit-box;
-                display:-webkit-flex;
-                display:-ms-flexbox;
                 display:flex;
-                -webkit-box-pack: center;
-                -webkit-justify-content: center;
-                -ms-flex-pack: center;
                 justify-content: center;
                 i {
                     position:relative;
@@ -777,34 +772,14 @@ $rate-review-lg-content-padding:12px;
             padding-left:$rate-review-container-padding;
             padding-right:$rate-review-container-padding;
             width:100%;
-            -webkit-box-flex: 1;
-            -webkit-flex-grow: 1;
-            -ms-flex-positive: 1;
             flex-grow: 1;
-            -webkit-flex-shrink: 1;
-            -ms-flex-negative: 1;
             flex-shrink: 1;
-            display:-webkit-box;
-            display:-webkit-flex;
-            display:-ms-flexbox;
             display:flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -webkit-flex-direction: column;
-            -ms-flex-direction: column;
             flex-direction: column;
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            -ms-flex-pack: center;
             justify-content: center;
             li {
-                display:-webkit-box;
-                display:-webkit-flex;
-                display:-ms-flexbox;
                 display:flex;
                 .number-star-label {
-                    -webkit-flex-shrink: 0;
-                    -ms-flex-negative: 0;
                     flex-shrink: 0;
 
                     span {
@@ -813,9 +788,6 @@ $rate-review-lg-content-padding:12px;
                 }
                 .number-star-value {
                     width:100%;
-                    -webkit-box-flex:1;
-                    -webkit-flex-grow:1;
-                    -ms-flex-positive:1;
                     flex-grow:1;
                     position:relative;
                     div {
@@ -829,26 +801,21 @@ $rate-review-lg-content-padding:12px;
                     }
                 }
             }
-
-            li:nth-child(1) .number-star-value div{
+            //change from nth-child to nth-of-type http://stackoverflow.com/questions/27127879/nth-child-not-working-on-iossafari-8
+            li:nth-of-type(1) .number-star-value div{
                 background-color:#87b02d;
-                //width:20%;
             }
-            li:nth-child(2) .number-star-value div{
+            li:nth-of-type(2) .number-star-value div{
                 background-color:#a2cc02;
-                //width:90%;
             }
-            li:nth-child(3) .number-star-value div{
+            li:nth-of-type(3) .number-star-value div{
                 background-color:#ffcf00;
-                //width:50%;
             }
-            li:nth-child(4) .number-star-value div{
+            li:nth-of-type(4) .number-star-value div{
                 background-color:#ff9e01;
-                //width:30%;
             }
-            li:nth-child(5) .number-star-value div{
+            li:nth-of-type(5) .number-star-value div{
                 background-color:#ff6f32;
-                //width:10%;
             }
         }
     }
@@ -898,6 +865,7 @@ $rate-review-lg-content-padding:12px;
         }
     }
 }
+
 /* ==========================================================================
    Page Layout
    ========================================================================== */
@@ -962,6 +930,32 @@ $rate-review-lg-content-padding:12px;
             width:200px;
             height:200px;
         }
+    }
+}
+
+
+
+#purchasedpropertydetail, #propertydetail {
+    .bg-image-button {
+        background-repeat: no-repeat;
+        background-size:cover;
+        background-position:center;
+        
+        @media screen and (min-width:$grid-responsive-sm-break) {
+            height:250px;   
+        }
+    }
+    .floorplan-bg-button {
+        background-image:url(../img/icons/Hatten_floorplan.png);
+    }
+    .gallery-bg-button {
+        background-image:url(../img/icons/Hatten_gallery.png);
+    }
+    .location-bg-button {
+        background-image:url(../img/icons/Hatten_location.png);
+    }
+    .specification-bg-button {
+        background-image:url(../img/icons/Hatten_spec.png);
     }
 }
 

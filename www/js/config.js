@@ -223,13 +223,27 @@ angular.module('route', ['ionic'])
             }
         }
     })
+    
+    .state('app.learnmore', {
+        url: '/learnmore',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/learnmore.html',
+                controller: 'LearnMoreCtrl'
+            }
+        }
+    })
 
     ;
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/whatsnew');
     
     
-}).run(function($rootScope, u, apiUser, $ionicModal,$state){
+}).run(function($rootScope, u, apiUser, $ionicModal,$state, $templateCache,$http,intent){
+    //preload templates
+    $http.get('templates/common/rate-review.html', { cache: $templateCache });
+    //setup global variables that can access from view (by assign it to rootScope);
+    $rootScope.intent = intent;
     $rootScope.$state = $state;
     $rootScope.u = u;
     $rootScope.apiUser = apiUser;

@@ -10,4 +10,16 @@ angular.module('directive', ['ionic'])
         }
     };
 })
+
+.directive('preloadThumb', function() {
+    return {
+        link: function (scope, element, attrs, ctrls) {
+            
+            alert(1);
+            
+            
+        }
+    }
+})
+
 ;
