@@ -186,6 +186,11 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PropertyDetailCtrl', function ($timeout, $q, $interval, $scope, u, $state, apiProperty, $timeout,intent) {
+    $element = $('#propertydetail');
+    $content = $element.find('ion-content .content');
+    console.log("$content.length = "+$content.length);
+    console.log($content.get(0));
+    
     $scope.rate = {
         title:'Rate this Property',
         setRate:function(i) {
@@ -213,13 +218,13 @@ angular.module('starter.controllers', [])
     $scope.rate.review.totalPeople = _.reduce($scope.rate.review.totalRatePerStars, function(s,o){
         return s+o;
     });
-    $scope.contentReady = false;
+    $content.addClass('contentNotReady');
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        return;
-        
         $scope.contentAnimated = false;
         if(state.direction != 'back') {
             $scope.contentReady = false;
+            
+            
             $timeout(function(){
                 $scope.contentAnimated = true;
                 u.showProgress();
@@ -227,9 +232,12 @@ angular.module('starter.controllers', [])
                 apiProperty.getById($state.params.id).then(function(results) {
                     $scope.property = results;  
                     $scope.project = results;
-                    u.imagesLoaded($('#propertydetail').find('img')).then(function(){ 
+                    u.imagesLoaded($element.find('img')).then(function(){ 
                         $timeout(function(){
-                            $scope.contentReady = true;    
+                            $scope.contentReady = true;   
+                            $content.removeClass('contentNotReady');
+                            
+                            console.log($content.get(0));
                         },50);
                     });
                 }).catch(function(error) {
