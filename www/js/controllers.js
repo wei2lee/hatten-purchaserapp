@@ -81,13 +81,17 @@ angular.module('starter.controllers', [])
 .controller('PurchasedPropertyDetailCtrl', function ($scope, u, $state, apiPurchasedProperty) {
     $scope.purchasedProperty = undefined;
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        if(state.direction != 'back') {          
+        $scope.contentAnimated = false;
+        if(state.direction != 'back') {  
+            $scope.contentReady = false;
             u.showProgress();
             apiPurchasedProperty.getById($state.params.id).then(function(results) {
                 $scope.purchasedProperty = results;
                 $scope.project = results.project;
                 $scope.unit = results.unit;
                 $scope.consultant = results.consultant;
+                $scope.contentAnimated = true;
+                $scope.contentReady = true;
             }).catch(function(error) {
 
             }).finally(function() {
@@ -181,7 +185,7 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertyDetailCtrl', function ($q, $interval, $scope, u, $state, apiProperty, $timeout,intent) {
+.controller('PropertyDetailCtrl', function ($timeout, $q, $interval, $scope, u, $state, apiProperty, $timeout,intent) {
     $scope.rate = {
         title:'Rate this Property',
         setRate:function(i) {
@@ -209,54 +213,31 @@ angular.module('starter.controllers', [])
     $scope.rate.review.totalPeople = _.reduce($scope.rate.review.totalRatePerStars, function(s,o){
         return s+o;
     });
-    
-    
-    $scope.imagesloaded = function() {
-        return $q(function(resolve, reject) {
-            $timeout(function() {
-                var $imgs = $('#propertydetail').find('img');
-                console.log($imgs.length);
-                var loadcnt = 0;
-                $imgs.one('load', function() {
-                    loadcnt++;
-                    if(loadcnt == $imgs.length){
-                        console.log('loaded');   
-                        resolve();
-                    }
-                }).each(function(){
-                    if(this.complete) $(this).load();
-                });
-            });
-        });
-    };
-    
-    $scope.increaseContentReadyStat = function() {
-        if($scope.contentReadyStat === undefined) $scope.contentReadyStat = 0;
-        $scope.contentReadyStat++;   
-        if($scope.contentReadyStat == 2) {
-            $scope.imagesloaded().then(function(){
-                $scope.contentReady = true;     
-            });
-        }
-    }
-    
+    $scope.contentReady = false;
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        return;
+        
+        $scope.contentAnimated = false;
         if(state.direction != 'back') {
-            u.showProgress();
-            apiProperty.getById($state.params.id).then(function(results) {
-                $scope.property = results;  
-                $scope.project = results;
+            $scope.contentReady = false;
+            $timeout(function(){
+                $scope.contentAnimated = true;
+                u.showProgress();
+                console.log($scope.contentReady + new Date());
+                apiProperty.getById($state.params.id).then(function(results) {
+                    $scope.property = results;  
+                    $scope.project = results;
+                    u.imagesLoaded($('#propertydetail').find('img')).then(function(){ 
+                        $timeout(function(){
+                            $scope.contentReady = true;    
+                        },50);
+                    });
+                }).catch(function(error) {
 
-                $onAfterEnter = $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
-                    $onAfterEnter();
+                }).finally(function() {
+                     u.hideProgress();
                 });
-                
-                
-            }).catch(function(error) {
-
-            }).finally(function() {
-                 u.hideProgress();
-            });
+            },50);
         }
     });
 })
@@ -330,7 +311,7 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('EventDetailCtrl', function ($scope, u, $state, apiEvent, apiTicket) {
+.controller('EventDetailCtrl', function ($timeout, $scope, u, $state, apiEvent, apiTicket) {
     $scope.rate = {
         title:'Rate this Event',
         setRate:function(i) {
@@ -369,15 +350,23 @@ angular.module('starter.controllers', [])
         });
     }
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        $scope.contentAnimated = false;
         if(state.direction != 'back') {
+            $scope.contentReady = false;
             u.showProgress();
-            apiEvent.getById($state.params.id).then(function(results) {
-                $scope.event = results;
-            }).catch(function(error) {
-                
-            }).finally(function() {
-                 u.hideProgress();
-            });
+            $timeout(function(){
+                apiEvent.getById($state.params.id).then(function(results) {
+                    $scope.event = results;
+                    $scope.contentAnimated = true;
+                    $timeout(function(){
+                        $scope.contentReady = true;
+                    },50);
+                }).catch(function(error) {
+
+                }).finally(function() {
+                     u.hideProgress();
+                });
+            },50);
         }
     });
 })
@@ -445,10 +434,12 @@ angular.module('starter.controllers', [])
     
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
+            $scope.contentReady = false;
             u.showProgress();
             apiConsultant.getById($state.params.id).then(function(results) {
                 console.log(results);
                 $scope.consultant = results;
+                $scope.contentReady = true;
             }).catch(function(error) {
 
             }).finally(function() {

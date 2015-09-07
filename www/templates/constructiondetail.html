@@ -4,7 +4,7 @@
     </ion-nav-title>
     <ion-content>
         <img class="view-center-thumb padding-top" ng-src="{{project.logo}}">
-        <div class="list card fade-animation" ng-repeat="progress in progresses">
+        <div class="list card fade-animation" ng-repeat="progress in progresses | orderBy:'-photoTakenDate'">
             <img class="full-img-responsive" ng-src="{{progress.thumb}}">
             <p class="padding-left padding-right">Photo taken by {{progress.photoTakenDate | date:'MMM dd, yyyy'}}</p>
         </div>

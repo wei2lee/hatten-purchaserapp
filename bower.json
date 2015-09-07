@@ -16,6 +16,8 @@
     "ionic-rating": "~0.1.0",
     "angular-filter": "~0.5.5",
     "ionic-ratings": "~0.2.0",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "angular-animate": "~1.4.5",
+    "animate.css": "~3.4.0"
   }
 }

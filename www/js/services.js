@@ -20,7 +20,7 @@ angular.module('services', ['ngResource'])
 .value('intent', {})
 
 
-.service('u', function ($state, $location, intent, $q, $rootScope, $ionicModal, apiUser, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
+.service('u', function ($timeout, $state, $location, intent, $q, $rootScope, $ionicModal, apiUser, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
     var _this = this;
     
    //Start Login
@@ -163,4 +163,20 @@ angular.module('services', ['ngResource'])
 //        $location.path(url);   
         $state.go(state);
     }
+    
+    this.imagesLoaded = function($imgs) {
+        return $q(function(resolve, reject) {
+            $timeout(function() {
+                var loadcnt = 0;
+                $imgs.one('load', function() {
+                    loadcnt++;
+                    if(loadcnt == $imgs.length){
+                        resolve();
+                    }
+                }).each(function(){
+                    if(this.complete) $(this).load();
+                });
+            });
+        });
+    };
 });

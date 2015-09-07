@@ -1,0 +1,75 @@
+<script src="lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    
+    var apiBase = 'http://prosalesdemo.infradesign.com.my/';
+//    var apiBase = 'http://salesplatform.infradesign.com.my/';
+    var token = '';
+    
+    function processError(jqXHR, textStatus, errorThrown) {
+        var msg = null;
+        if(jqXHR.responseJSON != null) {
+            var json = jqXHR.responseJSON;
+            if(!msg && json.error_description != null) {
+                msg = json.error_description;
+            }
+            if(!msg && json.error != null) {
+                msg = json.error; 
+            }
+            if(!msg && json.Message != null) {
+                msg = json.Message;   
+            }
+            if(!msg) {
+                msg = "Unable to interprete server reply";   
+            }
+        }else{
+            msg = errorThrown; 
+            if(!msg && jqXHR.status == 0) {
+                msg = "Unable to connect to server";   
+            }
+            if(!msg) {
+                msg = "Unable to interprete server reply";  
+            }
+        }
+        return msg;
+    }
+    
+    function login() {
+        return $.ajax(apiBase + 'Token',{
+            method:'POST',
+            dataType:'json',
+            data:{
+                username:'90731C01@hatt',
+                password:'F2568907B18C',
+                grant_type:'password'
+            }
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            token = data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });
+    }
+    
+    function getCompanySetting() {
+        return $.ajax(apiBase + 'api/Company/Settings',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            token = data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    login().then(function() {
+        return getCompanySetting(); 
+    });
+    
+</script>
