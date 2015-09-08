@@ -1,22 +1,23 @@
-<ion-view view-title="About Us">
+<ion-view view-title="About Us" id="aboutus">
     <ion-content>
-        <div class="list card">
-            <a class="item">
-                About Hatten Group
-            </a>
-            <a class="item">
-                Visit Hatten Group Website
-            </a>
-            <a class="item">
-                Follow Us on Facebook
-            </a>
-            <a class="item">
-                Contact Us
-            </a>
-            <a class="item" ng-click="u.rateApp()">
-                Rate Us
-            </a>
-            
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <div class="list card">
+                <a class="item" href="#/app/aboutdetail">
+                    About Hatten Group
+                </a>
+                <a class="item" href="http://www.hattengrp.com" target="_blank">
+                    Visit Hatten Group Website
+                </a>
+                <a class="item" href="https://www.facebook.com/hattengroup" target="_blank">
+                    Follow Us on Facebook
+                </a>
+                <a class="item" href="mailto:info@hattengrp.com">
+                    Contact Us
+                </a>
+                <a class="item" ng-click="u.rateApp()">
+                    Rate Us
+                </a>
+            </div>
         </div>
     </ion-content>
 </ion-view>

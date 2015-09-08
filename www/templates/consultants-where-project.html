@@ -1,15 +1,17 @@
 <ion-view view-title="{{project.displayName}}'s Consultants">
     <ion-nav-title>
-       {{project.displayName}}'s Consultants
+        {{project.displayName}}'s Consultants
     </ion-nav-title>
     <ion-content>
-        <div class="list card fade-animation" ng-repeat="consultant in consultants">
-            <a ng-href="#/app/consultant/{{consultant.id}}" class="item item-icon-left item-avatar-left">
-                <img ng-src="{{consultant.thumb}}">
-                <p class="font-bold">{{consultant.fullName}}</p>
-                <p><small>{{consultant.contact}}</small></p>
-                <p><small>{{consultant.address}}</small></p>
-            </a>
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'xxx':contentAnimated}">
+            <div class="list card fade-animation" ng-repeat="consultant in consultants">
+                <a ng-href="#/app/consultant/{{consultant.id}}" class="item item-icon-left item-avatar-left">
+                    <img ng-src="{{consultant.thumb}}">
+                    <p class="font-bold">{{consultant.fullName}}</p>
+                    <p><small>{{consultant.contact}}</small></p>
+                    <p><small>{{consultant.address}}</small></p>
+                </a>
+            </div>
         </div>
     </ion-content>
 </ion-view>

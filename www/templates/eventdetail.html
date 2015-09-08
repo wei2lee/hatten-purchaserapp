@@ -1,54 +1,52 @@
-<ion-view view-title="{{event.displayName}}">
+<ion-view view-title="{{event.displayName}}" id="eventdetail">
     <ion-nav-title>
         {{event.displayName}}
     </ion-nav-title>
     <ion-content>
-        <div ng-show="contentReady">
-            <div class="fadeInUp" ng-class="{'animated':contentAnimated}">
-                <div class="list card">
-                    <div class="item padding-0">
-                        <img preloadThumb class="full-img-responsive" ng-src="{{event.thumb}}">
-                        <p class="padding">
-                            {{event.displayName}}
-                        </p>
-                    </div>
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <div class="list card">
+                <div class="item padding-0">
+                    <img preloadThumb class="full-img-responsive" ng-src="{{event.thumb}}">
+                    <p class="padding">
+                        {{event.displayName}}
+                    </p>
                 </div>
-                <div class="list card learn-more-container">
-                    <div class="item-body">
-                        {{event.description}}
-                    </div>
-                    <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', event)">
-                        LEARN MORE
-                    </button>
-                    <div class="learn-more-overlay"></div>
+            </div>
+            <div class="list card learn-more-container">
+                <div class="item-body">
+                    {{event.description}}
                 </div>
+                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', event)">
+                    LEARN MORE
+                </button>
+                <div class="learn-more-overlay"></div>
+            </div>
 
-                <div class="list card">
-                    <div class="item padding-0">
-                        <div class="responsive-container">
-                            <canvas width=800 height=500></canvas>
-                            <div class="responsive-content">
-                                <iframe class="pointer-events-none" id='map' width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDwzM42cKPYaZ-NkqPkiVsu1_VJ7UIcHfg&q=3.1349111,101.5371">
-                                </iframe>
-                            </div>
+            <div class="list card">
+                <div class="item padding-0">
+                    <div class="responsive-container">
+                        <canvas width=800 height=500></canvas>
+                        <div class="responsive-content">
+                            <iframe class="pointer-events-none" id='map' width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDwzM42cKPYaZ-NkqPkiVsu1_VJ7UIcHfg&q=3.1349111,101.5371">
+                            </iframe>
                         </div>
                     </div>
-                    <div class="item-body padding-right-1-item">
-                        <span>{{event.address}}</span>
-                        <span class="item-right">{{event.distance}}</span>
-                    </div>
                 </div>
-                
-                <div class="padding-horizontal">
-                    <button ng-click="attempEvent(event)" class="button button-block button-balanced">ATTEND</button>
+                <div class="item-body padding-right-1-item">
+                    <span>{{event.address}}</span>
+                    <span class="item-right">{{event.distance}}</span>
                 </div>
+            </div>
 
-                <div class="padding-horizontal">
-                    <button ng-click="attempEvent(event)" class="button button-block button-energized">TICKET</button>
-                </div>
-                <div class="list card padding-md">
-                    <rate-widget rate="rate"></rate-widget>
-                </div>
+            <div class="padding-horizontal">
+                <button ng-click="attempEvent(event)" class="button button-block button-balanced">ATTEND</button>
+            </div>
+
+            <div class="padding-horizontal">
+                <button ng-click="attempEvent(event)" class="button button-block button-energized">TICKET</button>
+            </div>
+            <div class="list card padding-md">
+                <rate-widget rate="rate"></rate-widget>
             </div>
         </div>
     </ion-content>

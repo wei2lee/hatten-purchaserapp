@@ -20,7 +20,7 @@ $dark:                            #444 !default;
 */
 $royal:                           #000000 !default;
 $dark:                           #000000 !default;
-
+ 
 $sidemenu-bottom-overlay-box-shadow:0 0 20px rgba(0, 0, 0, .3) !default;
 
 $bgcolor: rgba(232, 230, 230, 0.21) ;
@@ -47,6 +47,7 @@ $light-theme-text-color:#ccc;
 @import "www/lib/ionic/scss/ionic";
  
 @import "../lib/ionic-rating/ionic-rating.css";
+@import "animate";
 
 /* ==========================================================================
    Utility
@@ -54,37 +55,35 @@ $light-theme-text-color:#ccc;
 //[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 //  display: none !important;
 //}
-.contentNotReady {
-    display:none !important;   
-}
+
 
 @mixin create-color($word, $css) {
     .#{$word}-light {
-        $css:$light;   
+        #{$css}:$light;   
     }
     .#{$word}-stable {
-        $css:$stable;   
+        #{$css}:$stable;   
     }
     .#{$word}-positive {
-        $css:$positive;   
+        #{$css}:$positive;   
     }
     .#{$word}-calm {
-        $css:$calm;   
+        #{$css}:$calm;   
     }
     .#{$word}-balanced {
-        $css:$balanced;   
+        #{$css}:$balanced;   
     }
     .#{$word}-energized {
-        $css:$energized;   
+        #{$css}:$energized;   
     }
     .#{$word}-assertive {
-        $css:$assertive;   
+        #{$css}:$assertive;   
     }
     .#{$word}-royal {
-        $css:$royal;   
+        #{$css}:$royal;   
     }
     .#{$word}-dark {
-        $css:$dark;   
+        #{$css}:$dark;   
     }
 }
 
@@ -129,7 +128,7 @@ $light-theme-text-color:#ccc;
         padding-top:$value;   
     }
 
-    .padding-#{$word}-bottom {
+    .padding-#{$word}-bottom { 
         padding-top:$value;   
     }
 
@@ -312,6 +311,10 @@ $light-theme-text-color:#ccc;
     /* width and height can be anything, as long as they're equal */
 }
 
+.fadeInUp {
+    animation-fill-mode: both;   
+    position:relative;
+}
 
 .fade-in-animation {
     position:relative;
@@ -580,7 +583,7 @@ ion-nav-view ion-content ion-content-bottom-fillter {
 }
 
 ion-header-bar {
-    background-color:black;
+    background-color:black; 
 }
 
 
@@ -598,12 +601,18 @@ ion-content {
         }
     }
 }
+ion-content .content:first-child {
+    opacity:0;
+    &.contentReady {
+        opacity:1 !important;    
+    }
+} 
+
 
 //ion-content which under a tabs component
 .tabs-top+ion-content {
     padding-top:50px;
 }
-
 
 
 /* ==========================================================================

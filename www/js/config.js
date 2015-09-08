@@ -183,7 +183,8 @@ angular.module('route', ['ionic'])
         url: '/privacypolicy',
         views: {
             'menuContent': {
-                templateUrl: 'templates/privacypolicy.html'
+                templateUrl: 'templates/privacypolicy.html',
+                controller: 'PolicyCtrl'
             }
         }
     })
@@ -192,7 +193,8 @@ angular.module('route', ['ionic'])
         url: '/termsandcondition',
         views: {
             'menuContent': {
-                templateUrl: 'templates/termsandcondition.html'
+                templateUrl: 'templates/termsandcondition.html',
+                controller: 'TNCCtrl'
             }
         }
     })
@@ -201,7 +203,8 @@ angular.module('route', ['ionic'])
         url: '/pdpa',
         views: {
             'menuContent': {
-                templateUrl: 'templates/pdpa.html'
+                templateUrl: 'templates/pdpa.html',
+                controller: 'PDPACtrl'
             }
         }
     })
@@ -210,7 +213,8 @@ angular.module('route', ['ionic'])
         url: '/profile',
         views: {
             'menuContent': {
-                templateUrl: 'templates/profile.html'
+                templateUrl: 'templates/profile.html',
+                controller: 'ProfileCtrl'
             }
         }
     })
@@ -219,7 +223,18 @@ angular.module('route', ['ionic'])
         url: '/aboutus',
         views: {
             'menuContent': {
-                templateUrl: 'templates/aboutus.html'
+                templateUrl: 'templates/aboutus.html',
+                controller: 'AboutUsCtrl'
+            }
+        }
+    })
+
+    .state('app.aboutdetail', {
+        url: '/aboutdetail',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/aboutdetail.html',
+                controller: 'AboutDetailCtrl'
             }
         }
     })
@@ -237,14 +252,18 @@ angular.module('route', ['ionic'])
     ;
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/whatsnew');
-    
-    
-}).run(function($rootScope, u, apiUser, $ionicModal,$state, $templateCache,$http,intent){
+})
+.config(function($ionicConfigProvider) {  
+    //$ionicConfigProvider.views.maxCache(1);
+})
+.run(function($rootScope, u, apiUser,$state, $templateCache,$http,intent,app){
     //preload templates
     $http.get('templates/common/rate-review.html', { cache: $templateCache });
     //setup global variables that can access from view (by assign it to rootScope);
+    $rootScope.app = app;
     $rootScope.intent = intent;
     $rootScope.$state = $state;
     $rootScope.u = u;
     $rootScope.apiUser = apiUser;
+    $rootScope.ionicPlatform = ionic.Platform;
 });

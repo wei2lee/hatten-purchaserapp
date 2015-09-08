@@ -1,56 +1,54 @@
-<ion-view view-title="{{consultant.fullName}}">
+<ion-view view-title="{{consultant.fullName}}" id="consultantdetail">
     <ion-nav-title>
         {{consultant.fullName}}
     </ion-nav-title>
     <ion-content>
-        <div abc ng-show="contentReady">
-            <div class="fadeInUp" ng-class="{'animated':true}">
-                <div class="text-center">
-                    <img ng-src="{{consultant.thumb}}" width=240 height=240 class="circle padding">
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <div class="text-center">
+                <img ng-src="{{consultant.thumb}}" width=240 height=240 class="circle padding">
+            </div>
+            <div class="list card">
+                <div class="item">
+                    <p>
+                        <small>Name</small>
+                        <br>
+                        <b>{{consultant.fullName}}</b>
+                    </p>
                 </div>
-                <div class="list card">
-                    <div class="item">
-                        <p>
-                            <small>Name</small>
-                            <br>
-                            <b>{{consultant.fullName}}</b>
-                        </p>
-                    </div>
-                    <div class="item">
-                        <p>
-                            <small>Contact</small>
-                            <br>
-                            <b>{{consultant.contact}}</b>
-                        </p>
-                    </div>
-                    <div class="item">
-                        <p>
-                            <small>Email</small>
-                            <br>
-                            <b>{{consultant.email}}</b>
-                        </p>
-                    </div>
-                    <div class="item">
-                        <p>
-                            <small>Address</small>
-                            <br>
-                            <b>{{consultant.address}}</b>
-                        </p>
-                    </div>
+                <div class="item">
+                    <p>
+                        <small>Contact</small>
+                        <br>
+                        <b>{{consultant.contact}}</b>
+                    </p>
                 </div>
-                
-                <div class="padding-horizontal">
-                    <a  class="button button-block button-calm">Call</a>
+                <div class="item">
+                    <p>
+                        <small>Email</small>
+                        <br>
+                        <b>{{consultant.email}}</b>
+                    </p>
                 </div>
-                
-                <div class="padding-horizontal">
-                    <a  class="button button-block button-balanced">Email</a>
+                <div class="item">
+                    <p>
+                        <small>Address</small>
+                        <br>
+                        <b>{{consultant.address}}</b>
+                    </p>
                 </div>
-                
-                
-                <div class="list card padding-md">
-                    <rate-widget rate="rate"></rate-widget>
-                </div>
+            </div>
+
+            <div class="padding-horizontal">
+                <a class="button button-block button-calm" href="tel:{{consultant.contact}}">Call</a>
+            </div>
+
+            <div class="padding-horizontal">
+                <a class="button button-block button-balanced" href="mailto:{{consultant.email}}">Email</a>
+            </div>
+
+
+            <div class="list card padding-md">
+                <rate-widget rate="rate"></rate-widget>
             </div>
         </div>
     </ion-content>

@@ -1,48 +1,50 @@
 <ion-view view-title="My Profile">
     <ion-content>
-        <div class="list">
-            <label class="item item-input item-select">
-                <div class="input-label">
-                    Title
-                </div>
-                <select>
-                    <option selected>Mr</option>
-                    <option>Mrs</option>
-                    <option>Miss</option>
-                </select>
-            </label>
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <div class="list">
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Title
+                    </div>
+                    <select>
+                        <option selected>Mr</option>
+                        <option>Mrs</option>
+                        <option>Miss</option>
+                    </select>
+                </label>
 
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Full Name</span>
-                <input type="text" placeholder="Christina Leong">
-            </label>
-            
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">IC/Passport</span>
-                <input type="text" placeholder="880323-14-8823">
-            </label>
-            
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Address</span>
-                <input type="text" placeholder="A-3-5, Kuchai Exchange">
-            </label>
-            
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Contact</span>
-                <input type="tel" placeholder="(+60)16376611">
-            </label>
-            
-            <label class="item item-input item-stacked-label">
-                <span class="input-label">Email</span>
-                <input type="email" placeholder="anonymous@gmail.com">
-            </label>
-            
-            <div class="padding-horizontal">
-                <button class="button button-block button-energized">Change Password</button>
-            </div>
-            
-            <div class="padding-horizontal">
-                <button class="button button-block button-balanced">Save</button>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Full Name</span>
+                    <input type="text" placeholder="Christina Leong">
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">IC/Passport</span>
+                    <input type="text" placeholder="880323-14-8823">
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Address</span>
+                    <input type="text" placeholder="A-3-5, Kuchai Exchange">
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Contact</span>
+                    <input type="tel" placeholder="(+60)16376611">
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Email</span>
+                    <input type="email" placeholder="anonymous@gmail.com">
+                </label>
+
+                <div class="padding-horizontal">
+                    <button class="button button-block button-energized">Change Password</button>
+                </div>
+
+                <div class="padding-horizontal">
+                    <button class="button button-block button-balanced">Save</button>
+                </div>
             </div>
         </div>
     </ion-content>

@@ -3,58 +3,56 @@
         {{property.displayName}}
     </ion-nav-title>
     <ion-content>
-        <div ng-show="contentReady" class="content">
-            <div class="fadeInUp" ng-class="{'animated':contentAnimated}">
-                <img class="view-center-thumb padding-top" ng-src="{{project.logo}}">
-                <div class="list card line-card-image">
-                    <img ng-src="{{property.thumb}}" class="full-img-responsive">
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <img class="view-center-thumb padding-top" ng-src="{{project.logo}}">
+            <div class="list card line-card-image">
+                <img ng-src="{{property.thumb}}" class="full-img-responsive">
+            </div>
+            <div class="list card learn-more-container">
+                <div class="item-body" ng-bind-html="property.description">
                 </div>
-                <div class="list card learn-more-container">
-                    <div class="item-body" ng-bind-html="property.description">
-                    </div>
-                    <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', property)">
-                        LEARN MORE
-                    </button>
-                    <div class="learn-more-overlay"></div>
-                </div>
-                <div class="list card">
-                    <div class="item padding-0">
-                        <div class="row padding-0">
-                            <div class="col  text-center bg-image-button floorplan-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
-                            </div>
-                            <a class="col left-border text-center bg-image-button specification-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="item padding-0">
-                        <div class="row padding-0">
-                            <div class="col  text-center bg-image-button gallery-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
-                            </div>
-                            <div class="col  left-border text-center bg-image-button location-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
+                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', property)">
+                    LEARN MORE
+                </button>
+                <div class="learn-more-overlay"></div>
+            </div>
+            <div class="list card">
+                <div class="item padding-0">
+                    <div class="row padding-0">
+                        <div class="col  text-center bg-image-button floorplan-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
                             </div>
                         </div>
+                        <a class="col left-border text-center bg-image-button specification-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </a>
                     </div>
                 </div>
-                
-                <div class="padding-horizontal">
-                    <a href="#/app/consultants/where-project/{{project.id}}" class="button button-block button-balanced">FIND A CONSULTANT</a>
+                <div class="item padding-0">
+                    <div class="row padding-0">
+                        <div class="col  text-center bg-image-button gallery-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </div>
+                        <div class="col  left-border text-center bg-image-button location-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="list card padding-md">
-                    <rate-widget rate="rate"></rate-widget>
-                </div>
+            <div class="padding-horizontal">
+                <a href="#/app/consultants/where-project/{{project.id}}" class="button button-block button-balanced">FIND A CONSULTANT</a>
+            </div>
+
+            <div class="list card padding-md">
+                <rate-widget rate="rate"></rate-widget>
             </div>
         </div>
     </ion-content>

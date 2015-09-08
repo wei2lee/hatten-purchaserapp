@@ -3,64 +3,62 @@
         {{unit.unitNo}}
     </ion-nav-title>
     <ion-content>
-        <div abc ng-show="contentReady">
-            <div class="fadeInUp" ng-class="{'animated':contentAnimated}">
-                <div class="list card line-card-image">
-                    <img class="full-img-responsive" ng-src="{{project.thumb}}">
-                </div>
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <div class="list card line-card-image">
+                <img class="full-img-responsive" ng-src="{{project.thumb}}">
+            </div>
 
-                <div class="list card">
-                    <div class="item">
-                        <p><small>Project</small></p>
-                        <h2>{{project.displayName}}</h2>
-                    </div>
-                    <div class="item">
-                        <p><small>Unit</small></p>
-                        <h2>{{unit.unitNo}}</h2>
-                    </div>
-                    <div class="item">
-                        <p><small>SPA Date</small></p>
-                        <h2>{{purchasedProperty.spaDate | date:'MMM dd,yyyy'}}</h2>
-                    </div>
+            <div class="list card">
+                <div class="item">
+                    <p><small>Project</small></p>
+                    <h2>{{project.displayName}}</h2>
                 </div>
+                <div class="item">
+                    <p><small>Unit</small></p>
+                    <h2>{{unit.unitNo}}</h2>
+                </div>
+                <div class="item">
+                    <p><small>SPA Date</small></p>
+                    <h2>{{purchasedProperty.spaDate | date:'MMM dd,yyyy'}}</h2>
+                </div>
+            </div>
 
-                <div class="list card">
-                    <div class="item padding-0">
-                        <div class="row padding-0">
-                            <div class="col  text-center bg-image-button floorplan-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
-                            </div>
-                            <a class="col left-border text-center bg-image-button specification-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="item padding-0">
-                        <div class="row padding-0">
-                            <div class="col  text-center bg-image-button gallery-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
-                            </div>
-                            <div class="col  left-border text-center bg-image-button location-bg-button">
-                                <div class="responsive-container">
-                                    <canvas width=504 height=291></canvas>
-                                </div>
+            <div class="list card">
+                <div class="item padding-0">
+                    <div class="row padding-0">
+                        <div class="col  text-center bg-image-button floorplan-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
                             </div>
                         </div>
+                        <a class="col left-border text-center bg-image-button specification-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </a>
                     </div>
                 </div>
-                <div class="padding-horizontal">
-                    <button ng-click="" class="button button-block button-positive">Billing Status</button>
+                <div class="item padding-0">
+                    <div class="row padding-0">
+                        <div class="col  text-center bg-image-button gallery-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </div>
+                        <div class="col  left-border text-center bg-image-button location-bg-button">
+                            <div class="responsive-container">
+                                <canvas width=504 height=291></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="padding-horizontal">
+                <button ng-click="" class="button button-block button-positive">Billing Status</button>
+            </div>
 
-                <div class="padding-horizontal">
-                    <a href="#/app/consultant/{{consultant.id}}" class="button button-block button-calm">Agent Served</a>
-                </div>
+            <div class="padding-horizontal">
+                <a href="#/app/consultant/{{consultant.id}}" class="button button-block button-calm">Agent Served</a>
             </div>
         </div>
     </ion-content>

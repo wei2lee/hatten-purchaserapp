@@ -112,6 +112,7 @@
         </ion-content>
         <ion-content scroll="false" class="block-child-only">
             <div class="absolute-position-bottom full-width">
+                <div class="padding-xxs text-light">Version {{app.versionNumber}}</div>
                 <button ng-if="apiUser.getUser()" class="sidemenu-bottom-overlay-box-shadow button button-balanced button-full margin-0 " ng-click="u.doLogout();">Logout</button>
                 <button ng-if="!apiUser.getUser()" class="sidemenu-bottom-overlay-box-shadow button button-balanced button-full margin-0 " ng-click="u.openLogin()">Login</button>
             </div>

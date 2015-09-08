@@ -1,6 +1,7 @@
 <ion-view view-title="Privacy Policy">
     <ion-content>
-        <pre class="center-block padding">
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
+            <pre class="center-block padding">
 Privacy Policy
 The [organisation name] is committed to protect the privacy of individuals who visit the
 website and who make use of the on-line facilities.
@@ -62,6 +63,7 @@ access our web site so as to be aware of any changes which may occur from time t
 7. Feedback
 Any comments or suggestions that you may have and which may contribute to a better
 quality of service will be welcome and greatly appreciated. 
-        </pre>
+            </pre>
+        </div>
     </ion-content>
 </ion-view>

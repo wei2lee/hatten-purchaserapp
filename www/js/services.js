@@ -18,12 +18,28 @@ angular.module('services', ['ngResource'])
 
 
 .value('intent', {})
-
-
-.service('u', function ($timeout, $state, $location, intent, $q, $rootScope, $ionicModal, apiUser, $ionicPopup, $ionicLoading, $cordovaSocialSharing, $cordovaAppRate, $cordovaProgress) {
+.service('u', function (
+         $timeout, 
+          $interval, 
+          $state, 
+          $location, 
+          intent, 
+          $q, 
+          $rootScope, 
+          $ionicModal, 
+          apiUser, 
+          $ionicPopup, 
+          $ionicLoading, 
+          $cordovaSocialSharing, 
+          $cordovaAppRate, 
+          $cordovaProgress,
+          $cordovaAppVersion,
+          app) {
     var _this = this;
     
-   //Start Login
+/* ==========================================================================
+   Login
+   ========================================================================== */
     $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $rootScope
     }).then(function (modal) {
@@ -58,26 +74,16 @@ angular.module('services', ['ngResource'])
             _this.hideProgress();
         });
     };
-    //End Login
-    
-    this.toggleFavourited = function (item) {
-        item.favourited = !item.favourited;
-    }
-    
+/* ==========================================================================
+   Show Progress, Error
+   ========================================================================== */
     this.showProgress = function() {
-//        if(window.cordova === undefined) return;
-//        
-//        $cordovaProgress.showSimple();
         $ionicLoading.show({
             delay: 300,
             templateUrl: 'templates/loading.html'
         });
     }
     this.hideProgress = function() {
-//        if(window.cordova === undefined) return;
-//        
-//        $cordovaProgress.hide();
-        
         $ionicLoading.hide();
     }
     
@@ -98,8 +104,18 @@ angular.module('services', ['ngResource'])
         return alertPopup;
     }
 
+/* ==========================================================================
+   Favourite
+   ========================================================================== */
+    this.toggleFavourited = function (item) {
+        item.favourited = !item.favourited;
+    }
+/* ==========================================================================
+   Share
+   ========================================================================== */
+    
     this.share = function (item) {
-        if(window.cordova === undefined) return;
+        if(window.cordova === undefined){ var defer = $q.defer(); $q.resolve(); return defer.promise; }
         
         var message = undefined;
         if (item.message) message = item.message;
@@ -121,7 +137,7 @@ angular.module('services', ['ngResource'])
 
         var link = undefined;
 
-        $cordovaSocialSharing
+        return $cordovaSocialSharing
             .share(message, subject, file, link) // Share via native share sheet
             .then(function (result) {
                 // Success!
@@ -129,40 +145,80 @@ angular.module('services', ['ngResource'])
                 // An error occured. Show a message to the user
             });
     }
-    
+/* ==========================================================================
+   Rate App
+   ========================================================================== */
     this.rateApp = function() {
-        if(window.cordova === undefined) return;
-        
-        $cordovaAppRate.promptForRating(true).then(function (result) {
+        if(window.cordova === undefined){ var defer = $q.defer(); $q.resolve(); return defer.promise; }
+        return $cordovaAppRate.promptForRating(true).then(function (result) {
             // success
         });
     }
-    
-    this.waitDeviceReadyAndViewDidLoaded = function($scope) {
-        var defer = $q(function(resolve, reject) {
-            var i = 0;
-            ionic.Platform.ready(function(){
-                console.log('ready');
-                if(++i==2) {
-                    resolve();   
+/* ==========================================================================
+   Application Specified Rating
+   ========================================================================== */
+    this.createRate = function(){
+        var ret = {
+            title:'Rate this Property',
+            setRate:function(i) {
+                var oldval = Math.floor(this.rate);
+                if(oldval == i && oldval > 1) {
+                    this.rate = oldval - 1;
+                }else{
+                    this.rate = i;
                 }
-            });
-            $scope.$on('$ionicView.loaded', function (viewInfo, state) {
-                console.log('$ionicView.loaded');
-                if(++i==2) {
-                    resolve();   
+                var newval = this.rate;
+                if(oldval != newval) {
+                    if(this.onSetRate)   
+                        this.onSetRate(newval)
                 }
-            });        
+            },
+            rate:_.random(10,50)/10,
+            review: {
+                averageRate:_.random(10,50)/10,
+                totalPeople:_.random(1000),
+                totalRatePerStars:[_.random(200),_.random(200),_.random(200),_.random(200),_.random(200)],
+                getTotalRateStars:function() { return _.max(this.totalRatePerStars); },
+                getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
+            }
+        };
+        ret.review.totalPeople = _.reduce(ret.review.totalRatePerStars, function(s,o){
+            return s+o;
         });
-        return defer;
+        return ret;
+    }
+/* ==========================================================================
+   Timer
+   ========================================================================== */
+    this.createTimer = function(f) {
+        var ret = {};
+        ret.updateExpireRemain = f;
+        ret.updateExpireRemainInterval = null;
+        ret.start = function() {
+            if(ret.updateExpireRemainInterval) return;
+            ret.updateExpireRemainInterval = $interval(function() {
+                if(ret.updateExpireRemain)
+                    ret.updateExpireRemain();
+            },500);
+        }
+        ret.stop = function() {
+            if(!ret.updateExpireRemainInterval) return;
+            $interval.cancel(ret.updateExpireRemainInterval);
+        }
+        return ret;
     }
     
-    
+/* ==========================================================================
+   Set Intent and Go to state
+   ========================================================================== */
     this.navigateToStateWithIntent = function(state, item) {
         intent.item = item;
-//        $location.path(url);   
         $state.go(state);
     }
+    
+/* ==========================================================================
+   Promise for loading images
+   ========================================================================== */
     
     this.imagesLoaded = function($imgs) {
         return $q(function(resolve, reject) {
@@ -179,4 +235,7 @@ angular.module('services', ['ngResource'])
             });
         });
     };
+
+
+    
 });

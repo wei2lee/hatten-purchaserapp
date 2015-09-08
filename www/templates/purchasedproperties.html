@@ -1,15 +1,17 @@
-<ion-view view-title="Purchased">
+<ion-view view-title="Purchased" id="purchasedproperties">
     <ion-content>
-        <div class="list card fade-animation" ng-repeat="purchasedProperty in purchasedProperties">
-            <a href="#/app/purchasedproperty/{{purchasedProperty.id}}" class="item item-icon-left item-thumbnail-left" >
-                <img ng-src="{{purchasedProperty.project.thumb}}"> 
-                <p>
-                    <b>{{purchasedProperty.project.displayName}}</b>
-                    <br/><b>{{purchasedProperty.unit.unitNo}}</b>
-                    <br/><small>{{purchasedProperty.project.area}}</small>
-                </p>
-                <p><small>Purchased at {{purchasedProperty.purchasedDate | date : 'MMM dd, yyyy'}}</small></p>
-            </a>
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'xxx':contentAnimated}">
+            <div class="list card fade-animation" ng-repeat="purchasedProperty in purchasedProperties">
+                <a href="#/app/purchasedproperty/{{purchasedProperty.id}}" class="item item-icon-left item-thumbnail-left">
+                    <img ng-src="{{purchasedProperty.project.thumb}}">
+                    <p>
+                        <b>{{purchasedProperty.project.displayName}}</b>
+                        <br/><b>{{purchasedProperty.unit.unitNo}}</b>
+                        <br/><small>{{purchasedProperty.project.area}}</small>
+                    </p>
+                    <p><small>Purchased at {{purchasedProperty.purchasedDate | date : 'MMM dd, yyyy'}}</small></p>
+                </a>
+            </div>
         </div>
     </ion-content>
 </ion-view>
