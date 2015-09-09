@@ -1,236 +1,251 @@
+
 function fakeNetworkDelay($timeout, f) {
     $timeout(f, Math.random() * 1000); 
 }
 angular.module('services-api', [])
 //API Service Start
 .value('apiService', {
-    token:null,
-    apiBase:'http://103.9.149.59:8034',
+    token:{},
+    apiBase:'http://103.9.149.59:8034/',
+    resourceBase:'http://103.9.149.59:8034/data/HATT/',
     apiUserName:'90731C01@hatt',
     apiUserPassword:'F2568907B18C'
 })
 .factory('apiServiceBase', function($q,$timeout,apiService) {
-    function _apiServiceBase(_values, $q, $timeout,apiService) {
+    function _apiServiceBase(_values) {
         var _this = this;
         this.values = _values;
-        var values = this.values;
         this.apiService = apiService;
-
-        this.add = function(o) {
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-
-        this.removeById = function(id) {
-            if(typeof id == 'string') id = parseInt(id);
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-
-        this.remove = function(_o) {
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-
-        this.getAll = function() {
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-
-        this.getById = function(id) {
-            if(typeof id == 'string') id = parseInt(id);
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-
-        this.getByProjectId = function(id) {
-            if(typeof id == 'string') id = parseInt(id);
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-        this.getByConstrucitonId = function(id) {
-            if(typeof id == 'string') id = parseInt(id);
-            return $q(function(resolve, reject) {
-                reject('Not implemented');
-            });
-        }
-        this.processError = function(jqXHR, textStatus, errorThrown) {
-            var msg = null;
-            if(jqXHR.responseJSON != null) {
-                var json = jqXHR.responseJSON;
-                if(!msg && json.error_description != null) {
-                    msg = json.error_description;
-                }
-                if(!msg && json.error != null) {
-                    msg = json.error; 
-                }
-                if(!msg && json.Message != null) {
-                    msg = json.Message;   
-                }
-                if(!msg) {
-                    msg = "Unable to interprete server reply";   
-                }
-            }else{
-                msg = errorThrown; 
-                if(!msg && jqXHR.status == 0) {
-                    msg = "Unable to connect to server";   
-                }
-                if(!msg) {
-                    msg = "Unable to interprete server reply";  
-                }
-            }
-            return msg;
-        }
+        this._useCache = false;
     }
-    return new _apiServiceBase([],$q,$timeout,apiService);
-}
+    _apiServiceBase.prototype.useCache = function() {
+        this._useCache = true;
+        return this; 
+    }
+    _apiServiceBase.prototype.processError = function(jqXHR, textStatus, errorThrown) {
+        var msg = null;
+        if(jqXHR.responseJSON != null) {
+            var json = jqXHR.responseJSON;
+            if(!msg && json.error) {
+                msg = {
+                    domain:ErrorDomain.ServerInfracture, 
+                    code:json.error, 
+                    description:json.error_description || ('error:'+json.error)
+                };   
+            }
+            if(!msg && json.ErrorCode){
+                msg = {
+                    domain:ErrorDomain.ServerInfracture, 
+                    code:json.ErrorCode, 
+                    description:json.Message || ('ErrorCode:'+json.ErrorCode)
+                };   
+            }
+            if(!msg && json.Message) {
+                msg = {
+                    domain:ErrorDomain.ServerInfracture, 
+                    code:0, 
+                    description:json.Message
+                }; 
+            }
+            if(!msg) {
+                msg = {
+                    domain:ErrorDomain.ServerInfracture, 
+                    code:0, 
+                    description:"Unable to interprete server reply"
+                }; 
+            }
+        }else{
+            if(!msg && jqXHR.status == 0) {
+                msg = {
+                    domain:ErrorDomain.ClientHTTP, 
+                    code:0, 
+                    description:"Unable to connect to server"
+                }; 
+            }
+            if(!msg && errorThrown != null) {
+                msg = {
+                    domain:ErrorDomain.ClientHTTP, 
+                    code:jqXHR.status, 
+                    description:errorThrown
+                }; 
+            }
+            if(!msg) {
+                msg = {
+                    domain:ErrorDomain.ClientHTTP, 
+                    code:jqXHR.status, 
+                    description:'Unable to interprete server reply ('+jqXHR.status+')'
+                }; 
+            }
+        }
+        return msg;
+    }
+    return _apiServiceBase;
+})
+.factory('apiServiceBaseWithToken', function($q,apiServiceBase,apiToken){
+    apiServiceBase.prototype.withToken = function(createJQXHR) {
+        var defer = $q.defer();
+        var _self = this;
+        createJQXHR().done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            _self.values = data;
+            defer.resolve(data);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            if(jqXHR.status==401){
+                console.log('fail@' + this.url);
+                console.log('Re-token');
+                return apiToken.token().then(function(){
+                    return createJQXHR().then(function(data, textStatus, jqXHR){
+                        console.log('done@' + this.url);
+                        console.log(data);
+                        _self.values = data;
+                        defer.resolve(data);
+                    });
+                }).catch(function(jqXHR, textStatus, errorThrown) {
+                    console.log('fail@' + this.url);
+                    var error = _self.processError(jqXHR, textStatus, errorThrown);
+                    console.log(error);
+                    defer.reject(error); 
+                });
+            }else{
+                console.log('fail@' + this.url);
+                var error = _self.processError(jqXHR, textStatus, errorThrown);
+                console.log(error);
+                defer.reject(error); 
+            }
+        });
+        return defer.promise;
+    }
+    return apiServiceBase;
+})
 
-
-
-.service('apiToken', function($q,apiServiceBase) {
-    apiServiceBase.token = function(){
+.factory('apiToken', function($q,apiServiceBase) {
+    var api = apiServiceBase;
+    api.prototype.token = function(){
+        var _self = this;
         return $q(function(resolve,reject) {
-            $.ajax(this.apiService.apiBase + 'Token',{
+            $.ajax(_self.apiService.apiBase + 'Token',{
                 method:'POST',
                 dataType:'json',
                 data:{
-                    username:this.apiService.apiUserName,
-                    password:this.apiService.apiUserPassword,
+                    username:_self.apiService.apiUserName,
+                    password:_self.apiService.apiUserPassword,
                     grant_type:'password'
                 }
             }).done(function(data, textStatus, jqXHR) { 
                 console.log('done@' + this.url);
                 console.log(data);
-                this.apiService.token = data;
+                _self.apiService.token = data;
                 resolve(data);
             }).fail (function(jqXHR, textStatus, errorThrown) {
                 console.log('fail@' + this.url);
-                var error = this.processError(jqXHR, textStatus, errorThrown);
+                var error = _self.processError(jqXHR, textStatus, errorThrown);
                 console.log(error);
                 reject(error);
             });
         })
     }
-    return apiServiceBase;
+    return new api();
 })
-.service('apiUser', function($q, $timeout) {
-    var _this = this;
-    this.user = undefined;
-    
-    
-    this.values = [];
-    var values = this.values;
-    values.push({
-        id:0,
-        fullName:'Aqilah Shahrul',
-        memberId:'9988112132301195',
-        username:'Aqilah Shahrul',
-        thumb:faker.image.avatar(),
-        nric:'901202-08-5678',
-        contact:faker.phone.phoneNumber()
-    });
-    
-    values.push({
-        id:1,
-        fullName:'Jefferson Ng',
-        memberId:'9988112132301201',
-        username:'Jefferson Ng',
-        thumb:faker.image.avatar(),
-        nric:'901202-08-5678',
-        contact:faker.phone.phoneNumber()
-    });
-    values.push({
-        id:2,
-        fullName:'Mahendran Arjuna',
-        memberId:'9988112132301293',
-        username:'Mahendran Arjuna',
-        thumb:faker.image.avatar(),
-        nric:'901202-08-5678',
-        contact:faker.phone.phoneNumber()
-    });
-    
-    ret = new apiBaseService(values,$q,$timeout);
-    
-    ret.login = function(username, password) {
-        return $q(function(resolve, reject) {
-            if(Math.random() >= 0)
-                fakeNetworkDelay($timeout, function() {
-                    if(!username) {
-                        reject({error_message:'Username must not be empty'});
-                        return;   
-                    }
-                    
-                    
-                    var founded = _.find(_this.values, {'username':username});
-                    if(founded) {
-                        _this.user = founded;
-                        resolve(founded);                        
-                    }else{
-                        reject({error_message:'User doen\'t match with password'});
-                    }
-                });
-            else
-                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
-        });
-    }
-    
-    ret.logout = function() {
-        _this.user = undefined;
-    }
-    
-    ret.getUser = function() {
-        return _this.user;
-    }
-    
-    return ret;
-})
-
-
-.service('apiProject', function($q,apiServiceBase) {
-    apiServiceBase.getAll = function() {
-        return $q(function(resolve,reject) {
-            $.ajax(this.apiService.apiBase + 'api/Project',{
+.factory('apiUser', function($q,apiServiceBaseWithToken) {
+    var api = apiServiceBaseWithToken;
+    api.prototype.login = function(username, password) {
+        var _self = this;
+        if(!username || !password){
+            return $q(function(resolve,reject) {
+                reject('Username must not be empty'); 
+            });
+        }
+        return _self.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppCustomer/GetByEmailAndPass',{
                 method:'GET',
                 dataType:'json',
-                headers:{Authorization:'Bearer '+this.apiService.token.access_token}
-            }).done(function(data, textStatus, jqXHR) { 
-                console.log('done@' + this.url);
-                console.log(data);
-                this.values = data;
-                resolve(data);
-            }).fail (function(jqXHR, textStatus, errorThrown) {
-                console.log('fail@' + this.url);
-                var error = this.processError(jqXHR, textStatus, errorThrown);
-                console.log(error);
-                reject(error);
-            });
-        })
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                data:{
+                    email:username,
+                    pass:password
+                }
+            })
+        }).then(function(data){
+            _self.user = data;
+            return data;
+        }).catch(function(error){
+            if(error.domain == ErrorDomain.ServerInfracture && error.code == 1){
+                throw {
+                    domain:ErrorDomain.ClientApplication, 
+                    code:0, 
+                    description:"User doesn\'t match with any password"
+                };
+            }else{
+                throw error;   
+            }
+        });
     }
-    apiServiceBase.getById = function(id) {
-        return $q(function(resolve,reject) {
-            if(typeof id == 'string') id = parseInt(id);
-            var found = _.find(this.values, function(o) { return o.id==id; });
-            if(found) resolve(found);
-            else reject('Not found');
-        })
+    api.prototype.logout = function() {
+        this.user = undefined;
     }
-    return apiServiceBase;
+    
+    api.prototype.getUser = function() {
+        return this.user;
+    }
+    return new api();
 })
 
 
-.service('apiWhatsNewItem', function($q,$timeout, apiEvent){
-    var values = []; this.values = values;
+.factory('apiProject', function($q,apiServiceBaseWithToken) {
+    var api = apiServiceBaseWithToken;
+    api.prototype.getAll = function() {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Project/GetAllProjects',{
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        }).then(function(data){
+            _self.values = data;
+            return data;
+        });
+    }
+    api.prototype.getById = function(id) {
+        var _self = this;
+        if(_self.useCache){
+            return $q(function(resolve,reject){
+                if(typeof id == 'string') id = parseInt(id);
+                var found = _.find(_self.values, function(o) {
+                    console.log(o + ',' + id);
+                    return o.ProjectId == id; 
+                });
+                if(found) resolve(found);
+                else reject(createError('Not found'));
+            });
+        }else{
+            return $q(function(resolve,reject) {
+                reject(createError('Not Implemented')); 
+            });
+        }
+    }
+    api.prototype.getRate = function(project,user) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/GetProject?iProjectID='+project.Id+'&iCustomerID='+user.CustomerId, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    return new api();
+})
+
+
+.service('apiWhatsNewItem', function($q, apiEvent,apiServiceBase){
+    var values = []; apiServiceBase.values = values;
     for(i = 0 ; i < 5 ; i++) {
         var value = apiEvent.values[i];
         values.push(value);
     }
-    return new apiBaseService(values,$q,$timeout);
+    return apiServiceBase;
 })
 
 .service('apiPurchasedProperty', function($q,$timeout, apiProject, apiUnit, apiConsultant) {
@@ -276,8 +291,8 @@ angular.module('services-api', [])
     return new apiBaseService(values,$q,$timeout);
 })
 
-.service('apiEvent', function($q,$timeout) {
-    var values = []; this.values = values;
+.service('apiEvent', function($q,$timeout,apiServiceBase) {
+    var values = []; apiServiceBase.values = values;
     for(i = 0 ; i < 10 ; i++) {
         var value = {};
         value.id = i;
@@ -297,14 +312,13 @@ angular.module('services-api', [])
         value.type = _.random(1);
         values.push(value);
     }
-    return new apiBaseService(values,$q,$timeout);
+    return apiServiceBase;
 })
 
 
 
-.service('apiProperty', function($q,$timeout, apiProject) {
-    var values = apiProject.values; this.values = values;
-    return new apiBaseService(values,$q,$timeout);
+.service('apiProperty', function(apiProject) {
+    return apiProject;
 })
 
 .service('apiConsultant', function($q,$timeout) {

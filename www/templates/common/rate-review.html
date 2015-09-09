@@ -1,7 +1,8 @@
 
 
 <div class="rate-widget">
-    <div class="rate-form">
+    --{{apiUser.getUser()}}--
+    <div class="rate-form" ng-if="apiUser.getUser()">
         <div class="rate-form-title">{{rate.title}}</div>
         <div class="rate-form-field">
             <li ng-repeat="i in [1,2,3,4,5]" ng-click="rate.setRate($index+1)">
@@ -23,7 +24,7 @@
             </div>
         </div>
         <div  class="chart-section">
-            <li ng-class="{{'li-'+$index}}" ng-repeat="totalRatePerStar in rate.review.totalRatePerStars">
+            <li ng-class="{{'li-'+$index}}" ng-repeat="totalRatePerStar in rate.review.totalRatePerStars track by $index">
                 <span class="number-star-label">
                     <i class="icon ion-star"></i>
                     <span>{{5-$index}}</span>

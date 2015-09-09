@@ -38,7 +38,7 @@ angular.module('starter.controllers', [])
                         $scope.contentAnimated = true;
                     },200);
                 }).catch(function(error) {
-
+                    u.showAlert(error.description);
                 }).finally(function() {
                      u.hideProgress();
                 });
@@ -94,7 +94,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 });
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -143,7 +143,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -175,7 +175,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 });
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -219,7 +219,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                 console.log('finally');
                  u.hideProgress();
@@ -251,7 +251,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -282,7 +282,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -314,6 +314,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -353,7 +354,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -391,7 +392,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -407,10 +408,9 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertyDetailCtrl', function ($scope, u, $timeout, $state, apiProperty) {
+.controller('PropertyDetailCtrl', function ($scope, u, $timeout, $state, apiProperty,apiUser) {
     $element = $('#propertydetail');
     $content = $element.find('ion-content .content');
-    $scope.rate = u.createRate();
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
@@ -418,18 +418,28 @@ angular.module('starter.controllers', [])
             $scope.property = null;
             $scope.project = null;
             u.showProgress();
-            apiProperty.getById($state.params.id).then(function(results) {
+            apiProperty.useCache().getById($state.params.id).then(function(results) {
                 $scope.property = results;  
                 $scope.project = results;
                 return $timeout(function(){
                     u.imagesLoaded($element.find('img'));
                 });
             }).then(function(){
+                if(apiUser.getUser()){
+                    apiProperty.getRate($scope.project, apiUser.getUser()).then(function(results){
+                        $scope.rate = u.createRate(results);  
+                    }).catch(function(error){
+                        u.showAlert(error.description);
+                    });
+                }else{
+                    $scope.rate = u.createRate($scope.property);  
+                }
                 return $timeout(function(){
                     $scope.contentReady = true;
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
+                u.showAlert(error.description);
             }).finally(function() {
                 u.hideProgress();
             });
@@ -453,7 +463,7 @@ angular.module('starter.controllers', [])
             apiProperty.getById($state.params.id).then(function(results) {
                 $scope.property = results;  
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -477,7 +487,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -511,7 +521,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });
@@ -549,7 +559,7 @@ angular.module('starter.controllers', [])
                     $scope.contentAnimated = true;
                 },200);
             }).catch(function(error) {
-
+                u.showAlert(error.description);
             }).finally(function() {
                  u.hideProgress();
             });

@@ -97,7 +97,7 @@ $light-theme-text-color:#ccc;
     }
 
     .margin-#{$word}-bottom {
-        margin-top:$value;   
+        margin-bottom:$value;   
     }
 
     .margin-#{$word}-left {
@@ -129,7 +129,7 @@ $light-theme-text-color:#ccc;
     }
 
     .padding-#{$word}-bottom { 
-        padding-top:$value;   
+        padding-bottom:$value;   
     }
 
     .padding-#{$word}-left {
@@ -170,11 +170,15 @@ $light-theme-text-color:#ccc;
 @include create-padding('xs', 10px);
 @include create-padding('md', 20px);
 @include create-padding('lg', 40px);
+@include create-padding('xlg', 60px);
+@include create-padding('xxlg', 90px);
 
 @include create-margin('xxs', 5px);
 @include create-margin('xs', 10px);
 @include create-margin('md', 20px);
 @include create-margin('lg', 40px);
+@include create-padding('xlg', 60px);
+@include create-padding('xxlg', 90px);
 
 .padding-right-1-item {
     padding-right:54px;
@@ -602,6 +606,7 @@ ion-content {
     }
 }
 ion-content .content:first-child {
+    @extend .padding-xxlg-bottom;
     opacity:0;
     &.contentReady {
         opacity:1 !important;    
@@ -805,8 +810,10 @@ $rate-review-lg-content-padding:12px;
                     flex-grow:1;
                     position:relative;
                     div {
+                        transition:width 0.3s;
                         height:20px;
                         position:relative;
+                        min-width:15px;
                     }
                     span {
                         position:absolute;   

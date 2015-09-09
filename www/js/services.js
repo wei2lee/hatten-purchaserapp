@@ -51,6 +51,8 @@ angular.module('services', ['ngResource'])
     this.openLogin = function () {
         $rootScope.loginAlert = null;
         $rootScope.loginData = {};
+        $rootScope.loginData.username = 'TAREN.SUNIL@YAHOO.COM';
+        $rootScope.loginData.password = 'wendyjsy';
         $ret = $rootScope.loginModal.show();
         return $q(function(resolve, reject) {
             $ret = $rootScope.$on('modal.hidden', function() {
@@ -68,7 +70,7 @@ angular.module('services', ['ngResource'])
             _this.closeLogin();
         }).catch(function(error) {
             $rootScope.loginAlert = {
-                message: error.error_message   
+                message: error.description 
             }
         }).finally(function(){
             _this.hideProgress();
@@ -157,7 +159,7 @@ angular.module('services', ['ngResource'])
 /* ==========================================================================
    Application Specified Rating
    ========================================================================== */
-    this.createRate = function(){
+    this.createRate = function(o){
         var ret = {
             title:'Rate this Property',
             setRate:function(i) {
@@ -173,13 +175,25 @@ angular.module('services', ['ngResource'])
                         this.onSetRate(newval)
                 }
             },
-            rate:_.random(10,50)/10,
+            rate:o.RateValue || 3,
             review: {
-                averageRate:_.random(10,50)/10,
-                totalPeople:_.random(1000),
-                totalRatePerStars:[_.random(200),_.random(200),_.random(200),_.random(200),_.random(200)],
+                averageRate:o.AverRate || 0,
+                totalPeople:o.Total || 0,
+                totalRatePerStars:[
+                    o.Total1 || o.Star1 || 0, 
+                    o.Total2 || o.Star2 || 0,
+                    o.Total3 || o.Star3 || 0,
+                    o.Total4 || o.Star4 || 0,
+                    o.Total5 || o.Star5 || 0
+                ],
                 getTotalRateStars:function() { return _.max(this.totalRatePerStars); },
-                getChartWidth:function(i) { return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; }
+                getChartWidth:function(i) {
+                    if(this.getTotalRateStars() == 0) {
+                        return '0%';
+                    }else{
+                        return (this.totalRatePerStars[i] / this.getTotalRateStars()) * 100 + '%'; 
+                    }
+                }
             }
         };
         ret.review.totalPeople = _.reduce(ret.review.totalRatePerStars, function(s,o){

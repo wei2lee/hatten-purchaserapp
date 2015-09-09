@@ -2,8 +2,10 @@
 
 <script>
     
-    var apiBase = 'http://prosalesdemo.infradesign.com.my/';
+//    var apiBase = 'http://prosalesdemo.infradesign.com.my/';
 //    var apiBase = 'http://salesplatform.infradesign.com.my/';
+    var apiBase = 'http://103.9.149.59:8034/';
+    var apiDataBase = 'http://103.9.149.59:8034/data/HATT/';
     var token = '';
     
     function processError(jqXHR, textStatus, errorThrown) {
@@ -47,6 +49,7 @@
             console.log('done@' + this.url);
             console.log(data);
             token = data;
+            return data;
         }).fail (function(jqXHR, textStatus, errorThrown) {
             console.log('fail@' + this.url);
             console.log(processError(jqXHR, textStatus, errorThrown));
@@ -61,7 +64,52 @@
         }).done(function(data, textStatus, jqXHR) { 
             console.log('done@' + this.url);
             console.log(data);
-            token = data;
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getProjects() {
+        return $.ajax(apiBase + 'api/Project',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getAppProjects() {
+        return $.ajax(apiBase + 'api/AppProject',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getAppProjectById(id) {
+        return $.ajax(apiBase + 'api/AppProject/'+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
         }).fail (function(jqXHR, textStatus, errorThrown) {
             console.log('fail@' + this.url);
             console.log(processError(jqXHR, textStatus, errorThrown));
@@ -70,6 +118,14 @@
     
     login().then(function() {
         return getCompanySetting(); 
-    });
+    }).then(function(){
+        return getProjects(); 
+    }).then(function(){
+        return getAppProjects().then(function(results){
+            $.each(results, function(ind,appProject){
+                getAppProjectById(appProject.Id);
+            });
+        });
+    })
     
 </script>

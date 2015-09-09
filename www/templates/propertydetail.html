@@ -1,15 +1,15 @@
 <ion-view view-title="{{property.displayName}}" id="propertydetail">
     <ion-nav-title>
-        {{property.displayName}}
+        {{property.Name}}
     </ion-nav-title>
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <img class="view-center-thumb padding-top" ng-src="{{project.logo}}">
             <div class="list card line-card-image">
-                <img ng-src="{{property.thumb}}" class="full-img-responsive">
+                <img ng-src="{{property.PictureLargeResourceKey ? (''+property.PictureLargeResourceKey) : 'img/placeholder_general_lg.png'}}" class="full-img-responsive">
             </div>
             <div class="list card learn-more-container">
-                <div class="item-body" ng-bind-html="property.description">
+                <div class="item-body" ng-bind-html="property.ProjectTemplate">
                 </div>
                 <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', property)">
                     LEARN MORE
@@ -51,7 +51,7 @@
                 <a href="#/app/consultants/where-project/{{project.id}}" class="button button-block button-balanced">FIND A CONSULTANT</a>
             </div>
 
-            <div class="list card padding-md">
+            <div class="list card padding-md fadeIn animated" ng-if="rate">
                 <rate-widget rate="rate"></rate-widget>
             </div>
         </div>

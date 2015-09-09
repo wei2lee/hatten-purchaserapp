@@ -14,12 +14,12 @@
     </div>
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
-            <div class="list card fade-in-animation" ng-repeat="property in properties | filter:{type:tabIndex}">
+            <div class="list card fade-in-animation" ng-repeat="property in properties">
                 <div class="item padding-0 line-card-image">
-                    <a ng-href="#/app/property/{{property.id}}"><img class="full-img-responsive" ng-src="{{property.thumb}}"></a>
+                    <a ng-href="#/app/property/{{property.ProjectId}}"><img class="full-img-responsive" ng-src="{{property.PictureLargeResourceKey || 'img/placeholder_general_lg.png'}}"></a>
                 </div>
                 <div class="item item-icon-right">
-                    <p>{{property.displayName}}</p>
+                    <p>{{property.Name}}</p>
                     <a ng-click="u.addFavourite(property)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
                     <a ng-click="u.share(property)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
                 </div>

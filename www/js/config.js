@@ -256,10 +256,12 @@ angular.module('route', ['ionic'])
 .config(function($ionicConfigProvider) {  
     //$ionicConfigProvider.views.maxCache(1);
 })
-.run(function($rootScope, u, apiUser,$state, $templateCache,$http,intent,app){
+.run(function($rootScope, u, apiUser,$state, $templateCache,$http,intent,app, apiService){
     //preload templates
     $http.get('templates/common/rate-review.html', { cache: $templateCache });
     //setup global variables that can access from view (by assign it to rootScope);
+    console.log(apiService);
+    $rootScope.apiService = apiService;
     $rootScope.app = app;
     $rootScope.intent = intent;
     $rootScope.$state = $state;
