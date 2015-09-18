@@ -1,14 +1,14 @@
 <ion-view view-title="Find A Consultant">
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'xxx':contentAnimated}">
-            <div class="list card fade-animation" ng-repeat="project in projects">
-                <a ng-href="#/app/consultants/where-project/{{project.id}}" class="item item-icon-left item-thumbnail-left">
-                    <img ng-src="{{project.thumb}}">
+            <div class="list card fade-in-animation" ng-repeat="property in properties | orderBy : '-Name'">
+                <a ng-href="#/app/consultants/where-project/{{property.ProjectId}}" class="item item-icon-left item-thumbnail-left">
+                    <img ng-src="{{property.PictureSmallResourceKey || 'img/placeholder_general_sm.png'}}">
                     <p>
-                        <b>{{project.displayName}}</b>
-                        <br/><small>{{project.area}}</small>
+                        <b>{{property.Name}}</b>
+                        <br/><small>{{property.Location}}</small>
                     </p>
-                    <p><small>{{project.address}}</small></p>
+<!--                    <p><small>{{project.address}}</small></p>-->
                 </a>
             </div>
         </div>

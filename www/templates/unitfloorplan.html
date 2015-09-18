@@ -1,0 +1,42 @@
+<ion-view view-title="Unit Floorplan" id="floorplan">
+    <ion-pane>
+        <ion-content class="has-header" scroll="false">
+            <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
+                <ion-slide-box on-slide-changed="slideHasChanged($index)" class="full-height">
+                    <ion-slide>
+                        <div class="box">
+                            <div class="box-container">
+                                <div class="box-thumb-container svg-container">
+                                    
+                                </div>
+                                <div class="box-thumb-container">
+                                    <img ng-src="{{keyFloorplan.FloorResourceKey}}">
+                                </div>
+                                <div class="box-thumb-container">
+                                    <img ng-src="{{keyFloorplan.TopFloorResourceKey}}">
+                                </div>
+                            </div>
+                            <div class="box-label">
+                                {{keyFloorplan.Floor}}
+                            </div>
+                        </div>
+                    </ion-slide>
+                    <ion-slide>
+                        <div class="box">
+                            <div class="box-container">
+                                <div class="box-thumb-container">
+                                    <img ng-src="{{unitFloorplan.TypeResourceKey}}">
+                                </div>
+                            </div>
+                            <div class="box-label">
+                                {{unitFloorplan.Type}}
+                            </div>
+                        </div>
+                    </ion-slide>
+                </ion-slide-box>
+                
+                <p class="padding">Unit Floorplan is not available</p>
+            </div>
+        </ion-content>
+    </ion-pane>
+</ion-view>

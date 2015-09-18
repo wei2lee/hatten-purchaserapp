@@ -4,10 +4,13 @@
     </ion-nav-title>
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
-            <img class="view-center-thumb padding-top" ng-src="{{project.logo}}">
-            <div class="list card fade-animation" ng-repeat="progress in progresses | orderBy:'-photoTakenDate'">
-                <img class="full-img-responsive" ng-src="{{progress.thumb}}">
-                <p class="padding-left padding-right">Photo taken by {{progress.photoTakenDate | date:'MMM dd, yyyy'}}</p>
+            <img class="view-center-thumb padding-top" ng-src="{{project.LogoResourceKey}}">
+            <div class="list card fade-animation" ng-repeat="construction in project.Contructions | orderBy:'-Seq'">
+                <img class="full-img-responsive" ng-src="{{construction.ProjectContractionResourceKey || 'img/placeholder_general_sm.png'}}">
+                <div class="padding">
+                    <div ng-if="construction.ProjectContractionRemark1">{{construction.ProjectContractionRemark1}}</div>
+                    <div ng-if="construction.ProjectContractionDate">Photo taken at {{construction.ProjectContractionDate  | date:'MMM dd, yyyy'}}</div>
+                </div>
             </div>
         </div>
     </ion-content>

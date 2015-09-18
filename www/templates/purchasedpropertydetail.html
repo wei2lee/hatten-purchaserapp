@@ -5,51 +5,53 @@
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="list card line-card-image">
-                <img class="full-img-responsive" ng-src="{{project.thumb}}">
+                <img class="full-img-responsive" ng-src="{{unit.project.PictureLargeResourceKey || 'img/placeholder_general_lg.png'}}">
             </div>
 
             <div class="list card">
                 <div class="item">
                     <p><small>Project</small></p>
-                    <h2>{{project.displayName}}</h2>
+                    <h2>{{unit.project.Name}}</h2>
                 </div>
                 <div class="item">
                     <p><small>Unit</small></p>
-                    <h2>{{unit.unitNo}}</h2>
+                    <h2>{{unit.UnitNo}}</h2>
                 </div>
-                <div class="item">
-                    <p><small>SPA Date</small></p>
-                    <h2>{{purchasedProperty.spaDate | date:'MMM dd,yyyy'}}</h2>
+                <div class="item" ng-if="unit.SoldDate">
+                    <p><small>Sold Date</small></p>
+                    <h2>{{unitSoldDate | date : 'MMM dd, yyyy'}}</h2>
                 </div>
             </div>
 
             <div class="list card">
+<!--
                 <div class="item padding-0">
                     <div class="row padding-0">
-                        <div class="col  text-center bg-image-button floorplan-bg-button">
+                        <a ng-href="#/app/unitfloorplan/{{unit.UnitId}}" class="col  text-center bg-image-button floorplan-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
-                        </div>
-                        <a class="col left-border text-center bg-image-button specification-bg-button">
+                        </a>
+                        <a ng-href="#/app/propertyspecification/{{unit.project.ProjectId}}" class="col left-border text-center bg-image-button specification-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
                         </a>
                     </div>
                 </div>
+-->
                 <div class="item padding-0">
                     <div class="row padding-0">
-                        <div class="col  text-center bg-image-button gallery-bg-button">
+                        <a ng-href="#/app/propertygallery/{{unit.project.ProjectId}}" class="col  text-center bg-image-button gallery-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
-                        </div>
-                        <div class="col  left-border text-center bg-image-button location-bg-button">
+                        </a>
+                        <a ng-href="#/app/propertylocation/{{unit.project.ProjectId}}" class="col  left-border text-center bg-image-button location-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -57,8 +59,8 @@
                 <button ng-click="" class="button button-block button-positive">Billing Status</button>
             </div>
 
-            <div class="padding-horizontal">
-                <a href="#/app/consultant/{{consultant.id}}" class="button button-block button-calm">Agent Served</a>
+            <div class="padding-horizontal" ng-if="agent">
+                <a href="#/app/consultant/{{agent.UserId}}" class="button button-block button-calm">Agent Served</a>
             </div>
         </div>
     </ion-content>

@@ -1,4 +1,6 @@
-angular.module('route', ['ionic'])
+
+
+angular.module('route', ['ionic', 'services'])
 
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -25,6 +27,11 @@ angular.module('route', ['ionic'])
                 templateUrl: 'templates/purchasedproperties.html',
                 controller: 'PurchasedPropertiesCtrl'
             }
+        },
+        resolve:{
+            login:function(u){
+                return u.sideMenuLoginOrNormalLogin();
+            }
         }
     })
     .state('app.purchasedproperty', {
@@ -33,6 +40,21 @@ angular.module('route', ['ionic'])
             'menuContent': {
                 templateUrl: 'templates/purchasedpropertydetail.html',
                 controller: 'PurchasedPropertyDetailCtrl'
+            }
+        },
+        resolve:{
+            login:function(u){
+                return u.sideMenuLoginOrNormalLogin();
+            }
+        }
+    })
+    
+    .state('app.unitfloorplan', {
+        url: '/unitfloorplan/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/unitfloorplan.html',
+                controller: 'UnitFloorplanCtrl'
             }
         }
     })
@@ -78,7 +100,7 @@ angular.module('route', ['ionic'])
     })
     
     .state('app.propertyspecification', {
-        url: '/propertyspecification',
+        url: '/propertyspecification/{id}',
         views: {
             'menuContent': {
                 templateUrl: 'templates/propertyspecification.html',
@@ -86,8 +108,36 @@ angular.module('route', ['ionic'])
             }
         }
     })
-
-
+    
+    .state('app.propertylocation', {
+        url: '/propertylocation/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/propertylocation.html',
+                controller: 'PropertyLocationCtrl'
+            }
+        }
+    })
+    
+    .state('app.propertygallery', {
+        url: '/propertygallery/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/propertygallery.html',
+                controller: 'PropertyGalleryCtrl'
+            }
+        }
+    })
+    
+    .state('app.propertyfloorplan', {
+        url: '/propertyfloorplan/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/propertyfloorplan.html',
+                controller: 'PropertyFloorplanCtrl'
+            }
+        }
+    })
     .state('app.events', {
         url: '/events',
         views: {
@@ -216,6 +266,11 @@ angular.module('route', ['ionic'])
                 templateUrl: 'templates/profile.html',
                 controller: 'ProfileCtrl'
             }
+        },
+        resolve:{
+            login:function(u){
+                return u.sideMenuLoginOrNormalLogin();
+            }
         }
     })
 
@@ -228,23 +283,23 @@ angular.module('route', ['ionic'])
             }
         }
     })
-
-    .state('app.aboutdetail', {
-        url: '/aboutdetail',
-        views: {
-            'menuContent': {
-                templateUrl: 'templates/aboutdetail.html',
-                controller: 'AboutDetailCtrl'
-            }
-        }
-    })
     
     .state('app.learnmore', {
         url: '/learnmore',
         views: {
             'menuContent': {
-                templateUrl: 'templates/learnmore.html',
+                templateUrl: 'templates/common/learnmore.html',
                 controller: 'LearnMoreCtrl'
+            }
+        }
+    })
+    
+    .state('app.web', {
+        url: '/web',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/common/web.html',
+                controller: 'WebCtrl'
             }
         }
     })
@@ -255,12 +310,28 @@ angular.module('route', ['ionic'])
 })
 .config(function($ionicConfigProvider) {  
     //$ionicConfigProvider.views.maxCache(1);
+//    $ionicConfigProvider.scrolling.jsScrolling(false)
 })
-.run(function($rootScope, u, apiUser,$state, $templateCache,$http,intent,app, apiService){
+.run(function(
+     $rootScope, 
+      u, 
+      apiUser,
+      $state, 
+      $location, 
+      $templateCache,
+      $http,
+      intent,
+      app, 
+      apiService,
+      $ionicSideMenuDelegate,
+      $ionicViewService){
+    
     //preload templates
     $http.get('templates/common/rate-review.html', { cache: $templateCache });
+    
     //setup global variables that can access from view (by assign it to rootScope);
     console.log(apiService);
+    $rootScope.$ionicSideMenuDelegate = $ionicSideMenuDelegate;
     $rootScope.apiService = apiService;
     $rootScope.app = app;
     $rootScope.intent = intent;

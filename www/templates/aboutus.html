@@ -2,13 +2,18 @@
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="list card">
-                <a class="item" href="#/app/aboutdetail">
+                <a class="item" ng-click="u.navigateToStateWithIntent('app.web', {title:'About Us', url:'http://hattengrp.com/'})">
                     About Hatten Group
                 </a>
-                <a class="item" href="http://www.hattengrp.com" target="_blank">
+                <a class="item" ng-click="u.navigateToStateWithIntent('app.web', {title:'Hatten Group Website', url:'http://hattengrp.com/'})">
                     Visit Hatten Group Website
                 </a>
-                <a class="item" href="https://www.facebook.com/hattengroup" target="_blank">
+<!--
+                <a class="item" ng-click="u.navigateToStateWithIntent('app.web', {title:'Facebook', url:'http://www.facebook.com/hattengroup/'})">
+                    Follow Us on Facebook
+                </a>
+-->
+                <a class="item" href="javascript:window.open('https://www.facebook.com/hattengroup/', '_blank', 'location=yes');">
                     Follow Us on Facebook
                 </a>
                 <a class="item" href="mailto:info@hattengrp.com">

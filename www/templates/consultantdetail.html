@@ -1,52 +1,50 @@
-<ion-view view-title="{{consultant.fullName}}" id="consultantdetail">
+<ion-view view-title="{{consultant.FullName}}" id="consultantdetail">
     <ion-nav-title>
-        {{consultant.fullName}}
+        {{consultant.FullName}}
     </ion-nav-title>
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="text-center">
-                <img ng-src="{{consultant.thumb}}" width=240 height=240 class="circle padding">
+                <img ng-src="{{consultant.AvatarResourceKey || 'img/placeholder_people_lg.png'}}" width=240 height=240 class="circle padding">
             </div>
             <div class="list card">
                 <div class="item">
                     <p>
                         <small>Name</small>
                         <br>
-                        <b>{{consultant.fullName}}</b>
+                        <b>{{consultant.FullName}}</b>
                     </p>
                 </div>
                 <div class="item">
                     <p>
                         <small>Contact</small>
                         <br>
-                        <b>{{consultant.contact}}</b>
+                        <b ng-if="!(consultant.Phones && consultant.Phones.length>=1)">-</b>
+                        <b ng-if="(consultant.Phones && consultant.Phones.length>=1)">{{consultant.Phones[0].Value}}</b>
                     </p>
                 </div>
                 <div class="item">
                     <p>
                         <small>Email</small>
                         <br>
-                        <b>{{consultant.email}}</b>
+                        <b ng-if="!(consultant.Emails && consultant.Emails.length>=1)">-</b>
+                        <b ng-if="(consultant.Emails && consultant.Emails.length>=1)">{{consultant.Emails[0].Value}}</b>
                     </p>
                 </div>
                 <div class="item">
                     <p>
                         <small>Address</small>
                         <br>
-                        <b>{{consultant.address}}</b>
+                        <b>-</b>
                     </p>
                 </div>
             </div>
-
-            <div class="padding-horizontal">
-                <a class="button button-block button-calm" href="tel:{{consultant.contact}}">Call</a>
+            <div class="padding-horizontal" ng-if="consultant.Phones && consultant.Phones.length>=1">
+                <a class="button button-block button-calm" href="tel:{{consultant.Phones[0].Value}}">Call</a>
             </div>
-
-            <div class="padding-horizontal">
-                <a class="button button-block button-balanced" href="mailto:{{consultant.email}}">Email</a>
+            <div class="padding-horizontal" ng-if="consultant.Emails && consultant.Emails.length>=1">
+                <a class="button button-block button-balanced" href="mailto:{{consultant.Emails[0].Value}}">Email</a>
             </div>
-
-
             <div class="list card padding-md">
                 <rate-widget rate="rate"></rate-widget>
             </div>

@@ -1,6 +1,10 @@
-<script src="lib/jquery/dist/jquery.min.js"></script>
 
+<script src="lib/jquery/dist/jquery.min.js"></script>
+<iframe id='map' width="500" height="500" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I&q=3.158384, 101.709390">
+<iframe width=500 height=500 src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I&center=-33.8569,151.2152&zoom=18&maptype=satellite"></iframe>
 <script>
+    
+
     
 //    var apiBase = 'http://prosalesdemo.infradesign.com.my/';
 //    var apiBase = 'http://salesplatform.infradesign.com.my/';
@@ -56,8 +60,43 @@
         });
     }
     
+    function feed() {
+        return $.ajax(apiBase + 'Token',{
+            method:'POST',
+            dataType:'json',
+            data:{
+                username:'90731C01@hatt',
+                password:'F2568907B18C',
+                grant_type:'password'
+            }
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            token = data;
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });
+    }
+    
     function getCompanySetting() {
         return $.ajax(apiBase + 'api/Company/Settings',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getAllProjects() {
+        return $.ajax(apiBase + 'api/Project/GetAllProjects',{
             headers:{Authorization:'Bearer '+token.access_token},
             method:'GET',
             dataType:'json'
@@ -116,16 +155,254 @@
         });  
     }
     
+    function getTopAgent(id) {
+        return $.ajax(apiBase + 'api/AppUser/TopAgent?projectId='+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getUnitsByCustomerId(customer) {
+        return $.ajax(apiBase + 'api/AppCustomer/'+customer.IC+'/Units?id='+customer.IC,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getFloorplanByProjectId(id) {
+        return $.ajax(apiBase + 'api/ProjectUnitFloors/GetListByProjectId?projectid='+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getUnitTypeByUnitId(id) {
+        return $.ajax(apiBase + 'api/ProjectUnitTypes/GetByUnitId?unitid='+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getFloorplanByUnitId(id) {
+        return $.ajax(apiBase + 'api/ProjectUnitFloors/GetListByUnitId?unitid='+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getAgentByProjectId(id) {
+        return $.ajax(apiBase + 'api/AppUser/GetByProjectId?iProjectID='+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getAgentById(id) {
+        return $.ajax(apiBase + 'api/AppUser/'+id,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function rateForProject(projectId,customerId,star) {
+        return $.ajax(apiBase + 'api/Rate/UpdateProjectRate?iProjectId='+projectId+'&iCustomerID='+customerId+'&iRateValue='+star,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function getRateByProject(projectId, customerId) {
+        return $.ajax(apiBase + 'api/Rate/GetProject?iProjectID='+projectId+'&iCustomerID='+customerId,{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    
+//    login().then(function() {
+//        var cnt = 0;
+//        var idnot0 = 0;
+//        var promises = [];
+//        for(i = 0 ; i < 100 ; i++) {
+//            var unitId = 900 + i;   
+//            var promise = getFloorplanByUnitId(unitId).then(function(result){
+//                 cnt++;
+//                if(result.id != 0) {
+//                    idnot0++;   
+//                }
+//            });
+//            promises.push(promise);
+//        }
+//        $.when(promises).always(function() {
+//            console.log('cnt='+cnt+',idnot0='+idnot0); 
+//        });
+//    });
+    
+    
     login().then(function() {
-        return getCompanySetting(); 
-    }).then(function(){
-        return getProjects(); 
-    }).then(function(){
-        return getAppProjects().then(function(results){
-            $.each(results, function(ind,appProject){
-                getAppProjectById(appProject.Id);
-            });
-        });
-    })
+        getUnitTypeByUnitId(3);
+        getFloorplanByUnitId(3);
+    });
+    
+    
+    
+//    
+//    login().then(function(){
+//        return getRateByProject(17,1);
+//    }).then(function(results){
+//        return rateForProject(17,1,5);
+//    }).then(function(results){
+//        return getRateByProject(17,1);
+//    }).then(function(results){
+//        return rateForProject(17,1,4);
+//    }).then(function(results){
+//        return getRateByProject(17,1);
+//    }).then(function(results){
+//        return rateForProject(17,1,3);
+//    }).then(function(results){
+//        return getRateByProject(17,1);
+//    }).then(function(results){
+//        return rateForProject(17,1,2);
+//    }).then(function(results){
+//        return getRateByProject(17,1);
+//    }).then(function(results){
+//        return rateForProject(17,1,1);
+//    });  
+    
+    
+    
+//    login().then(function(){
+//        return getAgentByProjectId(1);
+//    }).then(function(results){
+//        for(var i = 0 ; i < results.length ; i++) {
+//            getAgentById(results[i].UserId);   
+//        }
+//    });    
+    
+//    login().then(function(){
+//        return getAgentById(3);
+//    }).then(function(results){
+//        getAgentById(170);
+//        getAgentById(171);
+//        getAgentById(172);
+//        getAgentById(173);
+//    });    
+    
+    
+//
+//    login().then(function(){
+//        return getAllProjects();
+//    }).then(function(results){
+//        for(var i = 0 ; i < results.length ; i++) {
+//            getFloorplanByProjectId(results[i].ProjectId);   
+//        }
+//    });    
+    
+//    login().then(function(){
+//        return getUnitsByCustomerId('');
+//    }).then(function(results){
+//    });
+//    
+//    login().then(function(){
+//        return getAppProjectById(17);
+//    }).then(function(results){
+//    });
+    
+    
+//    login().then(function(){
+//        return getAllProjects();
+//    }).then(function(results){
+//        for(var i = 0 ; i < results.length ; i++) {
+//            getTopAgent(results[i].ProjectId);   
+//        }
+//    });
+    
+//    login().then(function() {
+//        return getCompanySetting(); 
+//    }).then(function(){
+//        return getProjects(); 
+//    }).then(function(){
+//        return getAppProjects().then(function(results){
+//            $.each(results, function(ind,appProject){
+//                getAppProjectById(appProject.Id);
+//            });
+//        });
+//    })
     
 </script>
+
+<iframe width="500" height="500" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I&q=101.704694,3.093024&zoom=18" class="">
+<iframe width="500" height="500" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBtc2XioMaIVYKaGp0lWuKFKhpEwkA9agI&center=-33.8569,151.2152&zoom=18&maptype=satellite" class="">
+</iframe>

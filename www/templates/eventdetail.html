@@ -12,11 +12,23 @@
                     </p>
                 </div>
             </div>
+<!--
             <div class="list card learn-more-container">
                 <div class="item-body">
                     {{event.description}}
                 </div>
                 <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', event)">
+                    LEARN MORE
+                </button>
+                <div class="learn-more-overlay"></div>
+            </div>
+-->
+            
+            <div class="list card learn-more-container" ng-class="{'tooshort':learnmoretooshort, 'expanded':expanded}">
+                <div class="item-body" ng-bind-html="event.description">
+                </div>
+<!--                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', {description:property.ProjectTemplate})">-->
+                <button class="learn-more-button button button-full button-positive footer-button" ng-click="learnmoretooshort=false; expanded=true;">
                     LEARN MORE
                 </button>
                 <div class="learn-more-overlay"></div>
@@ -38,13 +50,16 @@
                 </div>
             </div>
 
-            <div class="padding-horizontal">
+            <div class="padding-horizontal padding-lg-top" >
+                Number of Total Attemp : <strong style="font-size:24px">{{1056 | number}}</strong>
                 <button ng-click="attempEvent(event)" class="button button-block button-balanced">ATTEND</button>
             </div>
 
+<!--
             <div class="padding-horizontal">
-                <button ng-click="attempEvent(event)" class="button button-block button-energized">TICKET</button>
+                <a ng-click="#/app/tickets" class="button button-block button-energized">TICKET</a>
             </div>
+-->
             <div class="list card padding-md">
                 <rate-widget rate="rate"></rate-widget>
             </div>

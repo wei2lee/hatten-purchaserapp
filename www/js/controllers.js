@@ -3,6 +3,10 @@
 angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function ($rootScope, $scope, $ionicModal, $timeout, u, apiUser) {
+    $scope.hello = function() {
+        console.log('hello');   
+    }
+    $scope.app = 'Application';
 })
 
 .controller('WhatsNewCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiWhatsNewItem) {
@@ -16,7 +20,9 @@ angular.module('starter.controllers', [])
             var hh = Math.floor(remainSeconds / (60*60)) % 24;
             var mi = Math.floor(remainSeconds / (60)) % 60;
             var ss = remainSeconds % 60;
-            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
+            //Expring: 00days:00hrs:00mins
+//            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
+            _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
         }
     });
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
@@ -60,7 +66,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('EventsCtrl', function ($scope, u, $timeout, apiEvent) {
+.controller('EventsCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiEvent) {
     $element = $('#events');
     $content = $element.find('ion-content .content');
     $scope.timer = u.createTimer(function() {
@@ -71,7 +77,8 @@ angular.module('starter.controllers', [])
             var hh = Math.floor(remainSeconds / (60*60)) % 24;
             var mi = Math.floor(remainSeconds / (60)) % 60;
             var ss = remainSeconds % 60;
-            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
+            _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
+//            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
         }
     });
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
@@ -106,6 +113,7 @@ angular.module('starter.controllers', [])
         $scope.timer.stop();
         if(state.direction == 'none' || state.direction == 'back'){
             $scope.contentReady = false;
+            $ionicScrollDelegate.scrollTop(false);
         }
         if(state.direction == 'forward'){
             $scope.contentAnimated = false;
@@ -159,25 +167,38 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PurchasedPropertiesCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiPurchasedProperty) {
+.controller('PurchasedPropertiesCtrl', function ($scope, u, $timeout, $q, $state, $ionicScrollDelegate, apiPurchasedProperty,apiUser) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
             $scope.contentAnimated = false;
-            
-            $scope.purchasedProperties = [];
-            u.showProgress();
-            apiPurchasedProperty.getAll().then(function(results) {
-                $scope.purchasedProperties = results;  
-            }).then(function(){
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
+            $scope.units = [];
+            var waitLogin;
+            if(apiUser.getUser()) {
+                waitLogin = $q(function(resolve,reject){ resolve(); });
+            }else{
+                waitLogin = u.openLogin().catch(function(){
+                    throw createError('You must login before browsing purchased unit(s)');
+                });   
+            }
+            waitLogin.then(function() {
+                u.showProgress();
+                apiPurchasedProperty.getAll().then(function(results) {
+                    $scope.units = results;  
+                }).then(function(){
+                    return $timeout(function(){
+                        $scope.contentReady = true;
+                        $scope.contentAnimated = true;
+                    });
+                }).catch(function(error) {
+                    u.showAlert(error.description);
+                }).finally(function() {
+                    u.hideProgress();
                 });
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
+            }).catch(function(error){
+                u.showAlert(error.description).then(function(){
+                    $state.go('app.whatsnew');
+                });
             });
         }
     });
@@ -192,24 +213,23 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PurchasedPropertyDetailCtrl', function ($scope, u, $timeout, $state, apiPurchasedProperty) {
+.controller('PurchasedPropertyDetailCtrl', function ($scope, u, $timeout, $state, apiPurchasedProperty, apiConsultant) {
     $element = $('#purchasedpropertydetail');
     $content = $element.find('ion-content .content');
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {  
             $scope.contentReady = false;
             $scope.contentAnimated = false;
-            
-            $scope.purchasedProperty = null;
-            $scope.project = null;
             $scope.unit = null;
-            $scope.consultant = null;
+            $scope.agent = null;
             u.showProgress();
-            apiPurchasedProperty.getById($state.params.id).then(function(results) {
-                $scope.purchasedProperty = results;
-                $scope.project = results.project;
-                $scope.unit = results.unit;
-                $scope.consultant = results.consultant;
+            apiPurchasedProperty.useCache().getById($state.params.id).then(function(results) {
+                $scope.unit = results;
+                apiConsultant.getByUnitId(results.UnitId).then(function(results) {
+                    $scope.agent = _.first(results);                                                    
+                }).catch(function(error) {
+                    u.showAlert(error.description);
+                })
                 return $timeout(function(){
                     u.imagesLoaded($content.find('img').slice(0,2));
                 });
@@ -235,6 +255,46 @@ angular.module('starter.controllers', [])
         }
     });
 })
+
+.controller('UnitFloorplanCtrl', function ($scope, u, $q, $timeout, $state, apiProjectUnitType, apiProjectUnitFloor) {
+    $element = $('#floorplan');
+    $content = $element.find('ion-content .content');
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            $scope.property = null; 
+            u.showProgress();
+            $q.all([
+                apiProjectUnitFloor.getByUnitId($state.params.id), 
+                apiProjectUnitType.getByUnitId($state.params.id)]).then(function(results) {
+                $scope.keyFloorplan = results[0][0];
+                $scope.unitFloorplan = results[1];
+                $svg = $content.find('.svg-container').empty().append($scope.keyFloorplan.FloorSvg);
+                SVG.select('svg>g>*').fill('#ffffff');
+                var selector = '#'+$scope.unitFloorplan.UnitNo+'>*';
+                SVG.select(selector).fill('#ff0000');
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
+
+
 
 .controller('TicketsCtrl', function ($scope, u, $timeout, $state, apiTicket) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
@@ -298,16 +358,16 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ConstructionsCtrl', function ($scope, u, $timeout, $state, apiConstruction) {
+.controller('ConstructionsCtrl', function ($scope, u, $timeout, $state, apiProject) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
             $scope.contentAnimated = false;
             $scope.constructions = [];
-            $scope.tabIndex = 0;
+            $scope.tabIndex = 'COMMERCIAL';
             u.showProgress();
-            apiConstruction.getAll().then(function(results) {
-                $scope.constructions = results;  
+            apiProject.getAll().then(function(results) {
+                $scope.projects = results;  
             }).then(function(){
                 return $timeout(function(){
                     $scope.contentReady = true;
@@ -330,7 +390,7 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ConstructionDetailCtrl', function ($scope, u, $timeout, $state, apiConstruction) {
+.controller('ConstructionDetailCtrl', function ($scope, u, $timeout, $state, apiProject) {
     $element = $('#constructiondetail');
     $content = $element.find('ion-content .content');
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
@@ -338,13 +398,9 @@ angular.module('starter.controllers', [])
             $scope.contentReady = false;
             $scope.contentAnimated = false;
             $scope.project = null;
-            $scope.construction = null;
-            $scope.progresses = [];
             u.showProgress();
-            apiConstruction.getById($state.params.id).then(function(results) {
-                $scope.project = results.project;
-                $scope.construction = results;
-                $scope.progresses = results.progresses;
+            apiProject.useCache().getById($state.params.id).then(function(results) {
+                $scope.project = results;
                 return $timeout(function(){
                     u.imagesLoaded($content.find('img').slice(0,2));
                 });
@@ -371,7 +427,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('PropertiesCtrl', function ($scope, u, $timeout, $state, apiProperty) {
+.controller('PropertiesCtrl', function ($scope, u, $timeout, $state, apiProperty, $ionicScrollDelegate) {
     $element = $('#constructiondetail');
     $content = $element.find('ion-content .content');
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
@@ -379,7 +435,7 @@ angular.module('starter.controllers', [])
             $scope.contentReady = false;
             $scope.contentAnimated = false;
             $scope.properties = [];
-            $scope.tabIndex = 0;
+            $scope.tabIndex = 'COMMERCIAL';
             u.showProgress();
             apiProperty.getAll().then(function(results) {
                 $scope.properties = results;
@@ -401,6 +457,7 @@ angular.module('starter.controllers', [])
     $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
         if(state.direction == 'none' || state.direction == 'back'){
             $scope.contentReady = false;
+            $ionicScrollDelegate.scrollTop(false);
         }
         if(state.direction == 'forward'){
             $scope.contentAnimated = false;
@@ -408,9 +465,12 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertyDetailCtrl', function ($scope, u, $timeout, $state, apiProperty,apiUser) {
+.controller('PropertyDetailCtrl', function ($scope, u, $timeout, $state, $rootScope, apiProperty,apiUser) {
     $element = $('#propertydetail');
     $content = $element.find('ion-content .content');
+    $learnmore = $content.find('.learn-more-container');
+    $scope.rate = u.createRate();
+    $scope.rate.title = 'Rate this Property';
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
@@ -420,20 +480,18 @@ angular.module('starter.controllers', [])
             u.showProgress();
             apiProperty.useCache().getById($state.params.id).then(function(results) {
                 $scope.property = results;  
-                $scope.project = results;
+                $scope.project = results
+                $timeout(function(){
+                    $scope.learnmoretooshort = $learnmore.height()<160;
+                    console.log('learmore.height = ' + $learnmore.height() + ",learnmoretooshort="+$scope.learnmoretooshort);
+                    
+                });
                 return $timeout(function(){
                     u.imagesLoaded($element.find('img'));
                 });
             }).then(function(){
-                if(apiUser.getUser()){
-                    apiProperty.getRate($scope.project, apiUser.getUser()).then(function(results){
-                        $scope.rate = u.createRate(results);  
-                    }).catch(function(error){
-                        u.showAlert(error.description);
-                    });
-                }else{
-                    $scope.rate = u.createRate($scope.property);  
-                }
+                $scope.rate.setRateFromProject($scope.property);  
+                $scope.rate.getRateForProject($scope.property);
                 return $timeout(function(){
                     $scope.contentReady = true;
                     $scope.contentAnimated = true;
@@ -455,13 +513,18 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('PropertySpecificationCtrl', function ($scope, u, $timeout, $state, apiProperty, $timeout) {
+.controller('PropertySpecificationCtrl', function ($scope, u, $timeout, $state, apiProperty, $sce) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.property = null; 
             u.showProgress();
-            apiProperty.getById($state.params.id).then(function(results) {
-                $scope.property = results;  
+            apiProperty.useCache().getById($state.params.id).then(function(results) {
+                $scope.url = results.ProjectSpec ? $sce.trustAsResourceUrl(results.ProjectSpec) : '';  
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
             }).catch(function(error) {
                 u.showAlert(error.description);
             }).finally(function() {
@@ -469,18 +532,128 @@ angular.module('starter.controllers', [])
             });
         }
     });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
 })
 
+.controller('PropertyLocationCtrl', function ($scope, u, $timeout, $state, apiProperty, $sce) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if (state.direction != 'back') {
+            $scope.url = '';
+            u.showProgress();
+            apiProperty.useCache().getById($state.params.id).then(function (results) {
+                $scope.latitude = results.ProjectLat;
+                $scope.longitude = results.ProjectLot;
+                $scope.apiKey = 'AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I';
+                if($scope.latitude && $scope.longitude) {
+                    
+                    $scope.url = 
+                        'https://www.google.com/maps/embed/v1/place'+
+                        '?key='+$scope.apiKey+
+                        '&q='+$scope.latitude+','+$scope.longitude+
+                        '&zoom=18'
+                    ;
+                    console.log($scope.url);
+                    $scope.url = $sce.trustAsResourceUrl($scope.url);
+                    
+                }else{
+                    $scope.url = '';   
+                }
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
+            }).catch(function (error) {
+                u.showAlert(error.description);
+            }).finally(function () {
+                u.hideProgress();
+            });
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
 
-.controller('ConsultantsCtrl', function ($scope, u, $timeout, $state, apiProject, apiConsultant) {
+.controller('PropertyGalleryCtrl', function ($scope, u, $timeout, $state, apiProperty) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            $scope.property = null; 
+            u.showProgress();
+            apiProperty.useCache().getById($state.params.id).then(function(results) {
+                $scope.photos = _.sortBy(results.ProjectPhotos, 'Seq');
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
+
+.controller('PropertyFloorplanCtrl', function ($scope, u, $timeout, $state, apiProjectUnitFloor, apiService) {
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            $scope.property = null; 
+            u.showProgress();
+            apiProjectUnitFloor.getByProjectId($state.params.id).then(function(results) {
+                $scope.floorplans = results;
+                $scope.floorplans = _.sortBy($scope.floorplans, 'Floor');
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
+.controller('ConsultantsCtrl', function ($scope, u, $timeout, $state, apiProperty) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
             $scope.contentAnimated = false;
-            $scope.projects = [];
+            $scope.properties = [];
             u.showProgress();
-            apiProject.getAll().then(function(results) {
-                $scope.projects = results;
+            apiProperty.getAll().then(function(results) {
+                $scope.properties = results;
             }).then(function(){
                 return $timeout(function(){
                     $scope.contentReady = true;
@@ -512,7 +685,7 @@ angular.module('starter.controllers', [])
             $scope.project = null;
             u.showProgress();
             $q.all([apiConsultant.getByProjectId($state.params.projectId), 
-                    apiProject.getById($state.params.projectId)]).then(function(results) {
+                    apiProject.useCache().getById($state.params.projectId)]).then(function(results) {
                 $scope.consultants = results[0];
                 $scope.project = results[1];
             }).then(function(){
@@ -541,6 +714,7 @@ angular.module('starter.controllers', [])
     $element = $('#consultantdetail');
     $content = $element.find('ion-content .content');
     $scope.rate = u.createRate();
+    $scope.rate.title = 'Rate this Consultant';
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
@@ -548,12 +722,13 @@ angular.module('starter.controllers', [])
             $scope.consultant = null;
             u.showProgress();
             apiConsultant.getById($state.params.id).then(function(results) {
-                console.log(results);
                 $scope.consultant = results;
                 return $timeout(function(){
                     u.imagesLoaded($content.find('img').slice(0,2));
                 });
             }).then(function(){
+                $scope.rate.setRateFromConsultant($scope.consultant);  
+                $scope.rate.getRateForConsultant($scope.consultant);
                 return $timeout(function(){
                     $scope.contentReady = true;
                     $scope.contentAnimated = true;
@@ -721,6 +896,26 @@ angular.module('starter.controllers', [])
         if(state.direction != 'back') {
             $scope.contentReady = true;
             $scope.contentAnimated = true;
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
+
+.controller('WebCtrl', function($scope, u, intent, $sce) {
+    $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            $scope.contentReady = true;
+            $scope.contentAnimated = true;
+            $scope.item = intent.item;
+            $scope.title = intent.item.title;
+            $scope.url = intent.item.url ? $sce.trustAsResourceUrl(intent.item.url) : ''; 
         }
     });
     $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {

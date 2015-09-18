@@ -24,7 +24,7 @@
                     </span>
                     What's New
                 </ion-item>
-                <ion-item menu-close href="#/app/purchasedproperties" class="item-icon-left">
+                <ion-item ng-click="u.closeSideMenuIfLogon()" href="#/app/purchasedproperties" class="item-icon-left">
                     <span class="icon">
                         <img src="img/icons/Hatten_navigation_purchased(w).png">
                     </span>
@@ -42,23 +42,17 @@
                     </span>
                     Properties
                 </ion-item>
+                <ion-item menu-close href="#/app/consultants" class="item-icon-left">
+                    <span class="icon">
+                        <img src="img/icons/Hatten_navigation_consultant(w).png">
+                    </span>
+                    Consultants
+                </ion-item>
                 <ion-item menu-close href="#/app/events" class="item-icon-left">
                     <span class="icon">
                         <img src="img/icons/Hatten_navigation_event(w).png">
                     </span>
                     Events
-                </ion-item>
-                <ion-item menu-close href="#/app/tickets" class="item-icon-left">
-                    <span class="icon">
-                        <img src="img/icons/Hatten_navigation_voucher(w).png">
-                    </span>
-                    Tickets
-                </ion-item>
-                <ion-item menu-close href="#/app/calculator" class="item-icon-left">
-                    <span class="icon">
-                        <img src="img/icons/Hatten_navigation_calculator(w).png">
-                    </span>
-                    Calculator
                 </ion-item>
                 <ion-item menu-close href="#/app/feedbacks" class="item-icon-left">
                     <span class="icon">
@@ -66,17 +60,32 @@
                     </span>
                     Feedbacks
                 </ion-item>
-                <ion-item menu-close href="#/app/consultants" class="item-icon-left">
+<!--
+                <ion-item menu-close href="#/app/tickets" class="item-icon-left">
                     <span class="icon">
-                        <img src="img/icons/Hatten_navigation_consultant(w).png">
+                        <img src="img/icons/Hatten_navigation_voucher(w).png">
                     </span>
-                    Consultants
+                    Tickets
                 </ion-item>
+-->
+                <ion-item menu-close href="" class="item-icon-left">
+                    <span class="icon">
+                        <img src="img/icons/Hatten_navigation_voucher(w).png">
+                    </span>
+                    Voucher
+                </ion-item>
+                <ion-item menu-close href="#/app/calculator" class="item-icon-left">
+                    <span class="icon">
+                        <img src="img/icons/Hatten_navigation_calculator(w).png">
+                    </span>
+                    Calculator
+                </ion-item>
+<!--
                 <ion-item menu-close href="#/app/privacypolicy" class="item-icon-left">
                     <span class="icon">
                         <img src="img/icons/Hatten_navigation_privacy(w).png">
                     </span>
-                    Privacy Policy
+                    Legal &amp; Privacy
                 </ion-item>
                 <ion-item menu-close href="#/app/termsandcondition" class="item-icon-left">
                     <span class="icon">
@@ -90,7 +99,8 @@
                     </span>
                     Personal Data Policy
                 </ion-item>
-                <ion-item menu-close href="#/app/profile" class="item-icon-left">
+-->
+                <ion-item ng-click="u.closeSideMenuIfLogon()" href="#/app/profile" class="item-icon-left">
                     <span class="icon">
                         <img src="img/icons/Hatten_navigation_account(w).png">
                     </span>

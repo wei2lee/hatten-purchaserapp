@@ -28,19 +28,25 @@ angular.module('services', ['ngResource'])
           $rootScope, 
           $ionicModal, 
           apiUser, 
+          apiProperty,
+          apiConsultant,
+          apiEvent,
           $ionicPopup, 
           $ionicLoading, 
           $cordovaSocialSharing, 
           $cordovaAppRate, 
           $cordovaProgress,
           $cordovaAppVersion,
+          $ionicSideMenuDelegate,
+          $ionicViewService,
+          $ionicHistory,
           app) {
     var _this = this;
     
 /* ==========================================================================
    Login
    ========================================================================== */
-    $ionicModal.fromTemplateUrl('templates/login.html', {
+    this.loadLogin = $ionicModal.fromTemplateUrl('templates/common/login.html', {
         scope: $rootScope
     }).then(function (modal) {
         $rootScope.loginModal = modal;
@@ -49,40 +55,100 @@ angular.module('services', ['ngResource'])
         $rootScope.loginModal.hide();
     };
     this.openLogin = function () {
-        $rootScope.loginAlert = null;
-        $rootScope.loginData = {};
-        $rootScope.loginData.username = 'TAREN.SUNIL@YAHOO.COM';
-        $rootScope.loginData.password = 'wendyjsy';
-        $ret = $rootScope.loginModal.show();
-        return $q(function(resolve, reject) {
-            $ret = $rootScope.$on('modal.hidden', function() {
-                $ret();
-                resolve();
+        return this.loadLogin.then(function() {
+            $rootScope.loginAlert = null;
+            $rootScope.loginData = {};
+            $rootScope.loginData.username = 'TAREN.SUNIL@YAHOO.COM';
+            $rootScope.loginData.password = 'wendyjsy';
+            $ret = $rootScope.loginModal.show();
+            return $q(function(resolve, reject) {
+                $ret = $rootScope.$on('modal.hidden', function() {
+                    $ret();
+                    if(apiUser.getUser()){
+                        resolve(apiUser.getUser());
+                    }else{
+                        reject(createError('Not login'));   
+                    }
+                });
             });
         });
     }
     this.doLogout = function() {
         apiUser.logout();
+        var currentstate = _.find($state.get(), function(o) { return o.name == $state.current.name; });
+        if(currentstate) {
+            if(currentstate.resolve && currentstate.resolve.login) {
+                $ionicHistory.nextViewOptions({
+                   disableBack: true
+                });
+                $ionicSideMenuDelegate.toggleLeft(false);
+                $state.go("app.whatsnew");
+            }
+        }
     }
     this.doLogin = function () {
         _this.showProgress();
-        apiUser.login($rootScope.loginData.username, $rootScope.loginData.password).then(function(results){
+        return apiUser.login($rootScope.loginData.username, $rootScope.loginData.password).then(function(results){
             _this.closeLogin();
         }).catch(function(error) {
             $rootScope.loginAlert = {
                 message: error.description 
             }
+            throw error;
         }).finally(function(){
             _this.hideProgress();
         });
     };
+    
+    this.sideMenuLogin = function() {
+        console.log('sideMenuLogin');
+        if(!apiUser.getUser()){
+            return _this.openLogin().then(function(){
+                $ionicHistory.nextViewOptions({
+                   disableBack: true
+                });
+                $ionicSideMenuDelegate.toggleLeft(false);
+            }).catch(function(error){
+                throw error;
+            });
+        }else{
+            return $q(function(resolve,reject){
+                $ionicHistory.nextViewOptions({
+                   disableBack: true
+                });
+                $ionicSideMenuDelegate.toggleLeft(false);
+                resolve(); 
+            });
+        }
+    }
+    
+    this.sideMenuLoginOrNormalLogin = function() {
+        console.log('sideMenuLoginOrNormalLogin');
+        if($ionicSideMenuDelegate.isOpenLeft()) {
+            return _this.sideMenuLogin();   
+        }else{
+            if(!apiUser.getUser()){
+                return _this.openLogin();
+            }else{
+                return $q(function(resolve,reject) { resolve(apiUser.getUser()); });
+            }
+        }
+    }
+    
+    this.closeSideMenuIfLogon = function() {
+        console.log('closeSideMenuIfLogon');
+        if(apiUser.getUser()){
+            $ionicSideMenuDelegate.toggleLeft(false) 
+        }
+    }
+    
 /* ==========================================================================
    Show Progress, Error
    ========================================================================== */
     this.showProgress = function() {
         $ionicLoading.show({
             delay: 300,
-            templateUrl: 'templates/loading.html'
+            templateUrl: 'templates/common/loading.html'
         });
     }
     this.hideProgress = function() {
@@ -159,33 +225,39 @@ angular.module('services', ['ngResource'])
 /* ==========================================================================
    Application Specified Rating
    ========================================================================== */
-    this.createRate = function(o){
+    this.createRate = function(o, title){
         var ret = {
-            title:'Rate this Property',
+            'apiUser':apiUser,
+            'title':title,
             setRate:function(i) {
+                var _self = this;
                 var oldval = Math.floor(this.rate);
+                var newval;
                 if(oldval == i && oldval > 1) {
-                    this.rate = oldval - 1;
+                    newval = oldval - 1;
                 }else{
-                    this.rate = i;
+                    newval = i;
                 }
-                var newval = this.rate;
-                if(oldval != newval) {
-                    if(this.onSetRate)   
-                        this.onSetRate(newval)
+                if(oldval == newval)return;
+                if(apiUser.getUser()){
+                    _self.rate = newval;
+                    if(_self.rateFor)   
+                        _self.rateFor(newval)
+                }else{
+                    _this.openLogin().then(function(){
+                        if(apiUser.getUser()){
+                            _self.rate = newval;
+                            if(_self.rateFor)   
+                                _self.rateFor(newval)
+                        }
+                    });
                 }
             },
-            rate:o.RateValue || 3,
+            rate:-1,
             review: {
-                averageRate:o.AverRate || 0,
-                totalPeople:o.Total || 0,
-                totalRatePerStars:[
-                    o.Total1 || o.Star1 || 0, 
-                    o.Total2 || o.Star2 || 0,
-                    o.Total3 || o.Star3 || 0,
-                    o.Total4 || o.Star4 || 0,
-                    o.Total5 || o.Star5 || 0
-                ],
+                averageRate:0,
+                totalPeople:0,
+                totalRatePerStars:[0,0,0,0,0], 
                 getTotalRateStars:function() { return _.max(this.totalRatePerStars); },
                 getChartWidth:function(i) {
                     if(this.getTotalRateStars() == 0) {
@@ -199,6 +271,94 @@ angular.module('services', ['ngResource'])
         ret.review.totalPeople = _.reduce(ret.review.totalRatePerStars, function(s,o){
             return s+o;
         });
+        ret.setRateFrom = function(o) {
+            this.rate = o.RateValue || -1;
+            this.review.averageRate = o.AverRate || 0;
+            this.review.totalPeople = o.Total || 0;
+            console.log(o);
+            this.review.totalRatePerStars[4] = o.Total1 || o.Star1 || 0;
+            this.review.totalRatePerStars[3] = o.Total2 || o.Star2 || 0;
+            this.review.totalRatePerStars[2] = o.Total3 || o.Star3 || 0;
+            this.review.totalRatePerStars[1] = o.Total4 || o.Star4 || 0;
+            this.review.totalRatePerStars[0] = o.Total5 || o.Star5 || 0;
+        }
+        ret.rateFor = function(star) {
+            if(ret.project) {
+                return ret.rateForProject(ret.project,star);
+            }else if(ret.consultant) {
+                return ret.rateForConsultant(ret.consultant,star);
+            }else{
+                return $q(function(resolve,reject){
+                    reject('Invalid rateFor object');
+                });
+            }
+        }
+        //Rate for Project
+        ret.rateForProject = function(project, star) {
+            if(ret.apiUser.getUser() == null) {
+                return $q(function(resolve,reject){
+                    reject(createError('Not logon'));
+                });
+            }
+            return apiProperty.rate(project, ret.apiUser.getUser(), star).then(function(results){
+                $timeout(function(){
+                    ret.setRateFrom(results);  
+                });
+            }).catch(function(error){
+                _this.showAlert(error.description);
+                throw error;
+            }); 
+        }
+        ret.setRateFromProject = function(o) {
+            ret.project = o;
+            return ret.setRateFrom(o);   
+        }
+        ret.getRateForProject = function(project) {
+                if(ret.apiUser.getUser() == null) {
+                    return $q(function(resolve,reject){
+                        reject(createError('Not logon'));
+                    });
+                }
+                return apiProperty.getRate(project, ret.apiUser.getUser()).then(function(results){
+                ret.setRateFrom(results);  
+            }).catch(function(error){
+                _this.showAlert(error.description);
+                throw error;
+            });
+        }
+        //Rate for Consultant
+        ret.rateForConsultant = function(consultant, star) {
+            if(ret.apiUser.getUser() == null) {
+                return $q(function(resolve,reject){
+                    reject(createError('Not logon'));
+                });
+            }
+            return apiConsultant.rate(consultant, ret.apiUser.getUser(), star).then(function(results){
+                $timeout(function(){
+                    ret.setRateFrom(results);  
+                });
+            }).catch(function(error){
+                _this.showAlert(error.description);
+                throw error;
+            }); 
+        }
+        ret.setRateFromConsultant = function(o) {
+            ret.consultant = o;
+            return ret.setRateFrom(o);   
+        }
+        ret.getRateForConsultant = function(consultant) {
+            if(ret.apiUser.getUser() == null) {
+                return $q(function(resolve,reject){
+                    reject(createError('Not logon'));
+                });
+            }
+            return apiConsultant.getRate(consultant, ret.apiUser.getUser()).then(function(results){
+                ret.setRateFrom(results);  
+            }).catch(function(error){
+                _this.showAlert(error.description);
+                throw error;
+            });
+        }
         return ret;
     }
 /* ==========================================================================
@@ -230,6 +390,12 @@ angular.module('services', ['ngResource'])
         $state.go(state);
     }
     
+    this.disableBack = function() {
+        $ionicHistory.nextViewOptions({
+           disableBack: true
+        });
+    }
+    
 /* ==========================================================================
    Promise for loading images
    ========================================================================== */
@@ -249,7 +415,4 @@ angular.module('services', ['ngResource'])
             });
         });
     };
-
-
-    
 });

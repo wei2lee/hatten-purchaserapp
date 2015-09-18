@@ -22,6 +22,16 @@ angular.module('services-api', [])
         this._useCache = true;
         return this; 
     }
+    _apiServiceBase.prototype.getAll = function() {
+        return $q(function(resolve,reject){
+            reject(createError('Not implemented')); 
+        });
+    }
+    _apiServiceBase.prototype.getById = function(id) {
+        return $q(function(resolve,reject){
+            reject(createError('Not implemented')); 
+        });
+    }
     _apiServiceBase.prototype.processError = function(jqXHR, textStatus, errorThrown) {
         var msg = null;
         if(jqXHR.responseJSON != null) {
@@ -69,6 +79,7 @@ angular.module('services-api', [])
                     description:errorThrown
                 }; 
             }
+            console.log(jqXHR);
             if(!msg) {
                 msg = {
                     domain:ErrorDomain.ClientHTTP, 
@@ -79,16 +90,18 @@ angular.module('services-api', [])
         }
         return msg;
     }
+
     return _apiServiceBase;
 })
-.factory('apiServiceBaseWithToken', function($q,apiServiceBase,apiToken){
-    apiServiceBase.prototype.withToken = function(createJQXHR) {
+.factory('apiServiceBaseWithToken', function($q,$timeout,apiServiceBase,apiToken) {
+    function api() {}
+    api.prototype = new apiServiceBase();
+    api.prototype.withToken = function(createJQXHR) {
         var defer = $q.defer();
         var _self = this;
         createJQXHR().done(function(data, textStatus, jqXHR) { 
             console.log('done@' + this.url);
             console.log(data);
-            _self.values = data;
             defer.resolve(data);
         }).fail(function(jqXHR, textStatus, errorThrown) {
             if(jqXHR.status==401){
@@ -98,12 +111,10 @@ angular.module('services-api', [])
                     return createJQXHR().then(function(data, textStatus, jqXHR){
                         console.log('done@' + this.url);
                         console.log(data);
-                        _self.values = data;
                         defer.resolve(data);
                     });
-                }).catch(function(jqXHR, textStatus, errorThrown) {
+                }).catch(function(error) {
                     console.log('fail@' + this.url);
-                    var error = _self.processError(jqXHR, textStatus, errorThrown);
                     console.log(error);
                     defer.reject(error); 
                 });
@@ -116,11 +127,11 @@ angular.module('services-api', [])
         });
         return defer.promise;
     }
-    return apiServiceBase;
+    return api;
 })
-
 .factory('apiToken', function($q,apiServiceBase) {
-    var api = apiServiceBase;
+    function api() {}
+    api.prototype = new apiServiceBase();
     api.prototype.token = function(){
         var _self = this;
         return $q(function(resolve,reject) {
@@ -148,12 +159,13 @@ angular.module('services-api', [])
     return new api();
 })
 .factory('apiUser', function($q,apiServiceBaseWithToken) {
-    var api = apiServiceBaseWithToken;
+    function api() {}
+    api.prototype = new apiServiceBaseWithToken();
     api.prototype.login = function(username, password) {
         var _self = this;
         if(!username || !password){
             return $q(function(resolve,reject) {
-                reject('Username must not be empty'); 
+                reject('Username and password must not be empty'); 
             });
         }
         return _self.withToken(function(){
@@ -193,7 +205,8 @@ angular.module('services-api', [])
 
 
 .factory('apiProject', function($q,apiServiceBaseWithToken) {
-    var api = apiServiceBaseWithToken;
+    function api() {}
+    api.prototype = new apiServiceBaseWithToken();
     api.prototype.getAll = function() {
         var _self = this;
         return this.withToken(function(){
@@ -209,26 +222,259 @@ angular.module('services-api', [])
     }
     api.prototype.getById = function(id) {
         var _self = this;
-        if(_self.useCache){
+        if(_self.useCache && _self.values){
             return $q(function(resolve,reject){
                 if(typeof id == 'string') id = parseInt(id);
                 var found = _.find(_self.values, function(o) {
-                    console.log(o + ',' + id);
                     return o.ProjectId == id; 
                 });
                 if(found) resolve(found);
                 else reject(createError('Not found'));
             });
         }else{
-            return $q(function(resolve,reject) {
-                reject(createError('Not Implemented')); 
-            });
+            return this.withToken(function(){
+                return $.ajax(_self.apiService.apiBase + 'api/AppProject/'+id,{
+                    method:'GET',
+                    dataType:'json',
+                    headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+                }).done(function(data, textStatus, jqXHR) { 
+                    data.ProjectId = data.Id;
+                    data.Id = undefined;
+                    return data;
+                });
+            })
         }
     }
     api.prototype.getRate = function(project,user) {
         var _self = this;
         return this.withToken(function(){
-            return $.ajax(_self.apiService.apiBase + 'api/Rate/GetProject?iProjectID='+project.Id+'&iCustomerID='+user.CustomerId, {
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/GetProject?iProjectID='+project.ProjectId+'&iCustomerID='+user.CustomerId, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.rate = function(project,user,star) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/UpdateProjectRate?iProjectId='+project.ProjectId+'&iCustomerID='+user.CustomerId+'&iRateValue='+star+'', {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    return new api();
+})
+.service('apiPurchasedProperty', function($q, apiProperty, apiUser,apiServiceBaseWithToken) {
+    function api(){}
+    api.prototype = new apiServiceBaseWithToken();
+    api.prototype.getUnitsByUser = function(user) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppCustomer/'+user.IC+'/Units', {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getAll = function() {
+        var _self = this;
+        return $q.all([_self.getUnitsByUser(apiUser.getUser()), apiProperty.getAll()]).then(function(results){
+            var customerProjects = results[0];
+            var projects = results[1];
+            var units = [];
+            _.each(customerProjects, function(customerProject) {
+                var customerUnits = [];
+                var found = _.find(projects, function(project){
+                    return customerProject.ProjectId == project.ProjectId;
+                });
+                customerUnits = _.each(customerProject.Units, function(unit) {
+                    unit.project = found;
+                });
+                units = units.concat(customerUnits); 
+            });
+            _self.values = units;
+            console.log(units);
+            return units;
+        })
+    }
+    api.prototype.getById = function(id) {
+        var _self = this; 
+        var promise = $q(function(resolve,reject) { resolve(); });
+        var p = (_self.useCache && _self.values) ? promise : this.getAll();
+        return p.then(function(){ 
+            return $q(function(resolve,reject){
+                if(typeof id == 'string') id = parseInt(id);
+                var found = _.find(_self.values, function(o) {
+                    return o.UnitId == id; 
+                });
+                if(found) resolve(found);
+                else reject(createError('Not found'));
+            });
+        });
+    }
+    return new api();
+})
+
+.service('apiEvent', function($q,apiServiceBaseWithToken) {
+    function api(){}
+    api.prototype = new apiServiceBaseWithToken();
+    ret = new api();
+    var index = 0;
+    var values = []; ret.values = values;
+    var value = {};
+    value.id = index++;
+    value.thumb = 'img/images_dummy_only/Hatten_homepage1.png';
+    value.description = faker.lorem.paragraphs();
+    value.period = '12-14 JUNE, 11pm-5pm';
+    value.displayName = 'The New Pulse of Melaka';
+    value.expireDate = faker.date.future();
+    value.expireRemain = '';
+    value.area = faker.address.state();
+    value.address = faker.address.streetAddress() + ', ' + faker.address.city() + ', ' + faker.address.state() + ', ' + faker.address.country();
+    value.location = {
+        latitude:faker.address.latitude(),
+        longitude:faker.address.longitude()
+    };
+    value.distance = sprintf("%.1f ", Math.random() * 100) + 'KM';
+    value.type = 0;
+    values.push(value);
+    
+    value = {};
+    value.id = index++;
+    value.thumb = 'img/images_dummy_only/Hatten_birthday.png';
+    value.description = faker.lorem.paragraphs();
+    value.period = '12-14 JUNE, 11pm-5pm';
+    value.displayName = 'Happy Birthday';
+    value.expireDate = faker.date.future();
+    value.expireRemain = '';
+    value.area = faker.address.state();
+    value.address = faker.address.streetAddress() + ', ' + faker.address.city() + ', ' + faker.address.state() + ', ' + faker.address.country();
+    value.location = {
+        latitude:faker.address.latitude(),
+        longitude:faker.address.longitude()
+    };
+    value.distance = sprintf("%.1f ", Math.random() * 100) + 'KM';
+    value.type = 0;
+    values.push(value);
+    
+    
+    api.prototype.getAll = function() {
+        return $q(function(resolve,reject){
+            resolve(values); 
+        });
+    }
+    api.prototype.getById = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve,reject){
+            var found = _.find(values, function(o){
+                return o.id == id; 
+            });
+            if(found) resolve(found); 
+            else reject(createError('Not found'));
+        });
+    }
+    return ret;
+})
+
+.service('apiTicket', function($q,$timeout,apiServiceBaseWithToken,apiEvent) {
+    function api(){}
+    api.prototype = new apiServiceBaseWithToken();
+    var values = []; api.values = values;
+    var index = 0;
+    value = {};
+    value.id = index++;
+    value.qrcode = faker.image.qrcode();
+    value.event = apiEvent.values[0];
+    values.push(value);
+    api.prototype.addByEvent = function(event) {
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0){
+                var value = {};
+                value.id = index++;
+                value.qrcode = faker.image.qrcode();
+                value.event = event;
+                values.push(value);
+                    resolve(null); 
+            }else{
+                reject(createError('Not found'));
+            }
+        });
+    }
+    api.prototype.getAll = function() {
+        return $q(function(resolve,reject){
+            resolve(values); 
+        });
+    }
+    api.prototype.getById = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve,reject){
+            var found = _.find(values, function(o){ o.id == id; });
+            if(found) resolve(found); 
+            else reject(createError('Not found'));
+        });
+    }
+    return new api();
+})
+
+.service('apiWhatsNewItem', function($q,$timeout,apiServiceBase, apiEvent){
+    return apiEvent;
+})
+
+.service('apiProperty', function(apiProject) {
+    return apiProject;
+})
+
+.service('apiConsultant', function($q,$timeout,apiServiceBaseWithToken) {
+    function api(){}
+    api.prototype = new apiServiceBaseWithToken();
+    api.prototype.getByProjectId = function(id) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppUser/GetByProjectId?iProjectID='+id, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getByUnitId = function(id) {
+        var _self = this; 
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppUser/GetByUnitId?iUnitID='+id, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getById = function(id) {
+        var _self = this; 
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppUser/'+id, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getRate = function(consultant,user) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/GetSysUser?iSysUserID='+consultant.UserId+'&iCustomerID='+user.CustomerId, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.rate = function(consultant,user,star) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/UpdateSysUser?iSysUserID='+consultant.UserId+'&iCustomerID='+user.CustomerId+'&iRateValue='+star+'', {
                 method:'GET',
                 dataType:'json',
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
@@ -238,143 +484,46 @@ angular.module('services-api', [])
     return new api();
 })
 
-
-.service('apiWhatsNewItem', function($q, apiEvent,apiServiceBase){
-    var values = []; apiServiceBase.values = values;
-    for(i = 0 ; i < 5 ; i++) {
-        var value = apiEvent.values[i];
-        values.push(value);
-    }
-    return apiServiceBase;
-})
-
-.service('apiPurchasedProperty', function($q,$timeout, apiProject, apiUnit, apiConsultant) {
-    var values = [];
-    for(i = 0 ; i < 5 ; i++) {
-        var value = {};
-        value.id = i;
-        value.unit = _.sample(apiUnit.values);
-        value.project = value.unit.project;
-        value.consultant = _.sample(apiConsultant.values);
-        value.spaDate = faker.date.past();
-        value.completionDate = faker.date.future();
-        value.purchasedDate = faker.date.past();
-        values.push(value);
-    }
-    return new apiBaseService(values,$q,$timeout);
-})
-
-
-.service('apiConstruction', function($q,$timeout,apiProject) {
-    var values = []; 
-    var index2 = 0;
-    for(i = 0 ; i < apiProject.values.length ; i++) {
-        var progresses = [];
-        for(j = 0 ; j < 10 ; j++) {
-            var value = {
-                id:index2++,
-                photoTakenDate: faker.date.past(),
-                thumb:faker.image.progress(),
-            };
-            progresses.push(value);
-        }
-        
-        var value = {
-            id:i,
-            displayName: faker.company.companyName(),
-            thumb:faker.image.property(),
-            project:apiProject.values[i],
-            'progresses':progresses
-        };
-        values.push(value);
-    }
-    return new apiBaseService(values,$q,$timeout);
-})
-
-.service('apiEvent', function($q,$timeout,apiServiceBase) {
-    var values = []; apiServiceBase.values = values;
-    for(i = 0 ; i < 10 ; i++) {
-        var value = {};
-        value.id = i;
-        value.thumb = faker.image.event();
-        value.description = faker.lorem.paragraphs();
-        value.period = '12-14 JUNE, 11pm-5pm';
-        value.displayName = faker.company.projectName();
-        value.expireDate = faker.date.future();
-        value.expireRemain = '';
-        value.area = faker.address.state();
-        value.address = faker.address.streetAddress() + ', ' + faker.address.city() + ', ' + faker.address.state() + ', ' + faker.address.country();
-        value.location = {
-            latitude:faker.address.latitude(),
-            longitude:faker.address.longitude()
-        };
-        value.distance = sprintf("%.1f ", Math.random() * 100) + 'KM';
-        value.type = _.random(1);
-        values.push(value);
-    }
-    return apiServiceBase;
-})
-
-
-
-.service('apiProperty', function(apiProject) {
-    return apiProject;
-})
-
-.service('apiConsultant', function($q,$timeout) {
-    var values = []; this.values = values;
-    for(i = 0 ; i < 90 ; i++) {
-        var firstName = faker.name.firstName(), lastName = faker.name.lastName();
-        var value = {};
-        value.id = i;
-        value.fullName = faker.name.findName(firstName, lastName);
-        value.thumb = faker.internet.avatar();
-        value.project = {
-            id:_.random(9)  
-        };
-        value.contact = faker.phone.phoneNumber();
-        value.email = faker.internet.email(firstName, lastName)
-        value.address = faker.address.streetAddress() + ", " + faker.address.city() + ", " + faker.address.stateAbbr() + " " + faker.address.zipCode();
-        values.push(value);
-    }
-    return new apiBaseService(values,$q,$timeout);
-})
-
-
-.service('apiVoucher', function($q,$timeout) {
-    var values = faker.table.vouchers();
-    return new apiBaseService(values,$q,$timeout);
-})
-
-
-
-.service('apiTicket', function($q,$timeout,apiEvent) {
-    var index = 0;
-    var values = [];
-    value = {};
-    value.id = index++;
-    value.qrcode = faker.image.qrcode();
-    value.event = apiEvent.values[0];
-    values.push(value);
-    
-    ret = new apiBaseService(values,$q,$timeout);
-    ret.addByEvent = function(event) {
-        return $q(function(resolve, reject) {
-            if(Math.random() >= 0){
-                var value = {};
-                value.id = index++;
-                value.qrcode = faker.image.qrcode();
-                value.event = event;
-                values.push(value);
-                fakeNetworkDelay($timeout, function() { 
-                    resolve(null); 
-                });
-            }else{
-                fakeNetworkDelay($timeout, function() { reject({error_message:'fake error'}); });
-            }
+.service('apiProjectUnitType', function($q,$timeout,apiServiceBaseWithToken) {
+    function api(){}
+    api.prototype = new apiServiceBaseWithToken();
+    api.prototype.getByUnitId = function(id) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/ProjectUnitTypes/GetByUnitId?unitid='+id, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
         });
     }
-    return ret;
+    return new api();
+})
+
+.service('apiProjectUnitFloor', function($q,$timeout,apiServiceBaseWithToken) {
+    function api(){}
+    api.prototype = new apiServiceBaseWithToken();
+    api.prototype.getByUnitId = function(id) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/ProjectUnitFloors/GetListByUnitId?unitid='+id, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getByProjectId = function(id) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/ProjectUnitFloors/GetListByProjectId?projectid='+id,{
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            });
+        })
+    }
+    return new api();
 })
 
 .service('apiDefectItemAreaLocation', function() {

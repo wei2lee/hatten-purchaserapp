@@ -1,0 +1,27 @@
+
+<ion-view view-title="Floorplan" id="floorplan">
+    <ion-pane>
+        <ion-content class="has-header" scroll="false">
+            <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
+                <ion-slide-box on-slide-changed="slideHasChanged($index)" class="full-height" ng-if="floorplans && floorplans.length">
+                    <ion-slide ng-repeat="floorplan in floorplans track by floorplan.Id">
+                        <div class="box">
+                            <div class="box-container">
+                                <div class="box-thumb-container">
+                                    <img ng-src="{{floorplan.FloorResourceKey}}">
+                                </div>
+                                <div class="box-thumb-container">
+                                    <img ng-src="{{floorplan.TopFloorResourceKey}}">
+                                </div>
+                            </div>
+                            <div class="box-label">
+                                {{floorplan.Floor}}
+                            </div>
+                        </div>
+                    </ion-slide>
+                </ion-slide-box>
+                <p class="padding">Floorplan is not available</p>
+            </div>
+        </ion-content>
+    </ion-pane>
+</ion-view>

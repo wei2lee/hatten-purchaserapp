@@ -1,20 +1,20 @@
 <ion-view view-title="Properties" id="properties">
     <div class="tabs-striped tabs-top tabs-background-light tabs-color-positive">
-        <div class="tabs">
-            <a class="tab-item" ng-class="{active:tabIndex==0}" ng-click="tabIndex=0;">
-                 COMMERICIAL
+        <div class="tabs"> 
+            <a class="tab-item" ng-class="{active:tabIndex=='COMMERCIAL'}" ng-click="tabIndex='COMMERCIAL';">
+                 COMMERCIAL
             </a>
-            <a class="tab-item" ng-class="{active:tabIndex==1}" ng-click="tabIndex=1;">
+            <a class="tab-item" ng-class="{active:tabIndex=='RESIDENTIAL'}" ng-click="tabIndex='RESIDENTIAL';">
                  RESIDENTIAL
             </a>
-            <a class="tab-item" ng-class="{active:tabIndex==2}" ng-click="tabIndex=2;">
-                 HOSPITALITY
+            <a class="tab-item" ng-class="{active:tabIndex=='HOTEL'}" ng-click="tabIndex='HOTEL';">
+                 HOTEL
             </a>
         </div>
     </div>
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
-            <div class="list card fade-in-animation" ng-repeat="property in properties">
+            <div class="list card fade-in-animation" ng-repeat="property in properties | filter : {PropertyTypeDesc:tabIndex}">
                 <div class="item padding-0 line-card-image">
                     <a ng-href="#/app/property/{{property.ProjectId}}"><img class="full-img-responsive" ng-src="{{property.PictureLargeResourceKey || 'img/placeholder_general_lg.png'}}"></a>
                 </div>

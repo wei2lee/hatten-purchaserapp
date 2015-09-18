@@ -6,51 +6,53 @@
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <img class="view-center-thumb padding-top" ng-src="{{project.logo}}">
             <div class="list card line-card-image">
-                <img ng-src="{{property.PictureLargeResourceKey ? (''+property.PictureLargeResourceKey) : 'img/placeholder_general_lg.png'}}" class="full-img-responsive">
+                <img ng-src="{{property.PictureLargeResourceKey || 'img/placeholder_general_lg.png'}}" class="full-img-responsive">
             </div>
-            <div class="list card learn-more-container">
+            <div class="list card learn-more-container" ng-class="{'tooshort':learnmoretooshort, 'expanded':expanded}">
                 <div class="item-body" ng-bind-html="property.ProjectTemplate">
                 </div>
-                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', property)">
+<!--                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', {description:property.ProjectTemplate})">-->
+                <button class="learn-more-button button button-full button-positive footer-button" ng-click="learnmoretooshort=false; expanded=true;">
                     LEARN MORE
                 </button>
                 <div class="learn-more-overlay"></div>
             </div>
             <div class="list card">
+<!--
                 <div class="item padding-0">
                     <div class="row padding-0">
-                        <div class="col  text-center bg-image-button floorplan-bg-button">
+                        <a ng-href="#/app/propertyfloorplan/{{property.ProjectId}}" class="col  text-center bg-image-button floorplan-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
-                        </div>
-                        <a class="col left-border text-center bg-image-button specification-bg-button">
+                        </a>
+                        <a ng-href="#/app/propertyspecification/{{property.ProjectId}}" class="col left-border text-center bg-image-button specification-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
                         </a>
                     </div>
                 </div>
+-->
                 <div class="item padding-0">
                     <div class="row padding-0">
-                        <div class="col  text-center bg-image-button gallery-bg-button">
+                        <a ng-href="#/app/propertygallery/{{property.ProjectId}}" class="col  text-center bg-image-button gallery-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
-                        </div>
-                        <div class="col  left-border text-center bg-image-button location-bg-button">
+                        </a>
+                        <a ng-href="#/app/propertylocation/{{property.ProjectId}}" class="col  left-border text-center bg-image-button location-bg-button">
                             <div class="responsive-container">
                                 <canvas width=504 height=291></canvas>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
 
             <div class="padding-horizontal">
-                <a href="#/app/consultants/where-project/{{project.id}}" class="button button-block button-balanced">FIND A CONSULTANT</a>
+                <a href="#/app/consultants/where-project/{{property.ProjectId}}" class="button button-block button-balanced">FIND A CONSULTANT</a>
             </div>
-
             <div class="list card padding-md fadeIn animated" ng-if="rate">
                 <rate-widget rate="rate"></rate-widget>
             </div>
