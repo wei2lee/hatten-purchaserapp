@@ -11,15 +11,27 @@ angular.module('route', ['ionic', 'services'])
         templateUrl: 'templates/menu.html',
         controller: 'AppCtrl'
     })
-    .state('app.whatsnew', {
-        url: '/whatsnew',
+    .state('app.whatsnews', {
+        url: '/whatsnews',
         views: {
             'menuContent': {
-                templateUrl: 'templates/whatsnew.html',
-                controller: 'WhatsNewCtrl'
+                templateUrl: 'templates/events.html',
+                controller: 'WhatsNewsCtrl'
             }
         }
     })
+
+    .state('app.whatsnewsdetail', {
+        url: '/whatsnews/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/eventdetail.html',
+                controller: 'WhatsNewsDetailCtrl'
+            }
+        }
+    })
+    
+    
     .state('app.purchasedproperties', {
         url: '/purchasedproperties',
         views: {
@@ -154,6 +166,26 @@ angular.module('route', ['ionic', 'services'])
             'menuContent': {
                 templateUrl: 'templates/eventdetail.html',
                 controller: 'EventDetailCtrl'
+            }
+        }
+    })
+    
+    .state('app.vouchers', {
+        url: '/vouchers',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/events.html',
+                controller: 'VouchersCtrl'
+            }
+        }
+    })
+
+    .state('app.voucherdetail', {
+        url: '/voucher/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/eventdetail.html',
+                controller: 'VoucherDetailCtrl'
             }
         }
     })
@@ -306,7 +338,7 @@ angular.module('route', ['ionic', 'services'])
 
     ;
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/app/whatsnew');
+    $urlRouterProvider.otherwise('/app/whatsnews');
 })
 .config(function($ionicConfigProvider) {  
     //$ionicConfigProvider.views.maxCache(1);

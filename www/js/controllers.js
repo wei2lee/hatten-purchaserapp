@@ -9,48 +9,56 @@ angular.module('starter.controllers', [])
     $scope.app = 'Application';
 })
 
-.controller('WhatsNewCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiWhatsNewItem) {
-    $element = $('#whatsnew');
+.controller('WhatsNewsCtrl', function ($scope, u, $timeout, $state, $ionicScrollDelegate, apiWhatsNews) {
+    $scope.title = "What's News";
+    $element = $('#events');
     $content = $element.find('ion-content .content');
     $scope.timer = u.createTimer(function() {
-        for(i = 0 ; i < $scope.news.length ; i++) {
-            var _new = $scope.news[i];
-            var remainSeconds = Math.max(Math.floor((_new.expireDate.getTime() - new Date().getTime()) / 1000), 0);
+        for(i = 0 ; i < $scope.events.length ; i++) {
+            var _new = $scope.events[i];
+            var remainSeconds = Math.max(Math.floor((_new.RoadShow.StartDate.getTime() - new Date().getTime()) / 1000), 0);
             var dd = Math.floor(remainSeconds / (60*60*24));
             var hh = Math.floor(remainSeconds / (60*60)) % 24;
             var mi = Math.floor(remainSeconds / (60)) % 60;
             var ss = remainSeconds % 60;
-            //Expring: 00days:00hrs:00mins
-//            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
             _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
         }
     });
-    $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
+    $scope.onClicked = function(event) {
+        if(event.RoadShow.WhatNewsClickMode == "ClickOpenUrl") {
+            u.navigateToStateWithIntent('app.web', {url:event.RoadShow.WhatNewsClickUrl});   
+        }else if(event.RoadShow.WhatNewsClickMode == "ClickShowDetail") {
+            $state.go("app.whatsnewsdetail({id:'"+event.EventId+"'})");
+        }else{
+            //no action
+        }
+    }
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        $scope.timer.start(); 
         if(state.direction != 'back') {
             $scope.contentReady = false;
             $scope.contentAnimated = false;
-            ionic.Platform.ready(function(){
-                $scope.news = [];
-                u.showProgress();
-                apiWhatsNewItem.getAll().then(function(results) {
-                    $scope.news = results;  
-                    $scope.timer.start(); 
-                    return $timeout(function(){
-                        u.imagesLoaded($content.find('img').slice(0,2));
-                    });
-                }).then(function(){
-                    return $timeout(function(){
-                        $scope.contentReady = true;
-                        $scope.contentAnimated = true;
-                    },200);
-                }).catch(function(error) {
-                    u.showAlert(error.description);
-                }).finally(function() {
-                     u.hideProgress();
+            $scope.events = [];
+            $scope.tabIndex = 0;
+            u.showProgress();
+            apiWhatsNews.getAll().then(function(results) {
+                $scope.events = results;
+                $scope.timer.start();
+                return $timeout(function(){
+                    u.imagesLoaded($content.find('img').slice(0,2));
                 });
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                });
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
             });
         }else{
-            $scope.timer.start();  
+            $scope.timer.start();
         }
     });
     $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
@@ -65,8 +73,57 @@ angular.module('starter.controllers', [])
     });
 })
 
+.controller('WhatsNewsDetailCtrl', function ($scope, u, $timeout, $state, apiWhatsNews) {
+    $element = $('#eventdetail');
+    $content = $element.find('ion-content .content');
+    $scope.rate = u.createRate();
+    $scope.rate.title = 'Rate this Event';
+//    $scope.attempEvent = function(event) {
+//        u.showProgress();
+//        apiTicket.addByEvent(event).then(function(results) {
+//            u.showAlert('Ticket for this event is added.');
+//        }).catch(function(error) {
+//        }).finally(function() {
+//             u.hideProgress();
+//        });
+//    }
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            $scope.contentReady = false;
+            $scope.contentAnimated = false;
+            $scope.event = null;
+            u.showProgress();
+            apiWhatsNews.getById($state.params.id).then(function(results) {
+                $scope.event = results;
+                return $timeout(function(){
+                    u.imagesLoaded($content.find('img').slice(0,2));
+                });
+            }).then(function(){
+                $scope.rate.setRateFromEvent($scope.event);  
+                $scope.rate.getRateForEvent($scope.event);
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
 
-.controller('EventsCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiEvent) {
+.controller('VouchersCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiVoucher) {
+    $scope.title = "Vouchers";
     $element = $('#events');
     $content = $element.find('ion-content .content');
     $scope.timer = u.createTimer(function() {
@@ -78,9 +135,131 @@ angular.module('starter.controllers', [])
             var mi = Math.floor(remainSeconds / (60)) % 60;
             var ss = remainSeconds % 60;
             _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
-//            _new.expireRemain = sprintf("%d:%02d:%02d:%02d", dd, hh, mi, ss);
         }
     });
+    $scope.onClicked = function(event) {
+        if(event.RoadShow.WhatNewsClickMode == "ClickOpenUrl") {
+            u.navigateToStateWithIntent('web', {url:event.RoadShow.WhatNewsClickUrl});   
+        }else if(event.RoadShow.WhatNewsClickMode == "ClickShowDetail") {
+            $state.go("app.voucherdetail({id:'"+event.EventId+"'})");
+        }else{
+            //no action
+        }
+    }
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        $scope.timer.start(); 
+        if(state.direction != 'back') {
+            $scope.contentReady = false;
+            $scope.contentAnimated = false;
+            $scope.events = [];
+            $scope.tabIndex = 0;
+            u.showProgress();
+            apiVoucher.getAll().then(function(results) {
+                $scope.events = results;
+                $scope.timer.start();
+                return $timeout(function(){
+                    u.imagesLoaded($content.find('img').slice(0,2));
+                });
+            }).then(function(){
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                });
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }else{
+            $scope.timer.start();
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        $scope.timer.stop();
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+            $ionicScrollDelegate.scrollTop(false);
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
+
+.controller('VoucherDetailCtrl', function ($scope, u, $timeout, $state, apiVoucher) {
+    $element = $('#eventdetail');
+    $content = $element.find('ion-content .content');
+    $scope.rate = u.createRate();
+    $scope.rate.title = 'Rate this Event';
+//    $scope.attempEvent = function(event) {
+//        u.showProgress();
+//        apiTicket.addByEvent(event).then(function(results) {
+//            u.showAlert('Ticket for this event is added.');
+//        }).catch(function(error) {
+//        }).finally(function() {
+//             u.hideProgress();
+//        });
+//    }
+    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+        if(state.direction != 'back') {
+            $scope.contentReady = false;
+            $scope.contentAnimated = false;
+            $scope.event = null;
+            u.showProgress();
+            apiVoucher.getById($state.params.id).then(function(results) {
+                $scope.event = results;
+                return $timeout(function(){
+                    u.imagesLoaded($content.find('img').slice(0,2));
+                });
+            }).then(function(){
+                $scope.rate.setRateFromEvent($scope.event);  
+                $scope.rate.getRateForEvent($scope.event);
+                return $timeout(function(){
+                    $scope.contentReady = true;
+                    $scope.contentAnimated = true;
+                },200);
+            }).catch(function(error) {
+                u.showAlert(error.description);
+            }).finally(function() {
+                 u.hideProgress();
+            });
+        }
+    });
+    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+        if(state.direction == 'none' || state.direction == 'back'){
+            $scope.contentReady = false;
+        }
+        if(state.direction == 'forward'){
+            $scope.contentAnimated = false;
+        }
+    });
+})
+
+
+.controller('EventsCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiEvent) {
+    $scope.title = "Events";
+    $element = $('#events');
+    $content = $element.find('ion-content .content');
+    $scope.timer = u.createTimer(function() {
+        for(i = 0 ; i < $scope.events.length ; i++) {
+            var _new = $scope.events[i];
+            var remainSeconds = Math.max(Math.floor((_new.expireDate.getTime() - new Date().getTime()) / 1000), 0);
+            var dd = Math.floor(remainSeconds / (60*60*24));
+            var hh = Math.floor(remainSeconds / (60*60)) % 24;
+            var mi = Math.floor(remainSeconds / (60)) % 60;
+            var ss = remainSeconds % 60;
+            _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
+        }
+    });
+    $scope.onClicked = function(event) {
+        if(event.RoadShow.WhatNewsClickMode == "ClickOpenUrl") {
+            u.navigateToStateWithIntent('web', {url:event.RoadShow.WhatNewsClickUrl});   
+        }else if(event.RoadShow.WhatNewsClickMode == "ClickShowDetail") {
+            $state.go("app.eventdetail({id:'"+event.EventId+"'})");
+        }else{
+            //no action
+        }
+    }
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         $scope.timer.start(); 
         if(state.direction != 'back') {
@@ -121,19 +300,20 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('EventDetailCtrl', function ($scope, u, $timeout, $state, apiEvent, apiTicket) {
+.controller('EventDetailCtrl', function ($scope, u, $timeout, $state, apiEvent) {
     $element = $('#eventdetail');
     $content = $element.find('ion-content .content');
     $scope.rate = u.createRate();
-    $scope.attempEvent = function(event) {
-        u.showProgress();
-        apiTicket.addByEvent(event).then(function(results) {
-            u.showAlert('Ticket for this event is added.');
-        }).catch(function(error) {
-        }).finally(function() {
-             u.hideProgress();
-        });
-    }
+    $scope.rate.title = 'Rate this Event';
+//    $scope.attempEvent = function(event) {
+//        u.showProgress();
+//        apiTicket.addByEvent(event).then(function(results) {
+//            u.showAlert('Ticket for this event is added.');
+//        }).catch(function(error) {
+//        }).finally(function() {
+//             u.hideProgress();
+//        });
+//    }
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = false;
@@ -146,6 +326,8 @@ angular.module('starter.controllers', [])
                     u.imagesLoaded($content.find('img').slice(0,2));
                 });
             }).then(function(){
+                $scope.rate.setRateFromEvent($scope.event);  
+                $scope.rate.getRateForEvent($scope.event);
                 return $timeout(function(){
                     $scope.contentReady = true;
                     $scope.contentAnimated = true;
@@ -296,66 +478,66 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('TicketsCtrl', function ($scope, u, $timeout, $state, apiTicket) {
-    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        if(state.direction != 'back') {
-            $scope.contentReady = false;
-            $scope.contentAnimated = false;
-            $scope.tickets = [];
-            u.showProgress();
-            apiTicket.getAll().then(function(results) {
-                $scope.tickets = results;  
-            }).then(function(){
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
-                },200);
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
-            });
-        }
-    });
-    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        if(state.direction == 'none' || state.direction == 'back'){
-            $scope.contentReady = false;
-        }
-        if(state.direction == 'forward'){
-            $scope.contentAnimated = false;
-        }
-    });
+.controller('TicketsCtrl', function ($scope, u, $timeout, $state) {
+//    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+//        if(state.direction != 'back') {
+//            $scope.contentReady = false;
+//            $scope.contentAnimated = false;
+//            $scope.tickets = [];
+//            u.showProgress();
+//            apiTicket.getAll().then(function(results) {
+//                $scope.tickets = results;  
+//            }).then(function(){
+//                return $timeout(function(){
+//                    $scope.contentReady = true;
+//                    $scope.contentAnimated = true;
+//                },200);
+//            }).catch(function(error) {
+//                u.showAlert(error.description);
+//            }).finally(function() {
+//                 u.hideProgress();
+//            });
+//        }
+//    });
+//    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+//        if(state.direction == 'none' || state.direction == 'back'){
+//            $scope.contentReady = false;
+//        }
+//        if(state.direction == 'forward'){
+//            $scope.contentAnimated = false;
+//        }
+//    });
 })
 
-.controller('TicketCtrl', function ($scope, u, $state, apiTicket) {
-    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        if(state.direction != 'back') {
-            $scope.contentReady = false;
-            $scope.contentAnimated = false;
-            $scope.ticket = null;
-            u.showProgress();
-            apiTicket.getById($state.params.id).then(function(results) {
-                $scope.ticket = results;  
-            }).then(function(){
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
-                },200);
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
-            });
-        }
-    });
-    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        if(state.direction == 'none' || state.direction == 'back'){
-            $scope.contentReady = false;
-        }
-        if(state.direction == 'forward'){
-            $scope.contentAnimated = false;
-        }
-    });
+.controller('TicketCtrl', function ($scope, u, $state) {
+//    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
+//        if(state.direction != 'back') {
+//            $scope.contentReady = false;
+//            $scope.contentAnimated = false;
+//            $scope.ticket = null;
+//            u.showProgress();
+//            apiTicket.getById($state.params.id).then(function(results) {
+//                $scope.ticket = results;  
+//            }).then(function(){
+//                return $timeout(function(){
+//                    $scope.contentReady = true;
+//                    $scope.contentAnimated = true;
+//                },200);
+//            }).catch(function(error) {
+//                u.showAlert(error.description);
+//            }).finally(function() {
+//                 u.hideProgress();
+//            });
+//        }
+//    });
+//    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
+//        if(state.direction == 'none' || state.direction == 'back'){
+//            $scope.contentReady = false;
+//        }
+//        if(state.direction == 'forward'){
+//            $scope.contentAnimated = false;
+//        }
+//    });
 })
 
 .controller('ConstructionsCtrl', function ($scope, u, $timeout, $state, apiProject) {
@@ -483,8 +665,6 @@ angular.module('starter.controllers', [])
                 $scope.project = results
                 $timeout(function(){
                     $scope.learnmoretooshort = $learnmore.height()<160;
-                    console.log('learmore.height = ' + $learnmore.height() + ",learnmoretooshort="+$scope.learnmoretooshort);
-                    
                 });
                 return $timeout(function(){
                     u.imagesLoaded($element.find('img'));
@@ -840,11 +1020,28 @@ angular.module('starter.controllers', [])
     });
 })
 
-.controller('ProfileCtrl', function($scope, u, $timeout) {
+.controller('ProfileCtrl', function($scope, u, $timeout, apiUser, apiTitle, apiCountry) {
+    var vm = $scope;
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.contentReady = true;
             $scope.contentAnimated = true;
+            
+            apiTitle.getAll().then(function(results) {
+                 vm.titleOptions = results;
+            });
+            apiCountry.getAll().then(function(results) {
+                vm.callingCodeOptions = results; 
+            });
+            vm.user = {};
+            vm.user.IC = apiUser.getUser().IC;
+            vm.user.Title = apiUser.getUser().Title;
+            vm.user.EmailAddress = apiUser.getUser().Email;
+            vm.user.CallingCode  = parseInt(apiUser.getUser().Contact.CallingCode);
+            vm.user.ContactNumber  = apiUser.getUser().Contact.ContactNumber;
+            vm.user.FullName  = apiUser.getUser().FullName;
+            
+            console.log(vm.user);
         }
     });
     $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
@@ -914,7 +1111,7 @@ angular.module('starter.controllers', [])
             $scope.contentReady = true;
             $scope.contentAnimated = true;
             $scope.item = intent.item;
-            $scope.title = intent.item.title;
+            $scope.title = intent.item.title || '';
             $scope.url = intent.item.url ? $sce.trustAsResourceUrl(intent.item.url) : ''; 
         }
     });

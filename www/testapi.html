@@ -290,6 +290,29 @@
         });  
     }
     
+    function getByEmailAndPass(email,pass) {
+        return $.ajax(apiBase + 'api/AppCustomer/GetByEmailAndPass',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET',
+            data:{
+                'email':email,
+                'pass':pass
+            },
+            dataType:'json'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+//    login().then(function() {
+//        getByEmailAndPass('', ''); 
+//    });
+    
     
 //    login().then(function() {
 //        var cnt = 0;
@@ -310,12 +333,12 @@
 //        });
 //    });
     
-    
-    login().then(function() {
-        getUnitTypeByUnitId(3);
-        getFloorplanByUnitId(3);
-    });
-    
+//    
+//    login().then(function() {
+//        getUnitTypeByUnitId(3);
+//        getFloorplanByUnitId(3);
+//    });
+//    
     
     
 //    

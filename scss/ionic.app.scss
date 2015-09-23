@@ -214,6 +214,10 @@ $learn-more-bg-color-start:rgba(100,100,100,0);
     margin:0;   
 }
 
+.line-height-0 {
+    line-height:0;   
+}
+
 //alignment
 .text-center {
     text-align: center;
@@ -715,6 +719,20 @@ ion-side-menu {
 
 .list {
     &.card {
+        &.no-top-gap {
+            padding-top:0;   
+        }
+        &.no-bottom-gap {
+            line-height: 0;   
+        }
+        &.no-gap {
+            padding-top:0;   
+            line-height: 0;   
+        }
+    }
+    
+    
+    &.card {
         margin:10px 10px;   
         padding-bottom:0; 
     }
@@ -1167,5 +1185,26 @@ $rate-review-lg-content-padding:12px;
             }
         }
         
+    }
+}
+
+
+#modal-login {
+    #content-login, #content-signup {
+        z-index:0;
+        transition:left 0.3s ease-in-out;
+    }
+    #content-login {
+        left:0%;
+    }
+    #content-signup {
+        left:100%;
+    }
+    
+    #content-login.showSignUp {
+        left:-10%;
+    }
+    #content-signup.showSignUp {
+        left:0%; 
     }
 }

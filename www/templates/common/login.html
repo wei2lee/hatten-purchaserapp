@@ -1,25 +1,69 @@
-<ion-modal-view>
+<ion-modal-view id="modal-login">
     <ion-header-bar>
-        <h1 class="title">Login</h1>
+        <h1 class="title">{{loginModal.showSignUp?'Sign Up':'Login'}}</h1>
         <div class="buttons">
             <button class="button button-clear" ng-click="u.closeLogin()">Close</button>
         </div>
     </ion-header-bar>
-    <ion-content>
-        <form ng-submit="u.doLogin()">
+    <ion-content scroll="false" id="content-login" ng-class="{'showSignUp':loginModal.showSignUp}">
+        <form ng-submit="u.doLogin()" novalidate>
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Email</span>
-                    <input type="text" ng-model="loginData.username">
+                    <input type="text" ng-model="loginModal.loginData.username">
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Password</span>
-                    <input type="password" ng-model="loginData.password">
+                    <input type="password" ng-model="loginModal.loginData.password">
                 </label>
-                <div ng-if="loginAlert" class="item text-assertive">{{loginAlert.message}}</div>
+                <div ng-if="loginModal.loginAlert" class="item text-assertive">{{loginModal.loginAlert.message}}</div>
                 <label class="item">
                     <button class="button button-block button-positive" type="submit">Log in</button>
                 </label>
+                <p class="text-center padding-md-top padding-md-horizontal text-positive" style="margin-bottom:0;">Don't have a account?</p>
+                <a ng-click="loginModal.showSignUp=true;" class="button button-clear button-positive button-full" style="margin-top:0;">Sign Up</a>
+            </div>
+        </form>
+    </ion-content>
+    <ion-content scroll="false" id="content-signup" ng-class="{'showSignUp':loginModal.showSignUp}">
+        <form ng-submit="console.log('ng-submit'); u.doSignUp()" novalidate >
+<!--            {{signUpData}}-->
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">Email</span>
+                    <input type="email" ng-model="loginModal.signUpData.EmailAddress">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input type="password" ng-model="loginModal.signUpData.Password">
+                </label>
+                <label class="item item-input item-select">
+                    <span class="input-label">Title</span>
+                    <select ng-model="loginModal.signUpData.Title">
+                        <option ng-repeat="option in loginModal.titleOptions" value="{{option}}">{{option}}</option>
+                    </select>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">FullName</span>
+                    <input type="text" ng-model="loginModal.signUpData.FullName">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">IC/Passport</span>
+                    <input type="text" ng-model="loginModal.signUpData.IC">
+                </label>
+                <label class="item item-input item-select">
+                    <span class="input-label">Contact (Calling Code)</span>
+                    <select ng-options="option.CallingCode as '(+'+option.CallingCode+') '+option.Name for option in loginModal.callingCodeOptions" ng-model="loginModal.signUpData.CallingCode"></select>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Contact (Number)</span>
+                    <input type="text" ng-model="loginModal.signUpData.ContactNumber">
+                </label>
+                <div ng-if="loginModal.signUpAlert" class="item text-assertive">{{loginModal.signUpAlert.message}}</div>
+                <label class="item">
+                    <button class="button button-block button-positive" type="submit">Sign Up</button>
+                </label>
+                <a ng-click="loginModal.showSignUp=false;" class="button button-clear button-positive button-full" style="margin-top:0;">Back to Login</a>
             </div>
         </form>
     </ion-content>

@@ -2,40 +2,31 @@
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">Email</span>
+                    <input type="email" ng-model="user.EmailAddress">
+                </label>
                 <label class="item item-input item-select">
-                    <div class="input-label">
-                        Title
-                    </div>
-                    <select>
-                        <option selected>Mr</option>
-                        <option>Mrs</option>
-                        <option>Miss</option>
+                    <span class="input-label">Title</span>
+                    <select ng-model="user.Title">
+                        <option ng-repeat="option in titleOptions" value="{{option}}">{{option}}</option>
                     </select>
                 </label>
-
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Full Name</span>
-                    <input type="text" disabled placeholder="Christina Leong">
+                <label class="item item-input">
+                    <span class="input-label">FullName</span>
+                    <input type="text" ng-model="user.FullName">
                 </label>
-
-                <label class="item item-input item-stacked-label">
+                <label class="item item-input">
                     <span class="input-label">IC/Passport</span>
-                    <input type="text" disabled placeholder="880323-14-8823">
+                    <input type="text" ng-model="user.IC">
                 </label>
-
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Address</span>
-                    <input type="text" placeholder="A-3-5, Kuchai Exchange">
+                <label class="item item-input item-select">
+                    <span class="input-label">Contact (Calling Code)</span>
+                    <select ng-options="option.CallingCode as '(+'+option.CallingCode+') '+option.Name for option in callingCodeOptions" ng-model="user.CallingCode"></select>
                 </label>
-
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Contact</span>
-                    <input type="tel" disabled placeholder="(+60)16376611">
-                </label>
-
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Email</span>
-                    <input type="email" disabled placeholder="anonymous@gmail.com">
+                <label class="item item-input">
+                    <span class="input-label">Contact (Number)</span>
+                    <input type="text" ng-model="user.ContactNumber">
                 </label>
 
                 <div class="padding-horizontal">
@@ -44,10 +35,6 @@
 
                 <div class="padding-horizontal">
                     <button class="button button-block button-balanced">Save</button>
-                </div>
-                
-                <div class="padding-horizontal">
-                    <a href="#/app/privacypolicy" class="button button-block button-positive ">Legacy &amp; Privacy</a>
                 </div>
             </div>
         </div>

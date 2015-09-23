@@ -6,9 +6,9 @@
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="list card">
                 <div class="item padding-0">
-                    <img preloadThumb class="full-img-responsive" ng-src="{{event.thumb}}">
+                    <img preloadThumb class="full-img-responsive" ng-src="{{event.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
                     <p class="padding">
-                        {{event.displayName}}
+                        {{event.Name}}
                     </p>
                 </div>
             </div>
@@ -24,8 +24,8 @@
             </div>
 -->
             
-            <div class="list card learn-more-container" ng-class="{'tooshort':learnmoretooshort, 'expanded':expanded}">
-                <div class="item-body" ng-bind-html="event.description">
+            <div class="list card learn-more-container" ng-class="{'tooshort':learnmoretooshort, 'expanded':expanded}" ng-if="event.RoadShow.Visible4">
+                <div class="item-body" ng-bind-html="event.RoadShow.EventTemplate ">
                 </div>
 <!--                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', {description:property.ProjectTemplate})">-->
                 <button class="learn-more-button button button-full button-positive footer-button" ng-click="learnmoretooshort=false; expanded=true;">
@@ -34,7 +34,7 @@
                 <div class="learn-more-overlay"></div>
             </div>
 
-            <div class="list card">
+            <div class="list card" ng-if="event.RoadShow.Visible3">
                 <div class="item padding-0">
                     <div class="responsive-container">
                         <canvas width=800 height=500></canvas>
@@ -45,12 +45,12 @@
                     </div>
                 </div>
                 <div class="item-body padding-right-1-item">
-                    <span>{{event.address}}</span>
-                    <span class="item-right">{{event.distance}}</span>
+                    <span>{{event.RoadShow.Venue}}</span>
+                    <span class="item-right">{{event.RoadShow.Distance}}</span>
                 </div>
             </div>
 
-            <div class="padding-horizontal padding-lg-top" >
+            <div class="padding-horizontal padding-lg-top" ng-if="event.RoadShow.Visible2">
                 Number of Total Attemp : <strong style="font-size:24px">{{1056 | number}}</strong>
                 <button ng-click="attempEvent(event)" class="button button-block button-balanced">ATTEND</button>
             </div>
@@ -60,9 +60,19 @@
                 <a ng-click="#/app/tickets" class="button button-block button-energized">TICKET</a>
             </div>
 -->
-            <div class="list card padding-md">
+            <div class="list card padding-md" ng-if="event.RoadShow.Visible1">
                 <rate-widget rate="rate"></rate-widget>
             </div>
         </div>
     </ion-content>
 </ion-view>
+
+<!--
+Visible1  RateVisible
+Visible2  AttendVisible
+Visible3  LocationVisible  
+Visible4  VisibleTemplate
+
+Visible5  VisibleCountDown
+Visible6  VisibleShare
+Visible7  VisibleListItemDescription-->
