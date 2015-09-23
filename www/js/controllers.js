@@ -1,16 +1,5 @@
-
-
-angular.module('starter.controllers', [])
-
-.controller('AppCtrl', function ($rootScope, $scope, $ionicModal, $timeout, u, apiUser) {
-    $scope.hello = function() {
-        console.log('hello');   
-    }
-    $scope.app = 'Application';
-})
-
-.controller('WhatsNewsCtrl', function ($scope, u, $timeout, $state, $ionicScrollDelegate, apiWhatsNews) {
-    $scope.title = "What's News";
+function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, title, api) {
+    $scope.title = title;
     $element = $('#events');
     $content = $element.find('ion-content .content');
     $scope.timer = u.createTimer(function() {
@@ -41,7 +30,7 @@ angular.module('starter.controllers', [])
             $scope.events = [];
             $scope.tabIndex = 0;
             u.showProgress();
-            apiWhatsNews.getAll().then(function(results) {
+            api.getAll().then(function(results) {
                 $scope.events = results;
                 $scope.timer.start();
                 return $timeout(function(){
@@ -71,13 +60,12 @@ angular.module('starter.controllers', [])
             $scope.contentAnimated = false;
         }
     });
-})
-
-.controller('WhatsNewsDetailCtrl', function ($scope, u, $timeout, $state, apiWhatsNews) {
+}
+function EventDetailBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, rateTitle, api) {
     $element = $('#eventdetail');
     $content = $element.find('ion-content .content');
     $scope.rate = u.createRate();
-    $scope.rate.title = 'Rate this Event';
+    $scope.rate.title = rateTitle;
 //    $scope.attempEvent = function(event) {
 //        u.showProgress();
 //        apiTicket.addByEvent(event).then(function(results) {
@@ -93,7 +81,7 @@ angular.module('starter.controllers', [])
             $scope.contentAnimated = false;
             $scope.event = null;
             u.showProgress();
-            apiWhatsNews.getById($state.params.id).then(function(results) {
+            api.getById($state.params.id).then(function(results) {
                 $scope.event = results;
                 return $timeout(function(){
                     u.imagesLoaded($content.find('img').slice(0,2));
@@ -120,234 +108,57 @@ angular.module('starter.controllers', [])
             $scope.contentAnimated = false;
         }
     });
-})
+}
 
-.controller('VouchersCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiVoucher) {
-    $scope.title = "Vouchers";
-    $element = $('#events');
-    $content = $element.find('ion-content .content');
-    $scope.timer = u.createTimer(function() {
-        for(i = 0 ; i < $scope.events.length ; i++) {
-            var _new = $scope.events[i];
-            var remainSeconds = Math.max(Math.floor((_new.expireDate.getTime() - new Date().getTime()) / 1000), 0);
-            var dd = Math.floor(remainSeconds / (60*60*24));
-            var hh = Math.floor(remainSeconds / (60*60)) % 24;
-            var mi = Math.floor(remainSeconds / (60)) % 60;
-            var ss = remainSeconds % 60;
-            _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
-        }
-    });
-    $scope.onClicked = function(event) {
-        if(event.RoadShow.WhatNewsClickMode == "ClickOpenUrl") {
-            u.navigateToStateWithIntent('web', {url:event.RoadShow.WhatNewsClickUrl});   
-        }else if(event.RoadShow.WhatNewsClickMode == "ClickShowDetail") {
-            $state.go("app.voucherdetail({id:'"+event.EventId+"'})");
-        }else{
-            //no action
-        }
+
+
+angular.module('starter.controllers', [])
+.controller('AppCtrl', function ($rootScope, $scope, $ionicModal, $timeout, u, apiUser) {
+    $scope.hello = function() {
+        console.log('hello');   
     }
-    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        $scope.timer.start(); 
-        if(state.direction != 'back') {
-            $scope.contentReady = false;
-            $scope.contentAnimated = false;
-            $scope.events = [];
-            $scope.tabIndex = 0;
-            u.showProgress();
-            apiVoucher.getAll().then(function(results) {
-                $scope.events = results;
-                $scope.timer.start();
-                return $timeout(function(){
-                    u.imagesLoaded($content.find('img').slice(0,2));
-                });
-            }).then(function(){
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
-                });
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
-            });
-        }else{
-            $scope.timer.start();
-        }
-    });
-    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        $scope.timer.stop();
-        if(state.direction == 'none' || state.direction == 'back'){
-            $scope.contentReady = false;
-            $ionicScrollDelegate.scrollTop(false);
-        }
-        if(state.direction == 'forward'){
-            $scope.contentAnimated = false;
-        }
-    });
-})
-
-.controller('VoucherDetailCtrl', function ($scope, u, $timeout, $state, apiVoucher) {
-    $element = $('#eventdetail');
-    $content = $element.find('ion-content .content');
-    $scope.rate = u.createRate();
-    $scope.rate.title = 'Rate this Event';
-//    $scope.attempEvent = function(event) {
-//        u.showProgress();
-//        apiTicket.addByEvent(event).then(function(results) {
-//            u.showAlert('Ticket for this event is added.');
-//        }).catch(function(error) {
-//        }).finally(function() {
-//             u.hideProgress();
-//        });
-//    }
-    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        if(state.direction != 'back') {
-            $scope.contentReady = false;
-            $scope.contentAnimated = false;
-            $scope.event = null;
-            u.showProgress();
-            apiVoucher.getById($state.params.id).then(function(results) {
-                $scope.event = results;
-                return $timeout(function(){
-                    u.imagesLoaded($content.find('img').slice(0,2));
-                });
-            }).then(function(){
-                $scope.rate.setRateFromEvent($scope.event);  
-                $scope.rate.getRateForEvent($scope.event);
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
-                },200);
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
-            });
-        }
-    });
-    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        if(state.direction == 'none' || state.direction == 'back'){
-            $scope.contentReady = false;
-        }
-        if(state.direction == 'forward'){
-            $scope.contentAnimated = false;
-        }
-    });
-})
+    $scope.app = 'Application';
+});
 
 
-.controller('EventsCtrl', function ($scope, u, $timeout, $ionicScrollDelegate, apiEvent) {
-    $scope.title = "Events";
-    $element = $('#events');
-    $content = $element.find('ion-content .content');
-    $scope.timer = u.createTimer(function() {
-        for(i = 0 ; i < $scope.events.length ; i++) {
-            var _new = $scope.events[i];
-            var remainSeconds = Math.max(Math.floor((_new.expireDate.getTime() - new Date().getTime()) / 1000), 0);
-            var dd = Math.floor(remainSeconds / (60*60*24));
-            var hh = Math.floor(remainSeconds / (60*60)) % 24;
-            var mi = Math.floor(remainSeconds / (60)) % 60;
-            var ss = remainSeconds % 60;
-            _new.expireRemain = sprintf("%ddays:%02dhrs:%02dmins", dd, hh, mi);
-        }
-    });
-    $scope.onClicked = function(event) {
-        if(event.RoadShow.WhatNewsClickMode == "ClickOpenUrl") {
-            u.navigateToStateWithIntent('web', {url:event.RoadShow.WhatNewsClickUrl});   
-        }else if(event.RoadShow.WhatNewsClickMode == "ClickShowDetail") {
-            $state.go("app.eventdetail({id:'"+event.EventId+"'})");
-        }else{
-            //no action
-        }
-    }
-    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        $scope.timer.start(); 
-        if(state.direction != 'back') {
-            $scope.contentReady = false;
-            $scope.contentAnimated = false;
-            $scope.events = [];
-            $scope.tabIndex = 0;
-            u.showProgress();
-            apiEvent.getAll().then(function(results) {
-                $scope.events = results;
-                $scope.timer.start();
-                return $timeout(function(){
-                    u.imagesLoaded($content.find('img').slice(0,2));
-                });
-            }).then(function(){
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
-                });
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
-            });
-        }else{
-            $scope.timer.start();
-        }
-    });
-    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        $scope.timer.stop();
-        if(state.direction == 'none' || state.direction == 'back'){
-            $scope.contentReady = false;
-            $ionicScrollDelegate.scrollTop(false);
-        }
-        if(state.direction == 'forward'){
-            $scope.contentAnimated = false;
-        }
-    });
-})
+function WhatsNewsController($scope, u, $timeout, $state, $ionicScrollDelegate, apiWhatsNews) {
+    EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, "What's News", apiWhatsNews);
+}
+WhatsNewsController.prototype = Object.create(EventsBaseController.prototype);
+function WhatsNewsDetailController($scope, u, $timeout, $state, $ionicScrollDelegate, apiWhatsNews) {
+    EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, "Rate this Event", apiWhatsNews);
+}
+WhatsNewsDetailController.prototype = Object.create(EventDetailBaseController.prototype);
+angular.module('starter.controllers')
+.controller('WhatsNewsCtrl', WhatsNewsController)
+.controller('WhatsNewsDetailCtrl', WhatsNewsDetailController)
 
-.controller('EventDetailCtrl', function ($scope, u, $timeout, $state, apiEvent) {
-    $element = $('#eventdetail');
-    $content = $element.find('ion-content .content');
-    $scope.rate = u.createRate();
-    $scope.rate.title = 'Rate this Event';
-//    $scope.attempEvent = function(event) {
-//        u.showProgress();
-//        apiTicket.addByEvent(event).then(function(results) {
-//            u.showAlert('Ticket for this event is added.');
-//        }).catch(function(error) {
-//        }).finally(function() {
-//             u.hideProgress();
-//        });
-//    }
-    $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
-        if(state.direction != 'back') {
-            $scope.contentReady = false;
-            $scope.contentAnimated = false;
-            $scope.event = null;
-            u.showProgress();
-            apiEvent.getById($state.params.id).then(function(results) {
-                $scope.event = results;
-                return $timeout(function(){
-                    u.imagesLoaded($content.find('img').slice(0,2));
-                });
-            }).then(function(){
-                $scope.rate.setRateFromEvent($scope.event);  
-                $scope.rate.getRateForEvent($scope.event);
-                return $timeout(function(){
-                    $scope.contentReady = true;
-                    $scope.contentAnimated = true;
-                },200);
-            }).catch(function(error) {
-                u.showAlert(error.description);
-            }).finally(function() {
-                 u.hideProgress();
-            });
-        }
-    });
-    $scope.$on('$ionicView.beforeLeave', function (viewInfo, state) {
-        if(state.direction == 'none' || state.direction == 'back'){
-            $scope.contentReady = false;
-        }
-        if(state.direction == 'forward'){
-            $scope.contentAnimated = false;
-        }
-    });
-})
+function VouchersController($scope, u, $timeout, $state, $ionicScrollDelegate, apiVoucher) {
+    EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, "Voucher", apiVoucher);
+}
+VouchersController.prototype = Object.create(EventsBaseController.prototype);
+function VoucherDetailController($scope, u, $timeout, $state, $ionicScrollDelegate, apiVoucher) {
+    EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, "Rate this Event", apiVoucher);
+}
+VoucherDetailController.prototype = Object.create(EventDetailBaseController.prototype);
+angular.module('starter.controllers')
+.controller('VouchersCtrl', VouchersController)
+.controller('VoucherDetailCtrl', VoucherDetailController)
+
+
+
+function EventsController($scope, u, $timeout, $state, $ionicScrollDelegate, apiEvent) {
+    EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, "Event", apiEvent);
+}
+EventsController.prototype = Object.create(EventsBaseController.prototype);
+function EventDetailController($scope, u, $timeout, $state, $ionicScrollDelegate, apiEvent) {
+    EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, "Rate this Event", apiEvent);
+}
+EventDetailController.prototype = Object.create(EventDetailBaseController.prototype);
+angular.module('starter.controllers')
+.controller('EventsCtrl', EventsController)
+.controller('EventDetailCtrl', EventDetailController)
+
 
 .controller('PurchasedPropertiesCtrl', function ($scope, u, $timeout, $q, $state, $ionicScrollDelegate, apiPurchasedProperty,apiUser) {
     $scope.$on('$ionicView.beforeEnter', function (viewInfo, state) {
