@@ -95,6 +95,9 @@ angular.module('services-api', [])
         }
         return msg;
     }
+    _apiServiceBase.prototype.processHtml = function(html) {
+           
+    }
 
     return _apiServiceBase;
 })
@@ -104,7 +107,7 @@ angular.module('services-api', [])
     api.prototype.withToken = function(createJQXHR) {
         var defer = $q.defer();
         var _self = this;
-        if(apiToken.token.access_token) {
+        if(apiToken.apiService.token.access_token) {
             createJQXHR().done(function(data, textStatus, jqXHR) { 
                 console.log('done@' + this.url);
                 console.log(data);
@@ -149,7 +152,7 @@ angular.module('services-api', [])
     return api;
 })
 
-.factory('apiEventBase', function($q,$timeout,apiServiceBaseWithToken) {
+.factory('apiEventBase', function($q,$timeout,apiServiceBaseWithToken, apiUser) {
     function api(){}
     api.prototype = new apiServiceBaseWithToken();
     api.prototype.getAll = function() {
@@ -207,12 +210,86 @@ angular.module('services-api', [])
     }
     api.prototype.rate = function(event,user,star) {
         var _self = this;
+        var _self = this;
         return this.withToken(function(){
             return $.ajax(_self.apiService.apiBase + 'api/Rate/UpdateEventRate?iEventId='+event.EventId+'&iCustomerID='+user.CustomerId+'&iRateValue='+star+'', {
                 method:'GET',
                 dataType:'json',
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
             })
+        });
+    }
+    api.prototype.getFeedbackForm = function() {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerEventFeedBackForm/GetFeedBackForm', {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.postFeedbackForm = function(feedbackResult) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerEventFeedBackForm/UpdateFeedbackForm', {
+                method:'POST',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(feedbackResult)
+            })
+        });
+    }
+    api.prototype.attemp = function(event) {
+        var _self = this;
+        if(!apiUser.getUser()) {
+            return $q(function(resolve, reject) {
+                reject(createError("Not login")); 
+            });
+        }
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/AttendEvent', {
+                method:'GET',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                data: {
+                    iEventId:event.EventId,
+                    iCustomerID:apiUser.getUser().CustomerId
+                }
+            })
+        });
+    }
+    api.prototype.unAttemp = function(event) {
+        var _self = this;
+        if(!apiUser.getUser()) {
+            return $q(function(resolve, reject) {
+                reject(createError("Not login")); 
+            });
+        }
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/UnAttendEvent', {
+                method:'GET',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                data: {
+                    iEventId:event.EventId,
+                    iCustomerID:apiUser.getUser().CustomerId
+                }
+            })
+        });
+    }
+    api.prototype.getAttemp = function(event) {
+        var _self = this;
+        if(!apiUser.getUser()) {
+            return $q(function(resolve, reject) {
+                reject(createError("Not login")); 
+            });
+        }
+        var user = apiUser.getUser();
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/Rate/GetEventRate?iEventId='+event.EventId+'&iCustomerID='+user.CustomerId, {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            });
         });
     }
     return api;
@@ -346,12 +423,17 @@ angular.module('services-api', [])
     api.prototype.edit = function(user) {
         var _self = this;
         return _self.withToken(function(){
-            return $.ajax(_self.apiService.apiBase + 'api/AppCustomer/'+user.IC+'/Edit',{
-                method:'POST',
+            return $.ajax(_self.apiService.apiBase + 'api/AppCustomer/'+user.IC+'/Edit2',{
+                method:'GET',
                 dataType:'json',
-                contentType: "application/json; charset=utf-8",
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
-                data:JSON.stringify(user)
+                data:{
+                    Title:user.Title,
+                    CallingCode:user.CallingCode,
+                    ContactNumber:user.ContactNumber,
+                    FullName:user.FullName,
+                    sPass:user.sPass
+                }
             })
         }).then(function(data){
             return _self.withToken(function(){
@@ -360,16 +442,72 @@ angular.module('services-api', [])
                     dataType:'json',
                     headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
                     data:{
-                        email:_self.getUser().EmailAddress,
-                        pass:_self.getUser().Password
+                        email:_self.getUser().Email,
+                        pass:user.sPass
                     }
-                })
+                }).then(function(data){
+                    _self.user = data;
+                    return data;
+                });
             });
         })
     }
     
     api.prototype.logout = function() {
         this.user = undefined;
+    }
+    
+    api.prototype.changePassword = function(user) {
+        var _self = this;
+        if(!_self.getUser()) {
+            return $q(function(resolve, reject) {
+                reject(createError("Not logon")); 
+            });
+        }
+        return _self.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppCustomer/UpdateEmail?iCustomerId='+user.iCustomerId+'&email='+user.email+'&pass='+user.pass,{
+                method:'POST',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                data:{
+                    Ic:_self.getUser().IC
+                }
+            });
+        }).then(function(data){
+            return _self.withToken(function(){
+                return $.ajax(_self.apiService.apiBase + 'api/AppCustomer/GetByEmailAndPass',{
+                    method:'GET',
+                    dataType:'json',
+                    headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                    data:{
+                        email:user.email,
+                        pass:user.pass
+                    }
+                }).then(function(data){
+                    _self.user = data;
+                    return data;
+                });
+            });
+        })
+    }
+    
+    api.prototype.forgetPassword = function() {
+        var _self = this;
+        if(!_self.getUser()) {
+            return $q(function(resolve, reject) {
+                reject(createError("Not logon")); 
+            });
+        }
+        return _self.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/AppEmail/ForgetPassWord',{
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                data:{
+                    Ic:_self.getUser().IC
+                }
+            });
+        });
     }
     
     api.prototype.getUser = function() {
@@ -391,6 +529,19 @@ angular.module('services-api', [])
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
             })
         }).then(function(data){
+            data = _.each(data, function(o) {
+                $pts = $(o.ProjectTemplate);
+                $pt = $("<div/>");
+                $pt.append($pts);
+                $a = $pt.find('a');
+                $a.each(function() {
+                    var href = $(this).attr("href");
+                    var ngclick = "u.navigateToStateWithIntent('app.web', {title:'"+o.Name+"', url:'"+href+"'})";
+                    $(this).attr("ng-click", ngclick);
+                });
+                var x = $pt.get(0).outerHTML;
+                o.ProjectTemplate = x;
+            });
             _self.values = data;
             return data;
         });
@@ -437,6 +588,27 @@ angular.module('services-api', [])
                 method:'GET',
                 dataType:'json',
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getFeedbackForm = function() {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerProjectFeedBackForm/GetFeedBackForm', {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.postFeedbackForm = function(feedbackResult) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerProjectFeedBackForm/UpdateFeedbackForm', {
+                method:'POST',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(feedbackResult)
             })
         });
     }
@@ -499,45 +671,41 @@ angular.module('services-api', [])
     return new api();
 })
 
-//.service('apiTicket', function($q,$timeout,apiServiceBaseWithToken,apiEvent) {
-//    function api(){}
-//    api.prototype = new apiServiceBaseWithToken();
-//    var values = []; api.values = values;
-//    var index = 0;
-//    value = {};
-//    value.id = index++;
-//    value.qrcode = faker.image.qrcode();
-//    value.event = apiEvent.values[0];
-//    values.push(value);
-//    api.prototype.addByEvent = function(event) {
-//        return $q(function(resolve, reject) {
-//            if(Math.random() >= 0){
-//                var value = {};
-//                value.id = index++;
-//                value.qrcode = faker.image.qrcode();
-//                value.event = event;
-//                values.push(value);
-//                    resolve(null); 
-//            }else{
-//                reject(createError('Not found'));
-//            }
-//        });
-//    }
-//    api.prototype.getAll = function() {
-//        return $q(function(resolve,reject){
-//            resolve(values); 
-//        });
-//    }
-//    api.prototype.getById = function(id) {
-//        if(typeof id == 'string') id = parseInt(id);
-//        return $q(function(resolve,reject){
-//            var found = _.find(values, function(o){ o.id == id; });
-//            if(found) resolve(found); 
-//            else reject(createError('Not found'));
-//        });
-//    }
-//    return new api();
-//})
+.service('apiTicket', function($q,$timeout,apiServiceBaseWithToken,apiEvent) {
+    function api(){}
+    var index = 0;
+    api.prototype = new apiServiceBaseWithToken();
+    api.prototype.addByEvent = function(event) {
+        var _self = this;
+        return $q(function(resolve, reject) {
+            if(Math.random() >= 0){
+                var value = {};
+                value.id = index++;
+                value.qrcode = 'http://www.campusbookstore.com/MobileBuyBack/QR-AppStore.png';
+                value.event = event;
+                if(_self.values === undefined) _self.values = [];
+                _self.values.push(value);
+                    resolve(null); 
+            }else{
+                reject(createError('Not found'));
+            }
+        });
+    }
+    api.prototype.getAll = function() {
+        return $q(function(resolve,reject){
+            resolve(values); 
+        });
+    }
+    api.prototype.getById = function(id) {
+        if(typeof id == 'string') id = parseInt(id);
+        return $q(function(resolve,reject){
+            var found = _.find(values, function(o){ o.id == id; });
+            if(found) resolve(found); 
+            else reject(createError('Not found'));
+        });
+    }
+    return new api();
+})
 
 .service('apiWhatsNews', function($q,$timeout,apiEventBase){
     function api(){}
@@ -613,6 +781,27 @@ angular.module('services-api', [])
                 method:'GET',
                 dataType:'json',
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.getFeedbackForm = function() {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerSysUserFeedBackForm/GetFeedBackForm', {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.postFeedbackForm = function(feedbackResult) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerSysUserFeedBackForm/UpdateFeedbackForm', {
+                method:'POST',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(feedbackResult)
             })
         });
     }
@@ -693,3 +882,103 @@ angular.module('services-api', [])
 /* ==========================================================================
    API Service End
    ========================================================================== */
+.factory('apiServiceBase2', function($q) {
+    function _apiServiceBase() {
+        var _this = this;
+        this._useCache = false;
+    }
+    _apiServiceBase.prototype.useCache = function() {
+        this._useCache = true;
+        return this; 
+    }
+    _apiServiceBase.prototype.processError = function(jqXHR, textStatus, errorThrown) {
+        var msg = null;
+        if(jqXHR.responseJSON != null) {
+            var json = jqXHR.responseJSON;
+            if(json.error_exist) {
+                if(!msg && json.error_message) {
+                    msg = {
+                        domain:ErrorDomain.ServerInfracture, 
+                        code:0, 
+                        description:json.error_message
+                    }; 
+                }
+                if(!msg) {
+                    msg = {
+                        domain:ErrorDomain.ServerInfracture, 
+                        code:0, 
+                        description:"Unable to interprete server reply"
+                    }; 
+                }
+            }else{
+                msg = {
+                    domain:ErrorDomain.ServerInfracture, 
+                    code:0, 
+                    description:"Unable to interprete server reply"
+                }; 
+            }
+        }else{
+            if(!msg && jqXHR.status == 0) {
+                msg = {
+                    domain:ErrorDomain.ClientHTTP, 
+                    code:0, 
+                    description:"Unable to connect to server"
+                }; 
+            }
+            if(!msg && errorThrown != null) {
+                msg = {
+                    domain:ErrorDomain.ClientHTTP, 
+                    code:jqXHR.status, 
+                    description:errorThrown
+                }; 
+            }
+            console.log(jqXHR);
+            if(!msg) {
+                msg = {
+                    domain:ErrorDomain.ClientHTTP, 
+                    code:jqXHR.status, 
+                    description:'Unable to interprete server reply ('+jqXHR.status+')'
+                }; 
+            }
+        }
+        return msg;
+    }
+    _apiServiceBase.prototype.callApi = function(ajax) {
+        var _self = this;
+        var defer = $q.defer();
+        ajax.then(function(data, textStatus, jqXHR) {
+            if(data) {
+                if(!data.error_exist) {
+                    console.log('done@' + this.url);
+                    console.log(data.result);
+                    defer.resolve(data.result);   
+                    return;
+                }
+            }
+            console.log('done(with error)@' + this.url);
+            var error = _self.createError(jqXHR, textStatus, null)
+            console.log(error);
+            defer.reject(error);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            var error = _self.createError(jqXHR, textStatus, errorThrown)
+            console.log(error);
+            defer.reject(error);
+        });
+        return defer.promise;
+    }
+
+    return _apiServiceBase;
+})
+.service('apiApp', function($q, apiServiceBase2) {
+    function api(){}
+    api.prototype = new apiServiceBase2();
+    api.prototype.get = function() {
+        return this.callApi($.ajax('http://infradigital.com.my/appstore/cms/resources/app.php?appid=com.infradesign.prosync&platform=ios',{
+            method:'GET',
+            dataType:'json'
+        }));
+    }
+    return new api();
+});
+

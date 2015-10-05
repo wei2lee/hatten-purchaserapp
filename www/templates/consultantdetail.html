@@ -2,7 +2,7 @@
     <ion-nav-title>
         {{consultant.FullName}}
     </ion-nav-title>
-    <ion-content>
+    <ion-content delegate-handle="scrollDelegate">
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="text-center">
                 <img ng-src="{{consultant.AvatarResourceKey || 'img/placeholder_people_lg.png'}}" width=240 height=240 class="circle padding">
@@ -20,7 +20,7 @@
                         <small>Contact</small>
                         <br>
                         <b ng-if="!(consultant.Phones && consultant.Phones.length>=1)">-</b>
-                        <b ng-if="(consultant.Phones && consultant.Phones.length>=1)">{{consultant.Phones[0].Value}}</b>
+                        <b ng-if="(consultant.Phones && consultant.Phones.length>=1)">{{consultant.Phones[0].Value && consultant.Phones[0].Value != "0" ? consultant.Phones[0].Value : '-' }}</b>
                     </p>
                 </div>
                 <div class="item">
@@ -48,6 +48,11 @@
             <div class="list card padding-md">
                 <rate-widget rate="rate"></rate-widget>
             </div>
+            
+            <div class="padding-horizontal">
+                <a ng-href="#/app/consultantreview/{{consultant.iSysUserID}}" class="button button-block button-positive">SUBMIT REVIEW</a>
+            </div>
+
         </div>
     </ion-content>
 </ion-view>

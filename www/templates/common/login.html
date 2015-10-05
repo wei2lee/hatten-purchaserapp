@@ -1,11 +1,11 @@
 <ion-modal-view id="modal-login">
     <ion-header-bar>
-        <h1 class="title">{{loginModal.showSignUp?'Sign Up':'Login'}}</h1>
+        <h1 class="title">{{loginModal.tab == 0 ? 'Sign Up': (loginModal.tab == 1 ? 'Login' : 'Forget Password')}}</h1>
         <div class="buttons">
             <button class="button button-clear" ng-click="u.closeLogin()">Close</button>
         </div>
     </ion-header-bar>
-    <ion-content scroll="false" id="content-login" ng-class="{'showSignUp':loginModal.showSignUp}">
+    <ion-content scroll="false" id="content-login" ng-class="{'show':loginModal.tab == 0}">
         <form ng-submit="u.doLogin()" novalidate>
             <div class="list">
                 <label class="item item-input">
@@ -20,14 +20,15 @@
                 <label class="item">
                     <button class="button button-block button-positive" type="submit">Log in</button>
                 </label>
-                <p class="text-center padding-md-top padding-md-horizontal text-positive" style="margin-bottom:0;">Don't have a account?</p>
-                <a ng-click="loginModal.showSignUp=true;" class="button button-clear button-positive button-full" style="margin-top:0;">Sign Up</a>
+                <p style="margin-bottom:-8px;" class="text-center padding-md-top padding-md-horizontal text-positive" style="margin-bottom:0;"><small>Don't have a account?</small></p>
+                <a ng-click="loginModal.tab = 1;" class="button button-clear button-positive button-full" style="margin-top:0;">Sign Up</a>
+                <p style="margin-bottom:-8px;" class="text-center padding-md-horizontal text-positive" style="margin-bottom:0;"><small>Forget password?</small></p>
+                <a ng-click="loginModal.tab = 2" class="button button-clear button-positive button-full" style="margin-top:0;">Retrive your password</a>
             </div>
         </form>
     </ion-content>
-    <ion-content scroll="false" id="content-signup" ng-class="{'showSignUp':loginModal.showSignUp}">
+    <ion-content scroll="false" id="content-signup" ng-class="{'show':loginModal.tab == 1}">
         <form ng-submit="console.log('ng-submit'); u.doSignUp()" novalidate >
-<!--            {{signUpData}}-->
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Email</span>
@@ -61,10 +62,26 @@
                 </label>
                 <div ng-if="loginModal.signUpAlert" class="item text-assertive">{{loginModal.signUpAlert.message}}</div>
                 <label class="item">
-                    <button class="button button-block button-positive" type="submit">Sign Up</button>
+                    <a class="button button-block button-positive" type="submit">Sign Up</a>
                 </label>
-                <a ng-click="loginModal.showSignUp=false;" class="button button-clear button-positive button-full" style="margin-top:0;">Back to Login</a>
+                <a ng-click="loginModal.tab = 0;" class="button button-clear button-positive button-full" style="margin-top:0;">Back to Login</a>
+            </div>
+        </form>
+    </ion-content>
+    <ion-content scroll="false" id="content-forgetpassword" ng-class="{'show':loginModal.tab == 2}">
+        <form ng-submit="console.log('ng-submit'); u.doSignUp()" novalidate >
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">Email</span>
+                    <input type="email" ng-model="loginModal.forgetPasswordData.EmailAddress">
+                </label>
+                <div ng-if="loginModal.forgetPasswordAlert" class="item text-assertive">{{loginModal.forgetPasswordAlert.message}}</div>
+                <label class="item">
+                    <a ng-click="loginModal.changePassword()"  class="button button-block button-positive" type="submit">Submit</a>
+                </label>
+                <a ng-click="loginModal.tab = 0;" class="button button-clear button-positive button-full" style="margin-top:0;">Back to Login</a>
             </div>
         </form>
     </ion-content>
 </ion-modal-view>
+

@@ -39,6 +39,8 @@ $light-theme-text-color:#ccc;
 $learn-more-bg-color:rgba(100,100,100,1);
 $learn-more-bg-color-start:rgba(100,100,100,0);
 
+$card-box-shadow:0 1px 15px rgba(0, 0, 0, .6) !default;
+
 /* ==========================================================================
    Base Import
    ========================================================================== */
@@ -269,7 +271,7 @@ $learn-more-bg-color-start:rgba(100,100,100,0);
     padding-top:0;
     padding-bottom:0;
 }
-
+ 
 .item-right {
     position:absolute;
     right:11px;
@@ -277,7 +279,10 @@ $learn-more-bg-color-start:rgba(100,100,100,0);
 }
 
 .view-center-thumb {
-    width: 45%;
+    width: 95%;
+    @media screen and (min-width:$grid-responsive-sm-break) {
+        width:45%;   
+    }
     min-width: 160px;
     display: block;
     margin: 0 auto;
@@ -654,8 +659,9 @@ ion-pane>ion-content .content:first-child {
 //http://stackoverflow.com/questions/28174609/when-i-use-iframe-in-ion-content-the-ion-content-scroll-is-not-work
 .iframe-container {
     -webkit-overflow-scrolling: touch !important;
-    overflow-y: scroll !important;
-    
+//    overflow-y: scroll !important;
+    line-height: 0;
+    font-size: 0;
     overflow: hidden;
     width: 100%;
     height: 100%;
@@ -668,6 +674,11 @@ ion-pane>ion-content .content:first-child {
         height: 100%;
         border: none;
     }
+}
+
+iframe.disable-scroll {
+    overflow:hidden;
+    pointer-events:none;
 }
 
 /* ==========================================================================
@@ -716,6 +727,10 @@ ion-side-menu {
 /* ==========================================================================
    List
    ========================================================================== */
+.wrapping-list .item-content, .wrapping-list .item {
+    overflow: initial;
+    white-space: initial;
+}
 
 .list {
     &.card {
@@ -753,6 +768,11 @@ ion-side-menu {
 
 }
 
+.timeelapse-container-top {
+    background-color:$dark;
+    color:red;
+}
+
 .timeelapse-container {
     position:relative;
     display:inline-block;
@@ -761,10 +781,24 @@ ion-side-menu {
         position:absolute;
         text-decoration: none;
         color:white;
-        top:3.5%;
+        top:6%;
         text-align: center;
         width:100%;
+        
+        font-size:18px; //380px
+        @media screen and (min-width:(380px*1.2)) { font-size:(18px*1.2); }
+        @media screen and (min-width:(380px*1.44)) { font-size:(18px*1.44); }
+        @media screen and (min-width:(380px*1.728)) { font-size:(18px*1.728); }
+        @media screen and (min-width:(380px*2.073)) { font-size:(18px*2.073); }
+        @media screen and (min-width:(380px*2.488)) { font-size:(18px*2.488); }
+        @media screen and (min-width:(380px*2.985)) { font-size:(18px*2.985); }
+        @media screen and (min-width:(380px*3.583)) { font-size:(18px*3.583); }
+//        @media screen and (min-width:456px) { font-size:21.6px; }
+//        @media screen and (min-width:456px) { font-size:21.6px; }
+//        @media screen and (min-width:456px) { font-size:21.6px; }
     }
+    
+
 }
 
 .button.button-full.footer-button {
@@ -958,7 +992,7 @@ $rate-review-lg-content-padding:12px;
     }
 }
 .learn-more-container {
-    transition:max-height 4.5s ease-out;
+    transition:max-height 1.5s ease-in-out;
     
     @media screen and (max-width:$grid-responsive-md-break) {
         max-height:200px;
@@ -1190,21 +1224,87 @@ $rate-review-lg-content-padding:12px;
 
 
 #modal-login {
-    #content-login, #content-signup {
+    #content-login, #content-signup, #content-forgetpassword {
         z-index:0;
         transition:left 0.3s ease-in-out;
     }
     #content-login {
-        left:0%;
+        left:-10%;
     }
-    #content-signup {
+    #content-signup, #content-forgetpassword {
         left:100%;
     }
     
-    #content-login.showSignUp {
-        left:-10%;
+    #content-login.show {
+        left:0%;
     }
-    #content-signup.showSignUp {
+    #content-signup.show, #content-forgetpassword.show {
         left:0%; 
     }
+}
+
+#contactus {
+    color:#6D6E70 !important;   
+    h3, h4 {
+        color:#6D6E70 !important;   
+    }
+    
+    hr  {
+        margin-top:30px;
+        margin-bottom:30px;
+    }
+    
+    
+    .content>div {
+        >div {
+            table {
+                margin-bottom:30px;   
+            }
+        }
+    }
+}
+
+#consultantdetail {
+//    .logo {
+//        width:80%;
+//        @media screen and (min-width:$grid-responsive-sm-break) {
+//            width:80%;   
+//        }
+//    }
+}
+    
+#abouthattengroup {
+    color:#6D6E70 !important;   
+    .content>div {
+        max-width:480px;
+        margin:0 auto;
+        
+        >p {
+            margin-bottom:25px;   
+        }
+        >img {
+            margin-bottom:10px;   
+        }
+        >hr {
+            margin-top:20px;
+            margin-bottom:40px;   
+        }
+    }
+    .logo {
+        width:72%;
+        margin:0 auto;
+        display:block;
+        
+    }
+    .together {
+        width:35%;
+        margin:0 auto;
+        display:block;
+    }
+    img {
+        max-width:100%;   
+        height:auto;
+    }
+    
+    
 }

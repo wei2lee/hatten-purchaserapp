@@ -1,23 +1,25 @@
 <ion-view view-title="What's New" id="whatsnew">
-    <ion-content>
-        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
-            <div class="list card fade-in-animation no-top-gap" ng-repeat="new in news" ng-class="{'no-bottom-gap':!new.Visible7&&!new.RoadShow.Visible6&&!new.RoadShow.Visible2}">
+    <ion-content overflow-scroll="true">
+        <ion-list>
+            <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+                <div class="list card fade-in-animation no-top-gap" ng-repeat="new in news" ng-class="{'no-bottom-gap':!new.Visible7&&!new.RoadShow.Visible6&&!new.RoadShow.Visible2}">
                     <div class="item padding-0">
                         <a ng-click="onClicked(new)">
                             <img class="full-img-responsive" ng-src="{{new.RoadShow.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
                         </a>
-                    <p class="padding" ng-if="new.RoadShow.Visible7">
-                        <span class="font-bold font-size-lg">{{new.Name}}</span>
-                    </p>
-                <div class="item item-icon-right" ng-if="new.RoadShow.Visible6">
-                    &nbsp;
-                    <a ng-click="u.share(new)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
+                        <p class="padding" ng-if="new.RoadShow.Visible7">
+                            <span class="font-bold font-size-lg">{{new.Name}}</span>
+                        </p>
+                    </div>
+                    <div class="item item-icon-right" ng-if="new.RoadShow.Visible6">
+                        &nbsp;
+                        <a ng-click="u.share(new)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
+                    </div>
+                    <button ng-if="new.RoadShow.Visible2" class="learn-more-button button button-full button-assertive footer-button" ng-click="learnmoretooshort=false; expanded=true;">
+                        ATTEND
+                    </button>
                 </div>
-                <button ng-if="new.RoadShow.Visible2" class="learn-more-button button button-full button-assertive footer-button" ng-click="learnmoretooshort=false; expanded=true;">
-                    ATTEND
-                </button>
-
             </div>
-        </div>
+        </ion-list>
     </ion-content>
 </ion-view>

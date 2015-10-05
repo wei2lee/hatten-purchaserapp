@@ -1,8 +1,23 @@
 <ion-view view-title="About Us" id="aboutus">
+<!--<ion-nav-bar>-->
+<!--
+    <ion-nav-bar class="bar-positive bar bar-header">
+    <ion-nav-back-button ng-click="myGoBack()">
+    <i class="ion-android-arrow-back"></i>
+    </ion-nav-back-button>
+    <ion-nav-title>Test</ion-nav-title>
+    </ion-nav-bar>
+-->
+<!--</ion-nav-bar>-->
     <ion-content>
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="list card">
+<!--
                 <a class="item" ng-click="u.navigateToStateWithIntent('app.web', {title:'About Us', url:'http://hattengrp.com/'})">
+                    About Hatten Group
+                </a>
+-->
+                <a class="item" href="#/app/abouthattengroup">
                     About Hatten Group
                 </a>
                 <a class="item" ng-click="u.navigateToStateWithIntent('app.web', {title:'Hatten Group Website', url:'http://hattengrp.com/'})">
@@ -13,12 +28,15 @@
                     Follow Us on Facebook
                 </a>
 -->
-                <a class="item" href="javascript:window.open('https://www.facebook.com/hattengroup/', '_blank', 'location=yes');">
+                <a class="item" ng-click="openFacebook()">
                     Follow Us on Facebook
                 </a>
-                <a class="item" href="mailto:info@hattengrp.com">
+                <a class="item" href="#/app/contactus">
                     Contact Us
                 </a>
+                <a class="item" ng-click="">
+                    Review Us
+                </a>            
                 <a class="item" ng-click="u.rateApp()">
                     Rate Us
                 </a>

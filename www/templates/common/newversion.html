@@ -1,0 +1,13 @@
+<ion-modal-view id="modal-newversion">
+    <ion-header-bar>
+        <h1 class="title">New version</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="newversionModal.close()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content scroll="false" class="padding-md">
+        <p>Newer version of the app({{newversionModal.appstoreversion}}) is available.</p>
+        <button ng-click="newversionModal.download()" class="button button-clear button-positive">Download</button>
+        <button ng-click="newversionModal.close()" class="button button-clear button-positive">Close</button>
+    </ion-content>
+</ion-modal-view>

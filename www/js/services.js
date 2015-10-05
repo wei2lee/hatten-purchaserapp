@@ -16,7 +16,7 @@ angular.module('services', ['ngResource'])
     }, false);
 })
 
-
+.value('googleApiKey', 'AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I')
 .value('intent', {})
 .service('u', function (
          $timeout, 
@@ -44,7 +44,9 @@ angular.module('services', ['ngResource'])
           $ionicHistory,
           apiCountry,
           apiTitle,
-          app) {
+          app,
+          apiApp
+        ) {
     var _this = this;
     
 /* ==========================================================================
@@ -58,17 +60,58 @@ angular.module('services', ['ngResource'])
         $rootScope.loginModal.modal.hide();
     };
     this.openLogin = function () {
+        if(apiUser.getUser()) {
+            return $q(function(resolve,reject) {
+                resolve(apiUser.getUser()); 
+            });
+        }
+        
         var vm = $rootScope;
         vm.loginModal = {};
-        vm.loginModal.showSignUp = false;
+        
+        vm.loginModal.forgetPassword = function() {
+            if(apiUser.getUser()){
+                return $q(function(resolve,reject) {
+                    reject(createError("Already login"));
+                });
+            }
+            if(!forgetPasswordData.EmailAddress){
+                return $q(function(resolve,reject) {
+                    reject(createError("Email Address cannot be empty"));
+                });
+            }
+            _this.showProgress();
+            return apiUser.forgetPassword(forgetPasswordData.EmailAddress).then(function() {
+                _this.showAlert("Your password is sent to your email");
+            }).catch(function(error){
+                _this.showAlert(error.description);
+            }).finally(function(){
+                _this.hideProgress();
+            });
+            
+//            _this.showProgress();
+//            $timeout(function(){
+//                _this.showAlert("Your password is sent to your email");
+//                _this.hideProgress();
+//            },1500)
+//            return;   
+        }
+        
+        
+        vm.loginModal.tab = 0;
         vm.loginModal.loginAlert = null;
         vm.loginModal.loginData = {};
-        vm.loginModal.loginData.username = 'TAREN.SUNIL@YAHOO.COM';
-        vm.loginModal.loginData.password = 'wendyjsy';
+//        vm.loginModal.loginData.username = 'TAREN.SUNIL@YAHOO.COM';
+//        vm.loginModal.loginData.password = 'wendyjsy';
+        vm.loginModal.loginData.username = 'ivantan31@hotmail.com';
+        vm.loginModal.loginData.password = 'test';
 
         vm.loginModal.signUpAlert = null;
         vm.loginModal.signUpData = {};
         vm.loginModal.signUpData.Title = vm.titleOptions ? vm.titleOptions[0] : null;
+        
+        vm.loginModal.forgetPasswordAlert = null;
+        vm.loginModal.forgetPasswordData = {};
         
         var loadCountryOptions = apiCountry.getAll().then(function(results) {
             vm.loginModal.callingCodeOptions = results;
@@ -107,10 +150,12 @@ angular.module('services', ['ngResource'])
         if(currentstate) {
             if(currentstate.resolve && currentstate.resolve.login) {
                 $ionicHistory.nextViewOptions({
-                   disableBack: true
+                 historyRoot: true,
+                 disableAnimate: true,
+                 expire: 300
                 });
                 $ionicSideMenuDelegate.toggleLeft(false);
-                $state.go("app.whatsnew");
+                $state.go("app.whatsnews");
             }
         }
     }
@@ -150,7 +195,9 @@ angular.module('services', ['ngResource'])
         if(!apiUser.getUser()){
             return _this.openLogin().then(function(){
                 $ionicHistory.nextViewOptions({
-                   disableBack: true
+                 historyRoot: true,
+                 disableAnimate: true,
+                 expire: 300
                 });
                 $ionicSideMenuDelegate.toggleLeft(false);
             }).catch(function(error){
@@ -159,7 +206,9 @@ angular.module('services', ['ngResource'])
         }else{
             return $q(function(resolve,reject){
                 $ionicHistory.nextViewOptions({
-                   disableBack: true
+                 historyRoot: true,
+                 disableAnimate: true,
+                 expire: 300
                 });
                 $ionicSideMenuDelegate.toggleLeft(false);
                 resolve(); 
@@ -225,29 +274,14 @@ angular.module('services', ['ngResource'])
    Share
    ========================================================================== */
     
-    this.share = function (item) {
-        if(window.cordova === undefined){ var defer = $q.defer(); $q.resolve(); return defer.promise; }
-        
-        var message = undefined;
-        if (item.message) message = item.message;
-        else if (item.msg) message = item.msg;
-        else if (item.description) message = item.description;
-        else if (item.desc) message = item.desc;
-
-        var subject = undefined;
-        if (item.subject) subject = item.subject;
-        else if (item.title) subject = item.title;
-        else if (item.displayName) subject = item.displayName;
-        else if (item.name) subject = item.name;
-
-        var file = undefined;
-        if (item.image) file = item.image;
-        else if (item.thumb) file = item.thumb;
-        else if (item.thumbnail) file = item.thumbnail;
-        else if (item.avatar) file = item.avatar;
-
-        var link = undefined;
-
+    this.shareEventBase = function(event) {
+        if(window.cordova === undefined){ 
+            return $q(function(resolve,reject) { resolve(); });
+        }
+        var message = event.RoadShow.Name;
+        var subject = event.RoadShow.Name;
+        var file = event.RoadShow.EventSmallPhotoResourceKey;
+        var link = event.RoadShow.WhatNewsClickUrl || undefined;
         return $cordovaSocialSharing
             .share(message, subject, file, link) // Share via native share sheet
             .then(function (result) {
@@ -256,6 +290,40 @@ angular.module('services', ['ngResource'])
                 // An error occured. Show a message to the user
             });
     }
+    
+    
+    this.shareEvent = function(event) {
+        this.shareEventBase(event);
+    }
+    
+    this.shareWhatsNews = function(event) {
+        this.shareEventBase(event);
+    }
+    
+    this.shareVoucher = function(event) {
+        this.shareEventBase(event);
+    }
+    
+    this.shareProperty = function(o) {
+        if(window.cordova === undefined){ 
+            return $q(function(resolve,reject) { resolve(); });
+        }
+        var message = o.Name;
+        var subject = o.Name;
+        var file = o.PictureSmallResourceKey;
+        var link = undefined;
+        return $cordovaSocialSharing
+            .share(message, subject, file, link) // Share via native share sheet
+            .then(function (result) {
+                // Success!
+            }, function (err) {
+                // An error occured. Show a message to the user
+            });
+    }
+        
+        
+    
+    
 /* ==========================================================================
    Rate App
    ========================================================================== */
@@ -319,6 +387,12 @@ angular.module('services', ['ngResource'])
                 return ret.rateForProject(ret.project,star);
             }else if(ret.consultant) {
                 return ret.rateForConsultant(ret.consultant,star);
+            }else if(ret.event) {
+                return ret.rateForEvent(ret.event,star);
+            }else if(ret.whatsnews) {
+                return ret.rateForWhatsNews(ret.whatsnews,star);
+            }else if(ret.voucher) {
+                return ret.rateForVoucher(ret.voucher,star);
             }else{
                 return $q(function(resolve,reject){
                     reject('Invalid rateFor object');
@@ -360,12 +434,12 @@ angular.module('services', ['ngResource'])
             return ret.setRateFrom(o);   
         }
         ret.getRateForObject = function(o, api) {
-                if(ret.apiUser.getUser() == null) {
-                    return $q(function(resolve,reject){
-                        reject(createError('Not logon'));
-                    });
-                }
-                return api.getRate(o, ret.apiUser.getUser()).then(function(results){
+            if(ret.apiUser.getUser() == null) {
+                return $q(function(resolve,reject){
+                    reject(createError('Not logon'));
+                });
+            }
+            return api.getRate(o, ret.apiUser.getUser()).then(function(results){
                 ret.setRateFrom(results);  
             }).catch(function(error){
                 _this.showAlert(error.description);
@@ -373,25 +447,25 @@ angular.module('services', ['ngResource'])
             });
         }
         //Rate for Event
-        ret.rateForEvent = function(o, star) { return ret.rateForObject(o, start, apiEvent); }
+        ret.rateForEvent = function(o, star) { return ret.rateForObject(o, star, apiEvent); }
         ret.setRateFromEvent = function(o) { return ret.setRateFromObject(o, 'event'); }
         ret.getRateForEvent = function(o) { return ret.getRateForObject(o, apiEvent); }
         //Rate for WhatsNews
-        ret.rateForWhatsNews = function(o, star) { return ret.rateForObject(o, start, apiWhatsNews); }
+        ret.rateForWhatsNews = function(o, star) { return ret.rateForObject(o, star, apiWhatsNews); }
         ret.setRateFromWhatsNews = function(o) { return ret.setRateFromObject(o, 'whatsnews'); }
         ret.getRateForWhatsNews = function(o) { return ret.getRateForObject(o, apiWhatsNews); }
         //Rate for Voucher
-        ret.rateForVoucher = function(o, star) { return ret.rateForObject(o, start, apiVoucher); }
+        ret.rateForVoucher = function(o, star) { return ret.rateForObject(o, star, apiVoucher); }
         ret.setRateFromVoucher = function(o) { return ret.setRateFromObject(o, 'voucher'); }
         ret.getRateForVoucher = function(o) { return ret.getRateForObject(o, apiVoucher); }
         //Rate for Project
-        ret.rateForProject = function(o, star) { return ret.rateForObject(o, start, apiProperty); }
+        ret.rateForProject = function(o, star) { return ret.rateForObject(o, star, apiProperty); }
         ret.setRateFromProject = function(o) { return ret.setRateFromObject(o, 'project'); }
-        ret.getRateForProject = function(o) { return ret.getRateForObject(o, apiEvent); }
+        ret.getRateForProject = function(o) { return ret.getRateForObject(o, apiProperty); }
         //Rate for Consultant
-        ret.rateForConsultant = function(o, star) { return ret.rateForObject(o, start, apiConsultant); }
+        ret.rateForConsultant = function(o, star) { return ret.rateForObject(o, star, apiConsultant); }
         ret.setRateFromConsultant = function(o) { return ret.setRateFromObject(o, 'consultant'); }
-        ret.getRateForConsultant = function(o) { return ret.getRateForObject(o, apiEvent); }
+        ret.getRateForConsultant = function(o) { return ret.getRateForObject(o, apiConsultant); }
 
         
         return ret;
@@ -413,6 +487,7 @@ angular.module('services', ['ngResource'])
         ret.stop = function() {
             if(!ret.updateExpireRemainInterval) return;
             $interval.cancel(ret.updateExpireRemainInterval);
+            ret.updateExpireRemainInterval = null;
         }
         return ret;
     }
@@ -432,6 +507,56 @@ angular.module('services', ['ngResource'])
     }
     
 /* ==========================================================================
+   Get App Version
+   ========================================================================== */
+    
+    this.getAppInfo = function() {
+        return apiApp.get();   
+    }
+    this.checkAppVersion = function() {
+        var vm = $rootScope;
+        vm.newVersionModal = {};
+        vm.close = function() {
+            vm.newVersionModal.modal.hide(); 
+        }
+//        vm.newVersionModal.loadModal = $ionicModal.fromTemplateUrl('templates/common/newversion.html', {
+//            scope: vm
+//        }).then(function (modal) {
+//            vm.newVersionModal.modal = modal;
+//        });
+//        vm.newVersionModal.loadModal.then(function() {
+//            apiApp.get().then(function(result) {
+//                var appstoreversion = new SemanticVersion(result.version);
+//                var appversion = app.version;
+//                if(appstoreversion.compare(appversion) > 0) {
+//                    vm.newVersionModal.modal.show();
+//                }
+//            }); 
+//        });
+        apiApp.get().then(function(result) {
+            var appstoreversion = new SemanticVersion(result.version);
+            var appversion = app.version;
+            if(appstoreversion.compare(appversion) > 0) {
+                $ionicPopup.alert({
+                    'title': 'New Version',
+                    'template': 'New version ('+appstoreversion.toString()+') is available',
+                    'buttons': [{
+                        'text': 'Download',
+                        'type': 'button-positive',
+                        'onTap': function (e) {
+                            window.open(result.downloadsrc, '_system','location=yes');   
+                        }
+                    },{
+                        'text': 'Close',
+                        'type': 'button-default'
+                    }]
+                }).then(function(){
+                    
+                });
+            }
+        });
+    }
+/* ==========================================================================
    Promise for loading images
    ========================================================================== */
     
@@ -439,9 +564,12 @@ angular.module('services', ['ngResource'])
         return $q(function(resolve, reject) {
             $timeout(function() {
                 var loadcnt = 0;
+                console.log('image load : imgs.length = ' + $imgs.length);
                 $imgs.one('load', function() {
+                    console.log('image loaded');
                     loadcnt++;
                     if(loadcnt == $imgs.length){
+                        console.log('image all loaded');                   
                         resolve();
                     }
                 }).each(function(){

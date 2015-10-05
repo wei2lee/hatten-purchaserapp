@@ -4,7 +4,7 @@
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Email</span>
-                    <input type="email" ng-model="user.EmailAddress">
+                    <input type="email" ng-model="user.EmailAddress" disabled>
                 </label>
                 <label class="item item-input item-select">
                     <span class="input-label">Title</span>
@@ -18,7 +18,7 @@
                 </label>
                 <label class="item item-input">
                     <span class="input-label">IC/Passport</span>
-                    <input type="text" ng-model="user.IC">
+                    <input type="text" ng-model="user.IC" disabled>
                 </label>
                 <label class="item item-input item-select">
                     <span class="input-label">Contact (Calling Code)</span>
@@ -30,11 +30,11 @@
                 </label>
 
                 <div class="padding-horizontal">
-                    <button class="button button-block button-energized">Change Password</button>
+                    <button ng-click="showChangePassword()" class="button button-block button-energized">Change Password</button>
                 </div>
 
                 <div class="padding-horizontal">
-                    <button class="button button-block button-balanced">Save</button>
+                    <button ng-click="save()" class="button button-block button-balanced">Save</button>
                 </div>
             </div>
         </div>

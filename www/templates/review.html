@@ -1,0 +1,21 @@
+<ion-view view-title="Review" id="review">
+    <ion-content>
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
+            <form ng-submit="submit();" novalidate ng-if="fields && fields.length">
+                <div class="list wrapping-list">
+                    <div class="item item-divider" ng-repeat-start="field in fields">{{field.Label}}</div>
+                    <ion-radio ng-repeat="Choice in field.Choices" ng-model="field.Value" name="{{field.FieldId}}" ng-value="'{{Choice}}'" ng-if="field.Type == 2">{{Choice}}</ion-radio>
+<!--                    <ion-checkbox ng-repeat="Choice in field.Choices" ng-model="field.Value" ng-value="'{{Choice}}'">{{Choice}}</ion-checkbox>-->
+                    <label class="item item-input" ng-if="field.Type == 0">
+                        <input type="text" ng-model="field.Value">
+                    </label>
+                    <div ng-repeat-end></div>
+                    <div class="padding-horizontal">
+                        <button class="button button-block button-balanced">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <p class="padding" ng-if="!(fields && fields.length)">Form is not available</p>
+        </div>
+    </ion-content>
+</ion-view>

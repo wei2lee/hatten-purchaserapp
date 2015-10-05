@@ -31,6 +31,15 @@ angular.module('route', ['ionic', 'services'])
         }
     })
     
+    .state('app.whatsnewsreview', {
+        url: '/whatsnewsreview/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/review.html',
+                controller: 'WhatsNewsReviewCtrl'
+            }
+        }
+    })
     
     .state('app.purchasedproperties', {
         url: '/purchasedproperties',
@@ -111,6 +120,16 @@ angular.module('route', ['ionic', 'services'])
         }
     })
     
+    .state('app.propertyreview', {
+        url: '/propertyreview/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/review.html',
+                controller: 'PropertyReviewCtrl'
+            }
+        }
+    })
+    
     .state('app.propertyspecification', {
         url: '/propertyspecification/{id}',
         views: {
@@ -170,6 +189,16 @@ angular.module('route', ['ionic', 'services'])
         }
     })
     
+    .state('app.eventreview', {
+        url: '/eventreview/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/review.html',
+                controller: 'EventReviewCtrl'
+            }
+        }
+    })
+    
     .state('app.vouchers', {
         url: '/vouchers',
         views: {
@@ -186,6 +215,16 @@ angular.module('route', ['ionic', 'services'])
             'menuContent': {
                 templateUrl: 'templates/eventdetail.html',
                 controller: 'VoucherDetailCtrl'
+            }
+        }
+    })
+    
+    .state('app.voucherreview', {
+        url: '/voucherreview/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/review.html',
+                controller: 'VoucherReviewCtrl'
             }
         }
     })
@@ -260,6 +299,16 @@ angular.module('route', ['ionic', 'services'])
         }
     })
 
+    .state('app.consultantreview', {
+        url: '/consultantreview/{id}',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/review.html',
+                controller: 'ConsultantReviewCtrl'
+            }
+        }
+    })
+    
 
     .state('app.privacypolicy', {
         url: '/privacypolicy',
@@ -316,6 +365,36 @@ angular.module('route', ['ionic', 'services'])
         }
     })
     
+    .state('app.abouthattengroup', {
+        url: '/abouthattengroup',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/abouthattengroup.html',
+                controller: 'AboutHattenGroupCtrl'
+            }
+        }
+    })
+    
+    .state('app.contactus', {
+        url: '/contactus',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/contactus.html',
+                controller: 'ContactUsCtrl'
+            }
+        }
+    })
+    
+    .state('app.location', {
+        url: '/location',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/location.html',
+                controller: 'LocationCtrl'
+            }
+        }
+    })
+    
     .state('app.learnmore', {
         url: '/learnmore',
         views: {
@@ -341,8 +420,10 @@ angular.module('route', ['ionic', 'services'])
     $urlRouterProvider.otherwise('/app/whatsnews');
 })
 .config(function($ionicConfigProvider) {  
-    //$ionicConfigProvider.views.maxCache(1);
+//    $ionicConfigProvider.views.maxCache(1);
 //    $ionicConfigProvider.scrolling.jsScrolling(false)
+    $ionicConfigProvider.backButton.previousTitleText(false);
+    $ionicConfigProvider.backButton.text('   ');
 })
 .run(function(
      $rootScope, 
@@ -360,6 +441,9 @@ angular.module('route', ['ionic', 'services'])
     
     //preload templates
     $http.get('templates/common/rate-review.html', { cache: $templateCache });
+    $http.get('templates/common/loading.html', { cache: $templateCache });
+    $http.get('templates/common/login.html', { cache: $templateCache });
+    $http.get('templates/common/web.html', { cache: $templateCache });
     
     //setup global variables that can access from view (by assign it to rootScope);
     console.log(apiService);
@@ -371,4 +455,7 @@ angular.module('route', ['ionic', 'services'])
     $rootScope.u = u;
     $rootScope.apiUser = apiUser;
     $rootScope.ionicPlatform = ionic.Platform;
+    
+    console.log("app=");
+    console.log(app);
 });

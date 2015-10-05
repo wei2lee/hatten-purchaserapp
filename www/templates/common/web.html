@@ -1,4 +1,4 @@
-<ion-view view-title="{{title}}">
+<ion-view view-title="{{title}}" id="web">
     <ion-nav-title>
        {{title}}
     </ion-nav-title>
@@ -6,9 +6,11 @@
         <ion-content class="has-header" scroll="false">
         <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
             <div class="iframe-container">
-                <iframe width=100% height=100% ng-src="{{url}}" ng-if="url">
+<!--                <ion-scroll zooming=true direciton=xy style="width:100%; height:100%;">-->
+                <iframe ng-onload="iframeOnLoad()" scrolling=true width=100% height=100% ng-src="{{url}}" ng-if="url">
                 </iframe>
-                <p class="padding">Url is not available</p>
+<!--                </ion-scroll>-->
+                <p ng-if="!url" class="padding">Url is not available</p>
             </div>
         </div>
         </ion-content>

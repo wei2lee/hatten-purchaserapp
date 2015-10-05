@@ -1,9 +1,16 @@
 
 <script src="lib/jquery/dist/jquery.min.js"></script>
+<!--
 <iframe id='map' width="500" height="500" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I&q=3.158384, 101.709390">
 <iframe width=500 height=500 src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I&center=-33.8569,151.2152&zoom=18&maptype=satellite"></iframe>
+-->
 <script>
-    
+    $(document).ready(function() {
+        console.log = function(msg) {
+            if(typeof msg == 'object') msg = JSON.stringify(msg);
+            $('body').append(msg + '<br/><br/>');
+        }
+    });
 
     
 //    var apiBase = 'http://prosalesdemo.infradesign.com.my/';
@@ -290,6 +297,7 @@
         });  
     }
     
+    
     function getByEmailAndPass(email,pass) {
         return $.ajax(apiBase + 'api/AppCustomer/GetByEmailAndPass',{
             headers:{Authorization:'Bearer '+token.access_token},
@@ -309,8 +317,64 @@
         });  
     }
     
+    function getProjectFeedbackForm() {
+        return $.ajax(apiBase + 'api/CustomerProjectFeedBackForm/GetFeedBackForm',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'GET'
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+    
+    function postProjectFeedbackForm(result) {
+        return $.ajax(apiBase + 'api/CustomerProjectFeedBackForm/UpdateFeedbackForm',{
+            headers:{Authorization:'Bearer '+token.access_token},
+            method:'POST',
+            contentType: "application/json",
+            data:JSON.stringify(result)
+        }).done(function(data, textStatus, jqXHR) { 
+            console.log('done@' + this.url);
+            console.log(data);
+            return data;
+        }).fail (function(jqXHR, textStatus, errorThrown) {
+            console.log('fail@' + this.url);
+            console.log(this.data);
+            console.log(processError(jqXHR, textStatus, errorThrown));
+        });  
+    }
+
+    
+    
 //    login().then(function() {
-//        getByEmailAndPass('', ''); 
+//        return getProjectFeedbackForm()
+//    }).then(function(formFields) {
+//        var resultFormFields = [];
+//        for(i = 0 ; i < formFields.length ; i++) {
+//            var formField = formFields[i];
+//            var resultFormField = {};
+//            resultFormField.FieldId = formField.Id;
+//            resultFormField.Type = formField.Type;
+//            if(formField.Choices.length) {
+//                resultFormField.Value = formField.Choices[0];
+//            }else{
+//                resultFormField.Value = 'Boy!Boy!Boy!Not a girl!';
+//            }
+//            resultFormField.CustomerId = 1;
+//            resultFormField.ProjectId = 17;
+//            resultFormFields.push(resultFormField);
+//        }
+//        return postProjectFeedbackForm(resultFormFields);
+//    }).then(function() {
+//    });
+    
+//    login().then(function() {
+//        getByEmailAndPass('TAREN.SUNIL@YAHOO.COM', 'wendyjsy'); 
+//        getAllProjects();
 //    });
     
     
@@ -426,6 +490,7 @@
     
 </script>
 
+<!--
 <iframe width="500" height="500" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAZU6hYAxURw1ewJYV4OMLitTYd01xPb0I&q=101.704694,3.093024&zoom=18" class="">
 <iframe width="500" height="500" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBtc2XioMaIVYKaGp0lWuKFKhpEwkA9agI&center=-33.8569,151.2152&zoom=18&maptype=satellite" class="">
-</iframe>
+</iframe>-->

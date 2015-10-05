@@ -1,12 +1,14 @@
-<ion-view view-title="{{event.displayName}}" id="eventdetail">
+<ion-view view-title="{{event.Name}}" id="eventdetail">
     <ion-nav-title>
-        {{event.displayName}}
+        {{event.Name}}
     </ion-nav-title>
-    <ion-content>
+    <ion-content overflow-scroll="false" delegate-handle="scrollDelegate"  >
+<!--        <ion-list>-->
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
             <div class="list card">
+                
                 <div class="item padding-0">
-                    <img preloadThumb class="full-img-responsive" ng-src="{{event.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
+                    <img preloadThumb class="full-img-responsive" ng-src="{{event.RoadShow.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
                     <p class="padding">
                         {{event.Name}}
                     </p>
@@ -23,24 +25,34 @@
                 <div class="learn-more-overlay"></div>
             </div>
 -->
-            
+
             <div class="list card learn-more-container" ng-class="{'tooshort':learnmoretooshort, 'expanded':expanded}" ng-if="event.RoadShow.Visible4">
-                <div class="item-body" ng-bind-html="event.RoadShow.EventTemplate ">
+                <div class="item-body" ng-bind-html="event.RoadShow.EventTemplate | process_link">
                 </div>
 <!--                <button class="learn-more-button button button-full button-positive footer-button" ng-click="u.navigateToStateWithIntent('app.learnmore', {description:property.ProjectTemplate})">-->
-                <button class="learn-more-button button button-full button-positive footer-button" ng-click="learnmoretooshort=false; expanded=true;">
+                <button class="learn-more-button button button-full button-positive footer-button" ng-click="learnmore()">
                     LEARN MORE
                 </button>
                 <div class="learn-more-overlay"></div>
             </div>
 
+            
+            
             <div class="list card" ng-if="event.RoadShow.Visible3">
-                <div class="item padding-0">
+                
+                <div class="item padding-0" ng-click="showLocation()">
                     <div class="responsive-container">
                         <canvas width=800 height=500></canvas>
                         <div class="responsive-content">
+<!--
                             <iframe class="pointer-events-none" id='map' width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDwzM42cKPYaZ-NkqPkiVsu1_VJ7UIcHfg&q=3.1349111,101.5371">
                             </iframe>
+-->
+                            <div class="iframe-container">
+                                <iframe class="disable-scroll" id='map' width="100%" height="100%" frameborder="0" style="border:0" ng-src="{{mapurl}}" ng-if="mapurl">
+                                </iframe>
+                                <p class="padding" ng-if="!mapurl">Location is not available</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -51,7 +63,7 @@
             </div>
 
             <div class="padding-horizontal padding-lg-top" ng-if="event.RoadShow.Visible2">
-                Number of Total Attemp : <strong style="font-size:24px">{{1056 | number}}</strong>
+                Number of Total Attemp : <strong style="font-size:24px">{{event.RoadShow.TotalAttend | number}}</strong>
                 <button ng-click="attempEvent(event)" class="button button-block button-balanced">ATTEND</button>
             </div>
 
@@ -63,7 +75,13 @@
             <div class="list card padding-md" ng-if="event.RoadShow.Visible1">
                 <rate-widget rate="rate"></rate-widget>
             </div>
+            
+            <div class="padding-horizontal" ng-if="event.RoadShow.Visible2">
+                <button ng-if="event.RoadShow.Visible1" ng-click="submitReview(event)" class="button button-block button-positive">SUBMIT REVIEW</button>
+            </div>
+
         </div>
+<!--        </ion-list>-->
     </ion-content>
 </ion-view>
 

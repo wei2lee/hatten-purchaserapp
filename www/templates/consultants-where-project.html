@@ -1,14 +1,14 @@
-<ion-view view-title="{{project.Name}}'s Consultants">
+<ion-view view-title="{{project.Name ? project.Name + '\'s Consultants' : ''}}" id="consultantswhereproject">
     <ion-nav-title>
-        {{project.Name}}'s Consultants
+        {{project.Name ? project.Name + '\'s Consultants' : ''}}
     </ion-nav-title>
-    <ion-content>
+    <ion-content delegate-handle="scrollDelegate">
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'xxx':contentAnimated}">
-            <div class="list card fade-in-fast-animation" ng-repeat="consultant in consultants | orderBy:'-FullName':reverse">
+            <div class="list card fade-in-fast-animation" ng-repeat="consultant in consultants">
                 <a ng-href="#/app/consultant/{{consultant.UserId}}" class="item item-icon-left item-avatar-left">
                     <img ng-src="{{consultant.AvatarResourceKey || 'img/placeholder_people_sm.png'}}">
                     <p class="font-bold">{{consultant.FullName}}</p>
-                    <p ng-if="consultant.Phones.length>=1"><small>{{consultant.Phones[0].Value}}</small></p>
+                    <p ng-if="consultant.Phones.length>=1"><small>{{consultant.Phones[0].Value && consultant.Phones[0].Value != "0" ? consultant.Phones[0].Value : '-' }}</small></p>
                     <p ng-if="consultant.Address"><small>{{consultant.Address}}</small></p>
                 </a>
             </div>
