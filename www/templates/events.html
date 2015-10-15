@@ -18,8 +18,8 @@
         <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
 <!--            <ion-list>-->
                 <div class="list card fade-in-animation no-top-gap" ng-repeat="event in events | orderBy:'-EventId'">
-                    <div ng-if="event.RoadShow.Visible5" class="item timeelapse-container-top" >
-                        <span ng-if="!event.expireRemainFinished"><b>Count Down : {{event.expireRemain}}</b></span>
+                    <div ng-if="event.RoadShow.Visible5" class="item timeelapse-container-top" style="white-space:normal;" >
+                        <span ng-if="!event.expireRemainFinished"><b>Count Down : <span style="display:inline-block;">{{event.expireRemain}}</span></b></span>
                         <span ng-if="event.expireRemainFinished"><b>Count Down is finished!</b></span>
                     </div>
                     <div class="item padding-0 line-height-0">

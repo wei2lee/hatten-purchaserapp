@@ -227,7 +227,7 @@ function EventDetailBaseController($scope, u, $timeout, $state, $ionicScrollDele
     });
 }
 
-function ReviewBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser) {
+function ReviewBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser) {
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
         if(state.direction != 'back') {
             $scope.feedbackFormFields = null; 
@@ -281,7 +281,7 @@ function ReviewBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
             }
             u.showProgress();
             $scope.api.postFeedbackForm(feedbackResults).then(function(results) {
-                $ionicPopup.alert({
+                Popup.alert({
                     'title': 'Thank for reviewing question!',
                     'buttons': [{
                         'text': 'Back',
@@ -332,8 +332,8 @@ angular.module('starter.controllers').controller('WhatsNewsDetailCtrl', WhatsNew
 /* ================================
    WhatsNewsReviewController
    ================================ */
-function WhatsNewsReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser, apiWhatsNews) {
-    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser);
+function WhatsNewsReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser, apiWhatsNews) {
+    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser);
     $scope.api = apiWhatsNews;
     $scope.IdPropertyName = "EventId";
 }
@@ -367,8 +367,8 @@ angular.module('starter.controllers').controller('VoucherDetailCtrl', VoucherDet
 /* ================================
    VoucherReviewController
    ================================ */
-function VoucherReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser, apiVoucher) {
-    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser);
+function VoucherReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser, apiVoucher) {
+    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser);
     $scope.api = apiVoucher;
     $scope.IdPropertyName = "EventId";
 }
@@ -402,8 +402,8 @@ angular.module('starter.controllers').controller('EventDetailCtrl', EventDetailC
 /* ================================
    EventReviewController
    ================================ */
-function EventReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser, apiEvent) {
-    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser);
+function EventReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser, apiEvent) {
+    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser);
     $scope.api = apiEvent;
     $scope.IdPropertyName = "EventId";
 }
@@ -856,8 +856,8 @@ angular.module('starter.controllers')
 /* ================================
    PropertyReviewController
    ================================ */
-function PropertyReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser, apiProperty) {
-    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser);
+function PropertyReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser, apiProperty) {
+    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser);
     $scope.api = apiProperty;
     $scope.IdPropertyName = "ProjectId";
 }
@@ -1167,10 +1167,10 @@ angular.module('starter.controllers').controller('PropertySpecificationCtrl', fu
 /* ================================
    ConsultantReviewController
    ================================ */
-function ConsultantReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser, apiConsultant) {
-    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, $ionicPopup, apiUser);
+function ConsultantReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser, apiConsultant) {
+    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser);
     $scope.api = apiConsultant;
-    $scope.IdPropertyName = "ProjectId";
+    $scope.IdPropertyName = "SysUserId";
 }
 ConsultantReviewController.prototype = Object.create(ReviewBaseController.prototype);
 angular.module('starter.controllers').controller('ConsultantReviewCtrl', ConsultantReviewController)
@@ -1303,7 +1303,7 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
     });
 })
 
-.controller('ProfileCtrl', function ($scope, u, $timeout, $ionicPopup, apiUser, apiTitle, apiCountry) {
+.controller('ProfileCtrl', function ($scope, u, $timeout, Popup, apiUser, apiTitle, apiCountry) {
     var vm = $scope;
     $scope.save = function () {
         u.showProgress();
@@ -1318,7 +1318,7 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
         $scope.changePasswordUser.iCustomerId = apiUser.getUser().CustomerId;
         $scope.changePasswordUser.email = apiUser.getUser().Email;
         $scope.changePasswordUser.pass = '';
-        var myPopup = $ionicPopup.show({
+        var myPopup = Popup.show({
             template: '<input type="password" ng-model="changePasswordUser.pass">',
             title: 'Enter New Password',
             scope: $scope,

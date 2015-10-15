@@ -347,8 +347,16 @@ angular.module('services-api', [])
                 }
             })
         }).then(function(data){
-            _self.user = data;
-            return data;
+            if(data == null) {
+                throw {
+                    domain:ErrorDomain.ClientApplication, 
+                    code:0, 
+                    description:"User doesn\'t match with any password"
+                };
+            }else{
+                _self.user = data;
+                return data;
+            }
         }).catch(function(error){
             if(error.domain == ErrorDomain.ServerInfracture && error.code == 1){
                 throw {
@@ -956,12 +964,12 @@ angular.module('services-api', [])
                 }
             }
             console.log('done(with error)@' + this.url);
-            var error = _self.createError(jqXHR, textStatus, null)
+            var error = createError(jqXHR, textStatus, null)
             console.log(error);
             defer.reject(error);
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log('fail@' + this.url);
-            var error = _self.createError(jqXHR, textStatus, errorThrown)
+            var error = createError(jqXHR, textStatus, errorThrown)
             console.log(error);
             defer.reject(error);
         });
@@ -974,7 +982,8 @@ angular.module('services-api', [])
     function api(){}
     api.prototype = new apiServiceBase2();
     api.prototype.get = function() {
-        return this.callApi($.ajax('http://infradigital.com.my/appstore/cms/resources/app.php?appid=com.infradesign.prosync&platform=ios',{
+        var platform = !ionic.Platform.isAndroid() ? 'ios' : 'android';
+        return this.callApi($.ajax('http://infradigital.com.my/appstore/cms/resources/app.php?appid=com.infradesign.prosync&platform='+platform,{
             method:'GET',
             dataType:'json'
         }));

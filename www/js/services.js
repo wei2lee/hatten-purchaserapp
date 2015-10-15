@@ -33,7 +33,7 @@ angular.module('services', ['ngResource'])
           apiEvent,
           apiWhatsNews,
           apiVoucher,
-          $ionicPopup, 
+          Popup, 
           $ionicLoading, 
           $cordovaSocialSharing, 
           $cordovaAppRate, 
@@ -103,8 +103,10 @@ angular.module('services', ['ngResource'])
         vm.loginModal.loginData = {};
 //        vm.loginModal.loginData.username = 'TAREN.SUNIL@YAHOO.COM';
 //        vm.loginModal.loginData.password = 'wendyjsy';
-        vm.loginModal.loginData.username = 'ivantan31@hotmail.com';
-        vm.loginModal.loginData.password = 'test';
+//        vm.loginModal.loginData.username = 'ivantan31@hotmail.com';
+//        vm.loginModal.loginData.password = 'test';
+        vm.loginModal.loginData.username = 'apps@infradigital.com.my';
+        vm.loginModal.loginData.password = 'Hattengroup';
 
         vm.loginModal.signUpAlert = null;
         vm.loginModal.signUpData = {};
@@ -158,6 +160,13 @@ angular.module('services', ['ngResource'])
                 $state.go("app.whatsnews");
             }
         }
+        Popup.alert({
+                    'title': 'You have logout',
+                    'buttons': [{
+                        'text': 'Close',
+                        'type': 'button-positive'
+                    }]
+                });
     }
     this.doLogin = function () {
         var vm = $rootScope;
@@ -253,7 +262,7 @@ angular.module('services', ['ngResource'])
     
     this.showAlert = function(title, msg, buttonType) {
         if(buttonType === undefined || buttonType === null) buttonType = 'button-positive';
-        var alertPopup = $ionicPopup.alert({
+        var alertPopup = Popup.alert({
             'title': title,
             'template': msg,
             'buttons': [{
@@ -537,7 +546,7 @@ angular.module('services', ['ngResource'])
             var appstoreversion = new SemanticVersion(result.version);
             var appversion = app.version;
             if(appstoreversion.compare(appversion) > 0) {
-                $ionicPopup.alert({
+                Popup.alert({
                     'title': 'New Version',
                     'template': 'New version ('+appstoreversion.toString()+') is available',
                     'buttons': [{

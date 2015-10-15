@@ -659,10 +659,10 @@ ion-pane>ion-content .content:first-child {
 //http://stackoverflow.com/questions/28174609/when-i-use-iframe-in-ion-content-the-ion-content-scroll-is-not-work
 .iframe-container {
     -webkit-overflow-scrolling: touch !important;
-//    overflow-y: scroll !important;
+    overflow-y: scroll !important;
     line-height: 0;
     font-size: 0;
-    overflow: hidden;
+//    overflow: hidden;
     width: 100%;
     height: 100%;
     border: none;

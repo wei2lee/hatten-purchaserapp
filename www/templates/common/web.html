@@ -3,13 +3,12 @@
        {{title}}
     </ion-nav-title>
     <ion-pane>
-        <ion-content class="has-header" scroll="false">
+<!--        //http://stackoverflow.com/questions/28174609/when-i-use-iframe-in-ion-content-the-ion-content-scroll-is-not-work-->
+        <ion-content class="has-header" overflow-scroll="true">
         <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
             <div class="iframe-container">
-<!--                <ion-scroll zooming=true direciton=xy style="width:100%; height:100%;">-->
-                <iframe ng-onload="iframeOnLoad()" scrolling=true width=100% height=100% ng-src="{{url}}" ng-if="url">
+                <iframe  data-tap-disabled="true" ng-onload="iframeOnLoad()" scrolling=true width=100% height=100% ng-src="{{url}}" ng-if="url">
                 </iframe>
-<!--                </ion-scroll>-->
                 <p ng-if="!url" class="padding">Url is not available</p>
             </div>
         </div>

@@ -17,7 +17,8 @@ angular.module('starter', [
     'directive',
     'angular-bind-html-compile',
     'ngOnload',
-    'ngIOS9UIWebViewPatch'
+    'ngIOS9UIWebViewPatch',
+    'Popup'
 //    'inappbrowser'
     //'monospaced.qrcode'
 ])
