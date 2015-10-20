@@ -1,14 +1,15 @@
 <ion-view view-title="Gallery" id="gallery">
-    <ion-pane>
-        <ion-content class="has-header" overflow-scroll="false">
-<!--            <ion-list>-->
+    
+        <ion-pane class="has-header" overflow-scroll="false">
+<!--        <ion-content class="has-header" overflow-scroll="false">-->
             <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
-            <div class="list card fade-in-animation no-top-gap" ng-repeat="photo in photos">
-                <div class="item padding-0 line-height-0">
-                    <img class="full-image" ng-src="{{photo.ProjectPhotoResourceKey  || 'img/placeholder_general_lg.png'}}">
-                </div>
-            </div>
 <!--
+                <div class="list card fade-in-animation no-top-gap" ng-repeat="photo in photos">
+                    <div class="item padding-0 line-height-0">
+                        <img class="full-image" ng-src="{{photo.ProjectPhotoResourceKey  || 'img/placeholder_general_lg.png'}}">
+                    </div>
+                </div>
+-->
                 <ion-slide-box on-slide-changed="slideHasChanged($index)" class="full-height" ng-if="photos && photos.length">
                     <ion-slide ng-repeat="photo in photos">
                         <div class="box">
@@ -22,12 +23,11 @@
                         </div>
                     </ion-slide>
                 </ion-slide-box>
-                <p class="padding">Gallery is not available</p>
--->
+<!--                <p class="padding">Gallery is not available</p>-->
             </div>
-<!--            </ion-list>-->
-        </ion-content>
-    </ion-pane>
+<!--        </ion-content>-->
+        </ion-pane>
+    
 </ion-view>
 <!--https://blog.nraboy.com/2015/03/make-a-gallery-like-image-grid-using-ionic-framework/-->
 <!--http://ionicframework.com/docs/api/directive/ionSlideBox/-->

@@ -1,7 +1,13 @@
 function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, title, api) {
     $scope.title = title;
+    $scope.eventTabs = [
+//        {
+//            'title':'Nov',
+//            'events':[]
+//        }
+//    
+    ];
     $scope.scrollTop = function() {
-//        $scope.$scrollDelegate.scrollTop(false);
         $scope.$content.scrollTop(0);
         $scope.$scroll.scrollTop(0);
         $scope.$scroll.css({        'transform': 'translate3d(0px, 0px, 0px) scale(1)'});
@@ -17,7 +23,16 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
             var hh = Math.floor(remainSeconds / (60*60)) % 24;
             var mi = Math.floor(remainSeconds / (60)) % 60;
             var ss = remainSeconds % 60;
-            _new.expireRemain = sprintf("%ddays, %02dhrs, %02dmins, %02dseconds", dd, hh, mi, ss);
+//            _new.expireRemain = sprintf("%ddays, %02dhrs, %02dmins, %02dseconds", dd, hh, mi, ss);
+            _new.expireRemain = sprintf("%ddays, %02d:%02d:%02d", dd, hh, mi, ss);
+//            console.log(_new);
+            if(_new.RoadShow.EndDateTime && Date.now() > _new.RoadShow.EndDateTime.getTime()){
+                _new.expireDesc = "Event is ended.";
+            }else if(_new.RoadShow.StartDate && Date.now() > _new.RoadShow.StartDate.getTime()){
+                _new.expireDesc = "Event is started!";
+            }else{
+                _new.expireDesc = "Event is coming!!";
+            }
             _new.expireRemainFinished = !(dd || hh || mi || ss);
         }
         
@@ -77,6 +92,30 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
             u.showProgress();
             api.getAll().then(function(results) {
                 $scope.events = results;
+                var groupByMonth = _.groupBy($scope.events, function(o) {
+                    var ts = moment(o.RoadShow.StartDate);
+                    return ts.format("MMM")+','+ts.format("YYYY");
+                });
+                $scope.eventTabs = [];
+                for(k in groupByMonth) {
+                    console.log(k, groupByMonth[k]);
+                    
+                    
+                    var splits = k.split(",");
+                    var month = splits[0];
+                    var year = splits[1];
+                    
+                    $scope.eventTabs.push({
+                        'title':month,
+                        'events':groupByMonth[k]
+                    });
+                    
+                }
+                console.log('eventTabs',$scope.eventTabs);
+                
+                
+                
+                
                 $scope.timer.start();
                 return $timeout(function(){
                     u.imagesLoaded($scope.$content.find('img').slice(0,2));

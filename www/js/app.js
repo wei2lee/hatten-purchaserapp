@@ -65,7 +65,17 @@ angular.module('starter', [
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-        //u.checkAppVersion();
+//          $ionicPlatform.ready(function() {
+//            Ionic.io(); 
+//
+//            var push = new Ionic.Push({
+//              "debug": true
+//            });
+//
+//            push.register(function(token) {
+//              console.log("Device token:",token.token);
+//            });
+//          });
     });
     document.addEventListener("deviceready", function () {
         app.deviceready = true;

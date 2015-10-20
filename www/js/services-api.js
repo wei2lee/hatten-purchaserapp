@@ -167,6 +167,12 @@ angular.module('services-api', [])
             _self.values = _.each(data, function(o) {
                 o.RoadShow.StartDate = new Date(o.RoadShow.StartDate);
                 o.RoadShow.EndDateTime  = new Date(o.RoadShow.EndDateTime);
+                
+                
+                var _start = moment(o.RoadShow.StartDate);
+                var _end = moment(o.RoadShow.EndDateTime);
+                o._period = _start.format('D') + '-' + _end.format('D MMM YYYY');
+                
             });
             return data;
         });
@@ -182,6 +188,12 @@ angular.module('services-api', [])
                 if(found){
                     found.RoadShow.StartDate = new Date(found.RoadShow.StartDate);
                     found.RoadShow.EndDateTime  = new Date(found.RoadShow.EndDateTime);
+                    
+                    
+                    var _start = moment(found.RoadShow.StartDate);
+                    var _end = moment(found.RoadShow.EndDateTime);
+                    found._period = _start.format('D') + '-' + _end.format('D MMM YYYY');
+                    
                     resolve(found);
                 }
                 else reject(createError('Not found'));

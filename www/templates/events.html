@@ -2,43 +2,114 @@
     <ion-nav-title>
         {{title}}
     </ion-nav-title>
-<!--
-    <div class="tabs-striped tabs-top tabs-background-light tabs-color-positive">
-        <div class="tabs">
-            <a class="tab-item" ng-class="{active:tabIndex==0}" ng-click="tabIndex=0;">
-                 Upcoming Events
-            </a>
-            <a class="tab-item" ng-class="{active:tabIndex==1}" ng-click="tabIndex=1;">
-                 Ongoing Events
-            </a>
-        </div>
-    </div>
--->
-    <ion-content delegate-handle="scrollDelegate"  >
-        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
-<!--            <ion-list>-->
-                <div class="list card fade-in-animation no-top-gap" ng-repeat="event in events | orderBy:'-EventId'">
-                    <div ng-if="event.RoadShow.Visible5" class="item timeelapse-container-top" style="white-space:normal;" >
-                        <span ng-if="!event.expireRemainFinished"><b>Count Down : <span style="display:inline-block;">{{event.expireRemain}}</span></b></span>
-                        <span ng-if="event.expireRemainFinished"><b>Count Down is finished!</b></span>
+<!--    <ion-content class="has-header"delegate-handle="scrollDelegate" scroll=false>-->
+    <ion-pane class="has-header" overflow-scroll="false">
+        <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+        <ion-slide-box class="full-height" >
+            <ion-slide ng-repeat="event in events">
+                <div class="box">
+                    <div class="box-container">
+                        <div class="box-thumb-container">
+                            <img ng-src="{{photo.ProjectPhotoResourceKey  || 'img/placeholder_general_lg.png'}}">
+                        </div>
                     </div>
-                    <div class="item padding-0 line-height-0">
-                        <a ng-click="click(event)" class="timeelapse-container">
-                            <img class="full-image" ng-src="{{event.RoadShow.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
-<!--                            <div ng-if="event.RoadShow.Visible5" class="timeelapse">{{event.expireRemain}}</div>-->
-                        </a>
+                    <div class="box-label">
                     </div>
-                    <div class="item item-icon-right" ng-if="event.RoadShow.Visible6&&event.RoadShow.Visible7">
-                        <span ng-if="event.RoadShow.Visible7" class="font-bold font-size-lg">{{event.Name}}</span>&nbsp;
-                        <a ng-if="event.RoadShow.Visible6" ng-click="share(event)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
-                    </div>
-                    <button ng-click="attempEvent(event)" ng-if="event.RoadShow.Visible2" class="learn-more-button button button-full button-assertive footer-button">
-                        ATTEND
-                    </button>
                 </div>
-<!--            </ion-list>-->
+            </ion-slide>
+        </ion-slide-box>
         </div>
-    </ion-content>
+        
+<!--
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
+            <ion-slide-box slide-tabs-scrollable="true" show-pager="false" ion-slide-tabs>
+                <ion-slide ion-slide-tab-label="{{eventTab.title}}" ng-repeat="eventTab in eventTabs">
+                    <ion-scroll zooming="false" direction="xy" style="width: 100%; height: 100%; ">
+                    <div>{{eventTab}}</div>
+                    <div class="list card fade-in-animation no-top-gap" ng-repeat="event in events | orderBy:'-EventId'">
+                        <div ng-if="event.RoadShow.Visible5" class="item timeelapse-container-top" style="white-space:normal;">
+                            <div ng-if="!event.expireRemainFinished">
+                                <span>
+                            <span>{{event.Name}}
+                                started in : <span class="countdown" style="display:inline-block;">{{event.expireRemain}}</span>
+                                </span>
+                                <br/><small>
+                                <span style="display:inline-block">{{event._period}}</span>
+                            </small>
+                                </span>
+
+
+                            </div>
+                            <div ng-if="event.expireRemainFinished">
+                                <span ng-if="event.expireRemainFinished">
+                            <span style="display:inline-block">{{event.Name}}</span>
+                                <br/><small><span style="display:inline-block">{{event._period}},</span></small>
+                                <small><span style="display:inline-block">{{event.expireDesc}}</span></small>
+                                </span>
+
+                            </div>
+                        </div>
+                        <div class="item padding-0 line-height-0">
+                            <a ng-click="click(event)" class="timeelapse-container">
+                                <img class="full-image" ng-src="{{event.RoadShow.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
+                            </a>
+                        </div>
+                        <div class="item item-icon-right" ng-if="event.RoadShow.Visible6&&event.RoadShow.Visible7">
+                            <span ng-if="event.RoadShow.Visible7" class="font-bold font-size-lg">{{event.Name}}</span>&nbsp;
+                            <a ng-if="event.RoadShow.Visible6" ng-click="share(event)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
+                        </div>
+                        <button ng-click="attempEvent(event)" ng-if="event.RoadShow.Visible2" class="learn-more-button button button-full button-assertive footer-button">
+                            ATTEND EVENT
+                        </button>
+                    </div>
+                    <div style="height:50px;"></div>
+                    </ion-scroll>
+                </ion-slide>
+            </ion-slide-box>
+-->
+
+
+        <!--
+            <div class="list card fade-in-animation no-top-gap" ng-repeat="event in events | orderBy:'-EventId'">
+                <div ng-if="event.RoadShow.Visible5" class="item timeelapse-container-top" style="white-space:normal;" >
+                    <div ng-if="!event.expireRemainFinished">
+                        <span>
+                            <span>{{event.Name}}
+                                started in : <span class="countdown" style="display:inline-block;">{{event.expireRemain}}</span>
+                            </span>
+                            <br/><small>
+                                <span style="display:inline-block">{{event._period}}</span>
+                            </small>
+                        </span>
+
+
+                    </div>
+                    <div ng-if="event.expireRemainFinished">
+                        <span ng-if="event.expireRemainFinished">
+                            <span style="display:inline-block">{{event.Name}}</span>
+                            <br/><small><span style="display:inline-block">{{event._period}},</span></small>
+                            <small><span style="display:inline-block">{{event.expireDesc}}</span></small>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="item padding-0 line-height-0">
+                    <a ng-click="click(event)" class="timeelapse-container">
+                        <img class="full-image" ng-src="{{event.RoadShow.EventLargePhotoResourceKey || 'img/placeholder_general_lg.png'}}">
+                    </a>
+                </div>
+                <div class="item item-icon-right" ng-if="event.RoadShow.Visible6&&event.RoadShow.Visible7">
+                    <span ng-if="event.RoadShow.Visible7" class="font-bold font-size-lg">{{event.Name}}</span>&nbsp;
+                    <a ng-if="event.RoadShow.Visible6" ng-click="share(event)"><i class="icon ion-android-share-alt icon-left-border"></i></a>
+                </div>
+                <button ng-click="attempEvent(event)" ng-if="event.RoadShow.Visible2" class="learn-more-button button button-full button-assertive footer-button">
+                    ATTEND EVENT
+                </button>
+            </div>
+-->
+<!--        </div>-->
+    </ion-pane>
+<!--    </ion-content>-->
 </ion-view>
 
 <!--
