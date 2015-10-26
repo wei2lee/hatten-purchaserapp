@@ -1,4 +1,4 @@
-function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, title, api) {
+function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, title, api, $cordovaLocalNotification) {
     $scope.title = title;
     $scope.eventTabs = [
 //        {
@@ -23,9 +23,9 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
             var hh = Math.floor(remainSeconds / (60*60)) % 24;
             var mi = Math.floor(remainSeconds / (60)) % 60;
             var ss = remainSeconds % 60;
-//            _new.expireRemain = sprintf("%ddays, %02dhrs, %02dmins, %02dseconds", dd, hh, mi, ss);
             _new.expireRemain = sprintf("%ddays, %02d:%02d:%02d", dd, hh, mi, ss);
-//            console.log(_new);
+            _new.expireRemainDay = sprintf("%ddays", dd);
+            _new.expireRemainTime = sprintf("%02d:%02d:%02d", hh, mi, ss);
             if(_new.RoadShow.EndDateTime && Date.now() > _new.RoadShow.EndDateTime.getTime()){
                 _new.expireDesc = "Event is ended.";
             }else if(_new.RoadShow.StartDate && Date.now() > _new.RoadShow.StartDate.getTime()){
@@ -35,8 +35,6 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
             }
             _new.expireRemainFinished = !(dd || hh || mi || ss);
         }
-        
-        console.log("timer");
     });
     $scope.attempEvent = function(event) {
         u.openLogin().then(function() {
@@ -56,6 +54,23 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
                         u.showAlert('Thank you for joining this event');
                         event.RoadShow.TotalAttend = result.TotalAttend;
                         event.RoadShow.Attend = result.Attend;
+                        
+                        if(ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+                        
+                            var title = event.RoadShow.NotificationAlertMesseage || sprintf('%s will be started in 24hours!', event.Name);
+                            var id = u.localStorage.getInt('NotificationId', 0);
+                            u.localStorage.set('NotificationId', id++);
+                            var intervalFromNow = event.RoadShow.StartDate.getTime() - (24*60*60*1000) - Date.now();
+                            if(intervalFromNow < 0) {
+                            var at = new Date(Date.now() + intervalFromNow);
+                                $cordovaLocalNotification.schedule({
+                                      'id': id,
+                                      'title': title,
+                                      'at': at
+                                }).then(function (result) {});
+                            }
+                            
+                        }
                     }).catch(function(error) {
                         u.showAlert(error.description);
                     }).finally(function(){
@@ -79,7 +94,7 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
         $scope.$content = $scope.$element.find('ion-content .content>');
         $scope.$scroll = $scope.$element.find('ion-content>.scroll');
         $scope.$scrollDelegate = $ionicScrollDelegate.$getByHandle('scrollDelegate');
-        $scope.timer.start(); 
+        //$scope.timer.start(); 
         if(state.direction == 'none' || state.direction == 'forward') {
 //            $scope.$scrollDelegate.scrollTop(false);
             $scope.scrollTop();
@@ -98,7 +113,7 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
                 });
                 $scope.eventTabs = [];
                 for(k in groupByMonth) {
-                    console.log(k, groupByMonth[k]);
+//                    console.log(k, groupByMonth[k]);
                     
                     
                     var splits = k.split(",");
@@ -111,7 +126,7 @@ function EventsBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
                     });
                     
                 }
-                console.log('eventTabs',$scope.eventTabs);
+//                console.log('eventTabs',$scope.eventTabs);
                 
                 
                 
@@ -175,6 +190,23 @@ function EventDetailBaseController($scope, u, $timeout, $state, $ionicScrollDele
                         u.showAlert('Thank you for joining this event');
                         event.RoadShow.TotalAttend = result.TotalAttend;
                         event.RoadShow.Attend = result.Attend;
+                        
+                        if(ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+                        
+                            var title = event.RoadShow.NotificationAlertMesseage || sprintf('%s will be started in 24hours!', event.Name);
+                            var id = u.localStorage.getInt('NotificationId', 0);
+                            u.localStorage.set('NotificationId', id++);
+                            var intervalFromNow = event.RoadShow.StartDate.getTime() - (24*60*60*1000) - Date.now();
+                            if(intervalFromNow < 0) {
+                            var at = new Date(Date.now() + intervalFromNow);
+                                $cordovaLocalNotification.schedule({
+                                      'id': id,
+                                      'title': title,
+                                      'at': at
+                                }).then(function (result) {});
+                            }
+                            
+                        }
                     }).catch(function(error) {
                         u.showAlert(error.description);
                     }).finally(function(){
@@ -314,7 +346,8 @@ function ReviewBaseController($scope, u, $timeout, $state, $ionicScrollDelegate,
                 field.FieldId = formField.Id;
                 field.Type = formField.Type;
                 field.Value = formField.Value;
-                field[$scope.IdPropertyName] = $state.params.id;
+                if($scope.IdPropertyName)
+                    field[$scope.IdPropertyName] = $state.params.id;
                 field.CustomerId = apiUser.getUser().CustomerId;
                 feedbackResults.push(field);
             }
@@ -550,7 +583,7 @@ angular.module('starter.controllers')
             }).catch(function(error) {
                 u.showAlert(error.description);
             }).finally(function() {
-                console.log('finally');
+//                console.log('finally');
                  u.hideProgress();
             });
         }
@@ -764,8 +797,8 @@ angular.module('starter.controllers')
 
 .controller('PropertiesCtrl', function ($scope, u, $timeout, $state, apiProperty, $ionicScrollDelegate) {
     $scope.scrollTop = function() {
-        console.log('$scope.$scroll.length = '+$scope.$scroll.length);
-        console.log($scope.$scroll);
+//        console.log('$scope.$scroll.length = '+$scope.$scroll.length);
+//        console.log($scope.$scroll);
 //        $scope.$scrollDelegate.scrollTop(false);
         $scope.$content.scrollTop(0);
         $scope.$scroll.scrollTop(0);
@@ -778,7 +811,7 @@ angular.module('starter.controllers')
         $scope.$content = $scope.$element.find('ion-content .content>');
         $scope.$scroll = $scope.$element.find('ion-content>.scroll');
         $scope.$scrollDelegate = $ionicScrollDelegate.$getByHandle('scrollDelegate');
-        console.log('PropertiesCtrl.afterEnter @ ' + state.direction);
+//        console.log('PropertiesCtrl.afterEnter @ ' + state.direction);
         if(state.direction == 'none' || state.direction == 'forward') {
             $scope.scrollTop();
         }
@@ -806,7 +839,7 @@ angular.module('starter.controllers')
         }
     });
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
-        console.log('PropertiesCtrl.afterLeave @'+state.direction);
+//        console.log('PropertiesCtrl.afterLeave @'+state.direction);
         if(state.direction == 'none' || state.direction == 'back'){
             $scope.contentReady = false;
             $scope.properties = [];
@@ -846,7 +879,7 @@ angular.module('starter.controllers')
         $scope.$scroll = $scope.$element.find('ion-content>.scroll');
         $scope.$scrollDelegate = $ionicScrollDelegate.$getByHandle('scrollDelegate');
         $scope.$learnmore = $scope.$content.find('.learn-more-container');
-        console.log('PropertyDetailCtrl.afterEnter @ ' + state.direction);
+//        console.log('PropertyDetailCtrl.afterEnter @ ' + state.direction);
         if(state.direction == 'none' || state.direction == 'forward') {
             $scope.scrollTop();
         }
@@ -880,7 +913,7 @@ angular.module('starter.controllers')
         }
     });
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
-        console.log('PropertyDetail.afterLeave @'+state.direction);
+//        console.log('PropertyDetail.afterLeave @'+state.direction);
         if(state.direction == 'none' || state.direction == 'back'){
             $scope.contentReady = false;
             $scope.property = null;
@@ -950,7 +983,7 @@ angular.module('starter.controllers').controller('PropertySpecificationCtrl', fu
                         '&q='+$scope.latitude+','+$scope.longitude+
                         '&zoom=18'
                     ;
-                    console.log($scope.url);
+//                    console.log($scope.url);
                     $scope.url = $sce.trustAsResourceUrl($scope.url);
                     
                 }else{
@@ -1292,7 +1325,7 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
         window.open('https://www.facebook.com/hattengroup/', '_system','location=yes');        
     }
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
-        console.log(app);
+//        console.log(app);
         if (state.direction != 'back') {
             $scope.contentReady = true;
             $scope.contentAnimated = true;
@@ -1408,7 +1441,7 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
             vm.user.FullName = apiUser.getUser().FullName;
             vm.user.sPass = apiUser.getUser().Pass;
 
-            console.log(vm.user);
+//            console.log(vm.user);
         }
     });
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {
@@ -1472,9 +1505,20 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
     });
 })
 
+/* ================================
+   WhatsNewsReviewController
+   ================================ */
+function ProgramReviewController($scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser, apiProgram) {
+    ReviewBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, $ionicHistory, Popup, apiUser);
+    $scope.api = apiProgram;
+    $scope.IdPropertyName = undefined;
+}
+ProgramReviewController.prototype = Object.create(ReviewBaseController.prototype);
+angular.module('starter.controllers').controller('ProgramReviewCtrl', ProgramReviewController)
+
 .controller('WebCtrl', function($scope, u, $timeout, intent, $ionicScrollDelegate, $sce) {
     $scope.iframeOnLoad = function() {
-        console.log('iframeOnLoad');
+//        console.log('iframeOnLoad');
         u.hideProgress();
         $timeout(function() {
             $scope.contentReady = true;
@@ -1525,7 +1569,7 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
 
 .controller('LocationCtrl', function($scope, u, $timeout, intent, $ionicScrollDelegate, $sce) {
     $scope.iframeOnLoad = function() {
-        console.log('iframeOnLoad');
+//        console.log('iframeOnLoad');
         u.hideProgress();
         $timeout(function() {
             $scope.contentReady = true;

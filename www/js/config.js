@@ -354,6 +354,16 @@ angular.module('route', ['ionic', 'services'])
             }
         }
     })
+    
+    .state('app.programreview', {
+        url: '/programreview',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/review.html',
+                controller: 'ProgramReviewCtrl'
+            }
+        }
+    })
 
     .state('app.aboutus', {
         url: '/aboutus',

@@ -1,0 +1,19 @@
+<ion-view view-title="Gallerylish-event" id="events">
+    <ion-pane class="has-header" overflow-scroll="false">
+        <div class="content full-width full-height" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
+            <ion-slide-box  class="full-height">
+                <ion-slide ng-repeat="event in events">
+                    <div class="box">
+                        <div class="box-container">
+                            <div class="box-thumb-container">
+                                <img ng-src="{{'img/placeholder_general_lg.png'}}">
+                            </div>
+                        </div>
+                        <div class="box-label">
+                        </div>
+                    </div>
+                </ion-slide>
+            </ion-slide-box>
+        </div>
+    </ion-pane>
+</ion-view>

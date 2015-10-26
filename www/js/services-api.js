@@ -222,13 +222,12 @@ angular.module('services-api', [])
     }
     api.prototype.rate = function(event,user,star) {
         var _self = this;
-        var _self = this;
         return this.withToken(function(){
             return $.ajax(_self.apiService.apiBase + 'api/Rate/UpdateEventRate?iEventId='+event.EventId+'&iCustomerID='+user.CustomerId+'&iRateValue='+star+'', {
                 method:'GET',
                 dataType:'json',
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
-            })
+            });
         });
     }
     api.prototype.getFeedbackForm = function() {
@@ -309,6 +308,33 @@ angular.module('services-api', [])
 /* ==========================================================================
    API Service Start
    ========================================================================== */
+.factory('apiProgram', function($q,apiServiceBaseWithToken) {
+    function api() {}
+    api.prototype = new apiServiceBaseWithToken();
+    api.prototype.getFeedbackForm = function() {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerProjectFeedBackForm/GetProgramFeedBackForm', {
+                method:'GET',
+                dataType:'json',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token}
+            })
+        });
+    }
+    api.prototype.postFeedbackForm = function(feedbackResult) {
+        var _self = this;
+        return this.withToken(function(){
+            return $.ajax(_self.apiService.apiBase + 'api/CustomerProjectFeedBackForm/UpdateProgramFeedbackForm', {
+                method:'POST',
+                headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
+                contentType: "application/json; charset=utf-8",
+                data:JSON.stringify(feedbackResult)
+            })
+        });
+    }
+    return new api();
+})
+
 .factory('apiToken', function($q,apiServiceBase) {
     function api() {}
     api.prototype = new apiServiceBase();

@@ -51,7 +51,6 @@ $card-box-shadow:0 1px 15px rgba(0, 0, 0, .6) !default;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
  
-@import "../lib/ionic-rating/ionic-rating.css";
 @import "animate";
 
 //@import "www/js/ionSlideBox/scss/slidingTabs.scss";
@@ -789,7 +788,16 @@ ion-side-menu {
         font-size:12px;   
     }
     .countdown {
-           
+        .countdown-day {
+//            font-family: 'Raleway', sans-serif;
+            font-family: 'Lato', sans-serif;
+            font-size:37px;
+            line-height:1em;
+        }   
+        .countdown-time {
+            font-size:16px;
+            line-height:1em;
+        }
     }
 }
 
@@ -797,6 +805,9 @@ ion-side-menu {
     position:relative;
     display:inline-block;
     width:100%;
+    
+    
+    
     .timeelapse {
         position:absolute;
         text-decoration: none;

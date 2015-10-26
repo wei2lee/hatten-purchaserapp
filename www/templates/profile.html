@@ -21,12 +21,16 @@
                     <input type="text" ng-model="user.IC" disabled>
                 </label>
                 <label class="item item-input item-select">
-                    <span class="input-label">Contact (Calling Code)</span>
+                    <span class="input-label">Country Code</span>
                     <select ng-options="option.CallingCode as '(+'+option.CallingCode+') '+option.Name for option in callingCodeOptions" ng-model="user.CallingCode"></select>
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">Contact (Number)</span>
-                    <input type="text" ng-model="user.ContactNumber">
+                    <span class="input-label">Contact</span>
+                    <input type="text" ng-model="user.ContactNumber" placeholder="01234567">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Mailing Address</span>
+                    <input type="textarea" ng-model="user.MailingAddress">
                 </label>
 
                 <div class="padding-horizontal">

@@ -6,10 +6,8 @@
 angular.module('starter', [
     'ionic',
     'ngAnimate',
-    'ionic.rating',
     'services-api',
     'ngCordova',
-    'adaptive.googlemaps',
     'route',
     'starter.controllers',
     'services',
@@ -49,9 +47,10 @@ angular.module('starter', [
     deviceready:false,
     versionNumber:"0.0.0",
     versionCode:0,
-    version:new SemanticVersion("0.0.0")
+    version:new SemanticVersion("0.0.0"),
+    notificationPermissionGranted:false
 })
-.run(function ($ionicPlatform,app, u, $timeout, $cordovaAppVersion, app) {
+.run(function ($ionicPlatform,app, u, $timeout, $cordovaAppVersion, app,$cordovaLocalNotification) {
     $ionicPlatform.ready(function () {
         app.ionicPlatformReady = true;
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -65,17 +64,48 @@ angular.module('starter', [
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
         }
-//          $ionicPlatform.ready(function() {
-//            Ionic.io(); 
+        
+        
+        if(ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+            $cordovaLocalNotification.hasPermission().then(function(granted){
+                console.log('$cordovaLocalNotification.hasPermission.then');
+                console.log(granted);
+                App.notificationPermissionGranted = true;
+            }).catch(function(error){
+                console.log('$cordovaLocalNotification.hasPermission.catch');
+                console.log(error);
+                if(error === false) {
+                    return $cordovaLocalNotification.registerPermission().then(function(granted){
+                        console.log('$cordovaLocalNotification.registerPermission.then');
+                        console.log(granted);
+                        App.notificationPermissionGranted = true;
+                    }).catch(function(error){
+                        console.log('$cordovaLocalNotification.registerPermission.catch');
+                        console.log(error);
+                        throw error;
+                    });
+                }else{
+                }
+            }).then(function(){
+//                console.log('Notification.then');
+//                var title = sprintf('%s will be started in 15seconds!', 'Notification');
+//                var id = u.localStorage.getInt('NotificationId', 0);
+//                u.localStorage.set('NotificationId', id++);
+//                var at = new Date(Date.now() + (15 * 1000));
 //
-//            var push = new Ionic.Push({
-//              "debug": true
-//            });
-//
-//            push.register(function(token) {
-//              console.log("Device token:",token.token);
-//            });
-//          });
+//                $cordovaLocalNotification.schedule({
+//                    'id': id,
+//                    'title': title,
+//                    'at': at
+//                }).then(function (result) {
+//                    console.log('$cordovaLocalNotification.schedule.then');
+//                    console.log(result);
+//                }).catch(function(error){
+//                    console.log('$cordovaLocalNotification.schedule.catch');
+//                    console.log(error);
+//                })
+            });
+        }
     });
     document.addEventListener("deviceready", function () {
         app.deviceready = true;
