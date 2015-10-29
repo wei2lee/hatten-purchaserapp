@@ -28,7 +28,7 @@
         </form>
     </ion-content>
     <ion-content scroll="false" id="content-signup" ng-class="{'show':loginModal.tab == 1}">
-        <form ng-submit="console.log('ng-submit'); u.doSignUp()" novalidate >
+        <form ng-submit="u.doSignUp()" novalidate >
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Email</span>
@@ -62,14 +62,14 @@
                 </label>
                 <div ng-if="loginModal.signUpAlert" class="item text-assertive">{{loginModal.signUpAlert.message}}</div>
                 <label class="item">
-                    <a class="button button-block button-positive" type="submit">Sign Up</a>
+                    <button class="button button-block button-positive" type="submit">Sign Up</button>
                 </label>
                 <a ng-click="loginModal.tab = 0;" class="button button-clear button-positive button-full" style="margin-top:0;">Back to Login</a>
             </div>
         </form>
     </ion-content>
     <ion-content scroll="false" id="content-forgetpassword" ng-class="{'show':loginModal.tab == 2}">
-        <form ng-submit="console.log('ng-submit'); u.doSignUp()" novalidate >
+        <form ng-submit="u.doForgetPassword()" novalidate >
             <div class="list">
                 <label class="item item-input">
                     <span class="input-label">Email</span>
@@ -77,7 +77,7 @@
                 </label>
                 <div ng-if="loginModal.forgetPasswordAlert" class="item text-assertive">{{loginModal.forgetPasswordAlert.message}}</div>
                 <label class="item">
-                    <a ng-click="loginModal.changePassword()"  class="button button-block button-positive" type="submit">Submit</a>
+                    <button class="button button-block button-positive" type="submit">Submit</button>
                 </label>
                 <a ng-click="loginModal.tab = 0;" class="button button-clear button-positive button-full" style="margin-top:0;">Back to Login</a>
             </div>

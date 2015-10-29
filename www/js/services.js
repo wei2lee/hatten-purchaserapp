@@ -70,35 +70,6 @@ angular.module('services', ['ngResource'])
             var vm = $rootScope;
             vm.loginModal = {};
 
-            vm.loginModal.forgetPassword = function () {
-                if (apiUser.getUser()) {
-                    return $q(function (resolve, reject) {
-                        reject(createError("Already login"));
-                    });
-                }
-                if (!forgetPasswordData.EmailAddress) {
-                    return $q(function (resolve, reject) {
-                        reject(createError("Email Address cannot be empty"));
-                    });
-                }
-                _this.showProgress();
-                return apiUser.forgetPassword(forgetPasswordData.EmailAddress).then(function () {
-                    _this.showAlert("Your password is sent to your email");
-                }).catch(function (error) {
-                    _this.showAlert(error.description);
-                }).finally(function () {
-                    _this.hideProgress();
-                });
-
-                //            _this.showProgress();
-                //            $timeout(function(){
-                //                _this.showAlert("Your password is sent to your email");
-                //                _this.hideProgress();
-                //            },1500)
-                //            return;   
-            }
-
-
             vm.loginModal.tab = 0;
             vm.loginModal.loginAlert = null;
             vm.loginModal.loginData = {};
@@ -188,6 +159,36 @@ angular.module('services', ['ngResource'])
             });
         };
 
+        this.doForgetPassword = function() {
+            var vm = $rootScope;
+            if (apiUser.getUser()) {
+                _this.showAlert("Already login");
+                return;
+//                return $q(function (resolve, reject) {
+//                    reject(createError("Already login"));
+//                });
+            }
+            if (!vm.loginModal.forgetPasswordData.EmailAddress) {
+                _this.showAlert("Email Address is empty or invalid");
+                return;
+//                return $q(function (resolve, reject) {
+//                    reject(createError("Email Address cannot be empty"));
+//                });
+            }
+            _this.showProgress();
+            return apiUser.forgetPassword(vm.loginModal.forgetPasswordData.EmailAddress).then(function () {
+                _this.showAlert("Your password is sent to your email");
+            }).catch(function (error) {
+                if(error.code == 1 && error.domain == ErrorDomain.ServerInfracture) {
+                    _this.showAlert("No email address is found");
+                } else {
+                    _this.showAlert(error.description);
+                }
+            }).finally(function () {
+                _this.hideProgress();
+            });
+        }
+    
         this.doSignUp = function () {
             console.log("doSignUp");
             var vm = $rootScope;

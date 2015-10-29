@@ -1,44 +1,92 @@
 <ion-view view-title="Calculator">
-    <ion-content>
-        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeInUp':contentAnimated}">
-            <div class="list">
-                <form ng-submit="window.cordova.plugins.Keyboard.close()">
-                <div class="item item-divider">
-                    <b>Input Loan Parameters</b>
-                </div>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Purchase Price</span>
-                    <input type="number" placeholder="500000" ng-model="purchaseprice">
-                </label>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Downpayment</span>
-                    <input type="number" placeholder="50000" ng-model="downpayment">
-                </label>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Loan Rate(%)</span>
-                    <input type="number" placeholder="6.5" ng-model="loanrate">
-                </label>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Tenure (years)</span>
-                    <input type="number" placeholder="20" ng-model="tenureyear">
-                </label>
-                <div class="item item-divider">
-                    <b>Result</b>
-                </div>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Loan Amount</span>
-                    <input type="text" disabled placeholder="450000" value="{{loanamount() | currency:'MYR ':2 || '-'}}">
-                </label>
-                <label class="item item-input item-stacked-label padding-top">
-                    <span class="input-label">Payable Per Month</span>
-                    <input type="text" disabled placeholder="0" value="{{payablepermonth() | currency:'MYR ':2 || '-'}}">
-                </label>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Total Payment</span>
-                    <input type="text" disabled placeholder="0" value="{{totalpayment() | currency:'MYR ':2 || '-'}}">
-                </label>
-                </form>
+    <div class="tabs-striped tabs-top tabs-background-light tabs-color-positive">
+        <div class="tabs">
+            <a class="tab-item" ng-class="{active:tabIndex==0}" ng-click="tabIndex=0;">
+                 Loan
+            </a>
+            <a class="tab-item" ng-class="{active:tabIndex==1}" ng-click="tabIndex=1;">
+                 Hire Purchase
+            </a>
+        </div>
+    </div>
+    <ion-content class="has-header">
+        <div class="content" ng-class="{'contentReady':contentReady, 'animated':contentAnimated, 'fadeIn':contentAnimated}">
+        <div ng-if="tabIndex==0" class="list">
+            <form ng-submit="window.cordova.plugins.Keyboard.close()">
+            <div class="item item-divider">
+                <b>Loan Calculator Parameters</b>
             </div>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Purchase Price</span>
+                <input type="number" placeholder="500000" ng-model="purchaseprice">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Downpayment</span>
+                <input type="number" placeholder="50000" ng-model="downpayment">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Loan Rate(%)</span>
+                <input type="number" placeholder="6.5" ng-model="loanrate">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Tenure (years)</span>
+                <input type="number" placeholder="20" ng-model="tenureyear">
+            </label>
+            <div class="item item-divider">
+                <b>Result</b>
+            </div>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Loan Amount</span>
+                <input type="text" disabled placeholder="450000" value="{{loanamount() | currency:'MYR ':2 || '-'}}">
+            </label>
+            <label class="item item-input item-stacked-label padding-top">
+                <span class="input-label">Payable Per Month</span>
+                <input type="text" disabled placeholder="0" value="{{payablepermonth() | currency:'MYR ':2 || '-'}}">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Total Payment</span>
+                <input type="text" disabled placeholder="0" value="{{totalpayment() | currency:'MYR ':2 || '-'}}">
+            </label>
+            </form>
+        </div>
+        <div ng-if="tabIndex==1" class="list">
+            <form ng-submit="window.cordova.plugins.Keyboard.close()">
+            <div class="item item-divider">
+                <b>Hire Purchase Calculator Parameters</b>
+            </div>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Purchase Price</span>
+                <input type="number" placeholder="500000" ng-model="purchaseprice">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Downpayment</span>
+                <input type="number" placeholder="50000" ng-model="downpayment">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Loan Rate(%)</span>
+                <input type="number" placeholder="6.5" ng-model="loanrate">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Tenure (years)</span>
+                <input type="number" placeholder="20" ng-model="tenureyear">
+            </label>
+            <div class="item item-divider">
+                <b>Result</b>
+            </div>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Loan Amount</span>
+                <input type="text" disabled placeholder="450000" value="{{loanamount() | currency:'MYR ':2 || '-'}}">
+            </label>
+            <label class="item item-input item-stacked-label padding-top">
+                <span class="input-label">Payable Per Month</span>
+                <input type="text" disabled placeholder="0" value="{{hirePurchasePayablepermonth() | currency:'MYR ':2 || '-'}}">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Total Payment</span>
+                <input type="text" disabled placeholder="0" value="{{hirePurchaseTotalpayment() | currency:'MYR ':2 || '-'}}">
+            </label>
+            </form>
+        </div>
         </div>
     </ion-content>
 </ion-view>

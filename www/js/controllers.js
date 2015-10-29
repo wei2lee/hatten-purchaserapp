@@ -230,6 +230,7 @@ function EventDetailBaseController($scope, u, $timeout, $state, $ionicScrollDele
     
     $scope.submitReview = function(event) {
         //   
+        console.log('submitreview base');
     }
     $scope.$on('$ionicView.afterEnter', function (viewInfo, state) {
         $scope.$element = $('#eventdetail[nav-view=active], #eventdetail[nav-view=entering]');
@@ -418,11 +419,6 @@ function VouchersController($scope, u, $timeout, $state, $ionicScrollDelegate, a
     EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, "Voucher", apiVoucher);
     $scope.showDetail = function(event) { $state.go("app.voucherdetail", {id:event.EventId}); }
     $scope.share = function(event) { u.shareVoucher(event); }
-    $scope.submitReview = function(event) {
-        u.openLogin().then(function() {
-            $state.go('app.voucherreview', {id:event.EventId}); 
-        });
-    }
 }
 VouchersController.prototype = Object.create(EventsBaseController.prototype);
 angular.module('starter.controllers').controller('VouchersCtrl', VouchersController)
@@ -433,6 +429,11 @@ function VoucherDetailController($scope, u, $timeout, $state, $ionicScrollDelega
     EventDetailBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, $sce, googleApiKey, "Rate this Event", apiVoucher);
     $scope.setRateFrom = function(event) { $scope.rate.setRateFromVoucher($scope.event); }
     $scope.getRateFor = function(event) { $scope.rate.getRateForVoucher($scope.event); }
+    $scope.submitReview = function(event) {
+        u.openLogin().then(function() {
+            $state.go('app.voucherreview', {id:event.EventId}); 
+        });
+    }
 }
 VoucherDetailController.prototype = Object.create(EventDetailBaseController.prototype);
 angular.module('starter.controllers').controller('VoucherDetailCtrl', VoucherDetailController)
@@ -453,11 +454,6 @@ function EventsController($scope, u, $timeout, $state, $ionicScrollDelegate, api
     EventsBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, "Event", apiEvent);
     $scope.showDetail = function(event) { $state.go("app.eventdetail", {id:event.EventId}); }
     $scope.share = function(event) { u.shareEvent(event); }
-    $scope.submitReview = function(event) {
-        u.openLogin().then(function() {
-            $state.go('app.eventreview', {id:event.EventId}); 
-        });
-    }
 }
 EventsController.prototype = Object.create(EventsBaseController.prototype);
 angular.module('starter.controllers').controller('EventsCtrl', EventsController);
@@ -468,6 +464,11 @@ function EventDetailController($scope, u, $timeout, $state, $ionicScrollDelegate
     EventDetailBaseController.call(this, $scope, u, $timeout, $state, $ionicScrollDelegate, apiTicket, $sce, googleApiKey, "Rate this Event", apiEvent);
     $scope.setRateFrom = function(event) { $scope.rate.setRateFromEvent($scope.event); }
     $scope.getRateFor = function(event) { $scope.rate.getRateForEvent($scope.event); }
+    $scope.submitReview = function(event) {
+        u.openLogin().then(function() {
+            $state.go('app.eventreview', {id:event.EventId}); 
+        });
+    }
 }
 EventDetailController.prototype = Object.create(EventDetailBaseController.prototype);
 angular.module('starter.controllers').controller('EventDetailCtrl', EventDetailController);
@@ -889,7 +890,7 @@ angular.module('starter.controllers')
             $scope.property = null;
             $scope.project = null;
             u.showProgress();
-            apiProperty.useCache().getById($state.params.id).then(function(results) {
+            apiProperty.getById($state.params.id).then(function(results) {
                 $scope.property = results;  
                 $scope.project = results
                 $timeout(function(){
@@ -1251,9 +1252,11 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
     $scope.loanamount = function () {
         return this.purchaseprice - this.downpayment;
     };
+    
     $scope.payablepermonth = function () {
         var ret = (this.interestpermonth() * this.effectiveinterest() * this.loanamount()) / (this.effectiveinterest() - 1);
         if (isNaN(ret)) ret = 0;
+        else if(!isFinite(ret)) ret = 0;
         return ret;
     };
     $scope.totalpayment = function () {
@@ -1265,6 +1268,15 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
     $scope.effectiveinterest = function () {
         return Math.pow(1 + this.interestpermonth(), this.tenureyear * 12);
     };
+    $scope.hirePurchasePayablepermonth = function() {
+        var ret = this.hirePurchaseTotalpayment() / (this.tenureyear * 12);
+        if (isNaN(ret)) ret = 0;
+        else if(!isFinite(ret)) ret = 0;
+        return ret;
+    }
+    $scope.hirePurchaseTotalpayment = function() {
+        return this.loanamount() * (1 + this.tenureyear * this.loanrate / 100);
+    }
     $scope.purchaseprice = '';
     $scope.downpayment = '';
     $scope.loanrate = '';
@@ -1273,6 +1285,7 @@ angular.module('starter.controllers').controller('ConsultantReviewCtrl', Consult
         if(state.direction != 'back') {
             $scope.contentReady = true;
             $scope.contentAnimated = true;
+            $scope.tabIndex = 0;
         }
     });
     $scope.$on('$ionicView.afterLeave', function (viewInfo, state) {

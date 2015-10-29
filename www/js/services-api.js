@@ -9,7 +9,9 @@ angular.module('services-api', [])
 .value('apiService', {
     token:{},
     apiBase:'http://103.9.149.59:8034/',
+//    apiBase:'http://192.168.1.104/SalesPlatForm/',
     resourceBase:'http://103.9.149.59:8034/data/HATT/',
+    
     apiUserName:'90731C01@hatt',
     apiUserPassword:'F2568907B18C'
 })
@@ -537,20 +539,20 @@ angular.module('services-api', [])
         })
     }
     
-    api.prototype.forgetPassword = function() {
+    api.prototype.forgetPassword = function(email) {
         var _self = this;
-        if(!_self.getUser()) {
-            return $q(function(resolve, reject) {
-                reject(createError("Not logon")); 
-            });
-        }
+//        if(!_self.getUser()) {
+//            return $q(function(resolve, reject) {
+//                reject(createError("Not logon")); 
+//            });
+//        }
         return _self.withToken(function(){
             return $.ajax(_self.apiService.apiBase + 'api/AppEmail/ForgetPassWord',{
                 method:'GET',
                 dataType:'json',
                 headers:{Authorization:'Bearer '+_self.apiService.token.access_token},
                 data:{
-                    Ic:_self.getUser().IC
+                    'email':email
                 }
             });
         });
